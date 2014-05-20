@@ -1,0 +1,51 @@
+apply plugin: "java"
+apply plugin: "application"
+apply plugin: 'eclipse'
+
+sourceCompatibility='1.7'
+targetCompatibility='1.7'
+version = '1.0'
+dropwizardVersion = '0.7.0'
+// Jukito for unit tests.
+jukitoVersion = '1.2'
+
+mainClassName = 'se.solit.dwtemplate.TemplateApplication'
+
+repositories 
+{
+	mavenCentral()
+}
+
+
+jar 
+{
+	manifest 
+	{
+		attributes "Implementation-Title": "Template DropWizard"
+		attributes "Implementation-Version": version
+		attributes 'Main-Class': mainClassName
+	}
+	doFirst 
+	{
+		from (configurations.runtime.resolve().collect { it.isDirectory() ? it : zipTree(it) }) 
+		{
+			exclude 'META-INF/MANIFEST.MF'
+			exclude 'META-INF/*.SF'
+			exclude 'META-INF/*.DSA'
+			exclude 'META-INF/*.RSA'
+		}
+	}
+}
+
+
+run 
+{
+	args 'sw-template', './src/main/config/template-config.yml'
+}
+
+dependencies 
+{
+	compile group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views', version: dropwizardVersion
+	testCompile group: 'org.jukito', name: 'jukito', version: jukitoVersion
+}
