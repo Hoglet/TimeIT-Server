@@ -11,23 +11,23 @@ jukitoVersion = '1.2'
 
 mainClassName = 'se.solit.dwtemplate.TemplateApplication'
 
-repositories 
+repositories
 {
 	mavenCentral()
 }
 
 
-jar 
+jar
 {
-	manifest 
+	manifest
 	{
 		attributes "Implementation-Title": "Template DropWizard"
 		attributes "Implementation-Version": version
 		attributes 'Main-Class': mainClassName
 	}
-	doFirst 
+	doFirst
 	{
-		from (configurations.runtime.resolve().collect { it.isDirectory() ? it : zipTree(it) }) 
+		from (configurations.runtime.resolve().collect { it.isDirectory() ? it : zipTree(it) })
 		{
 			exclude 'META-INF/MANIFEST.MF'
 			exclude 'META-INF/*.SF'
@@ -38,14 +38,16 @@ jar
 }
 
 
-run 
+run
 {
-	args 'sw-template', './src/main/config/template-config.yml'
+	args 'server','./src/main/config/template-config.yml'
 }
 
-dependencies 
+dependencies
 {
 	compile group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-views', version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: dropwizardVersion
 	testCompile group: 'org.jukito', name: 'jukito', version: jukitoVersion
 }
