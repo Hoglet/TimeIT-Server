@@ -34,4 +34,31 @@ public class UserManager
 		em.close();
 	}
 
+	public User getUser(String username)
+	{
+		EntityManager em = emf.createEntityManager();
+		User user = em.find(User.class, username);
+		em.detach(user);
+		em.close();
+		return user;
+	}
+
+	public void update(User user)
+	{
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.merge(user);
+		em.getTransaction().commit();
+		em.close();
+	}
+
+	public void delete(User user)
+	{
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.remove(em.getReference(User.class, user.getUsername()));
+		em.getTransaction().commit();
+		em.close();
+	}
+
 }

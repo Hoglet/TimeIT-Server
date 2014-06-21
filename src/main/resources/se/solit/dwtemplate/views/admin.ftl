@@ -64,7 +64,7 @@ body.showConfirm #Confirm {
 					<td valign="top">
 					  <input type="submit" id="add" value="add" name="submitType"> <br>
 					  <input type="submit" id="edit" value="edit" name="submitType" disabled="true"> <br>
-					  <input type="button" id="delete" value="Delete" onclick="deleteClicked()" disabled="true">
+					  <input type="button" id="delete" value="delete" onclick="deleteClicked()" disabled="true">
 						<div id="Confirm">
 							<p>Are you sure you want to delete the selected user?</p>
 							<input type="submit" value="OK" name="submitType" id="OKButton">

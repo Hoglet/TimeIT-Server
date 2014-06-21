@@ -47,8 +47,14 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/edit")
-	public void userEdit(@FormParam("userSelector") List<String> users, @FormParam("submitType") String type)
+	public void userEdit(@FormParam("userName") String username, @FormParam("name") String name,
+			@FormParam("password") String password, @FormParam("email") String email)
 	{
+		User user = userManager.getUser(username);
+		user.setName(name);
+		user.setEmail(email);
+		user.setPassword(password);
+		userManager.update(user);
 		redirect("/admin");
 	}
 
@@ -87,11 +93,17 @@ public class AdminResource
 		View view = null;
 		if (type.equals("edit"))
 		{
-			view = new UserEditView();
+			view = new UserEditView(users.get(0), emf);
 		}
 		else if (type.equals("add"))
 		{
 			view = new UserAddView();
+		}
+		else if (type.equals("OK"))
+		{
+			User user = userManager.getUser(users.get(0));
+			userManager.delete(user);
+			redirect("/admin");
 		}
 		else
 		{
