@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 
 import se.solit.dwtemplate.views.IndexView;
 
-import com.google.common.base.Charsets;
 
 @Path("/")
 public class IndexResource

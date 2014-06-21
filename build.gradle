@@ -5,7 +5,8 @@ apply plugin: 'eclipse'
 sourceCompatibility='1.7'
 targetCompatibility='1.7'
 version = '1.0'
-dropwizardVersion = '0.7.0'
+dropwizardVersion = '0.7.+'
+h2Version = '1.4+'
 // Jukito for unit tests.
 jukitoVersion = '1.2'
 
@@ -49,5 +50,9 @@ dependencies
 	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-views', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: dropwizardVersion
+	compile group: 'com.h2database', name: 'h2', version: h2Version
+//	compile group: 'com.google.inject', name: 'guice', version: '3.0'
+//	compile group: 'com.google.inject.extensions', name: 'guice-persist', version: '3.0'
+	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 	testCompile group: 'org.jukito', name: 'jukito', version: jukitoVersion
 }
