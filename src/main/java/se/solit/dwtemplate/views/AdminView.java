@@ -6,18 +6,18 @@ import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwtemplate.User;
-import se.solit.dwtemplate.accessors.UserManager;
+import se.solit.dwtemplate.dao.UserDAO;
+import se.solit.dwteplate.entities.User;
 
 public class AdminView extends View
 {
 
-	private final UserManager	userManager;
+	private final UserDAO	userManager;
 
 	public AdminView(EntityManagerFactory emf)
 	{
 		super("admin.ftl");
-		userManager = new UserManager(emf);
+		userManager = new UserDAO(emf);
 	}
 
 	public Collection<User> getUsers()

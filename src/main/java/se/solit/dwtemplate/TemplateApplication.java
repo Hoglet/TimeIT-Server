@@ -12,8 +12,10 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import se.solit.dwtemplate.dao.RoleDAO;
 import se.solit.dwtemplate.resources.AdminResource;
 import se.solit.dwtemplate.resources.IndexResource;
+import se.solit.dwteplate.entities.Role;
 
 public class TemplateApplication extends Application<TemplateConfiguration>
 {
@@ -49,18 +51,6 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 		environment.jersey().register(new AdminResource(entityManagerFactory));
 	}
 
-	/*	private JpaPersistModule createJpaPersistModule(DatabaseConfiguration conf)
-		{
-			Properties props = new Properties();
-			props.put("javax.persistence.jdbc.url", conf.getUrl());
-			props.put("javax.persistence.jdbc.user", conf.getUser());
-			props.put("javax.persistence.jdbc.password", conf.getPassword());
-			props.put("javax.persistence.jdbc.driver", conf.getDriverClass());
-			JpaPersistModule jpaModule = new JpaPersistModule("Default");
-			jpaModule.properties(props);
-			return jpaModule;
-		}
-	*/
 	private EntityManagerFactory createJpaPersistFactory(DatabaseConfiguration conf)
 	{
 		Map<String, String> props = new HashMap<String, String>();
@@ -70,20 +60,18 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 		props.put("javax.persistence.jdbc.driver", conf.getDriverClass());
 		props.put("javax.persistence.schema-generation.database.action", "create");
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("Default", props);
-		createTables(emf);
+		populateTables(emf);
 		return emf;
 	}
 
-	private void createTables(EntityManagerFactory emf)
+	private void populateTables(EntityManagerFactory emf)
 	{
-		/*		EntityManager em = emf.createEntityManager();
-				em.createQuery(
-						"CREATE TABLE IF NOT EXISTS users"
-								+ "( username VARCHAR(40) PRIMARY KEY,"
-								+ " name VARCHAR(120) NOT NULL,"
-								+ " email VARCHAR(75) NOT NULL,"
-								+ " password VARCHAR(75) NOT NULL);").executeUpdate();
-				em.close();*/
+		RoleDAO roleDAO = new RoleDAO(emf);
+		if (roleDAO.get("Admin") == null)
+		{
+			Role role = new Role("Admin");
+			roleDAO.add(role);
+		}
 	}
 
 	public static void main(String[] op_args) throws Exception
@@ -96,12 +84,9 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 	}
 }
 
-//TODO: 1. UI för att ta bort användare
-//TODO: 1.1 (check that user is selected and show/hide edit &delete buttons)
-//TODO: 1.2 actually delete the user.
-//TODO: 2. Roller i databasen
-//TODO: 3. UI Lägga till roller på användare
-//TODO: 4. Säkerhet, Enbart admin får komma åt/se "admin"
-//TODO: 4. Health checks
+//TODO: 1. Säkerhet, Enbart admin får komma åt/se "admin"
+//TODO: 2. Health checks
+//TODO: 3. Error management and logging...
+//TODO: 4. DB with settings (version of db for upgrades)
 //TODO: 5. Warning to users with old browsers (IE9 and older)
 

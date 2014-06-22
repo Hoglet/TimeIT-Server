@@ -1,5 +1,5 @@
 <#-- @ftlvariable name=""
-type="se.solit.dwtemplate.resources.LandingView" -->
+type="se.solit.dwtemplate.resources.UserAddView" -->
 <!DOCTYPE HTML>
 <head><#include "head.ftl">
 </head>
@@ -26,7 +26,14 @@ type="se.solit.dwtemplate.resources.LandingView" -->
 				<td>E-mail</td>
 				<td><input type="text" name="email" /></td>
 			</tr>
-
+			<tr>
+				<td>Roles</td>
+				<td>
+				<#list roles as role>
+						<input type="checkbox" name="roles" value="${role.getName()}">${role.getName()}<br>
+				</#list>
+				</td>
+			</tr>
 		</table>
 
 		<p>

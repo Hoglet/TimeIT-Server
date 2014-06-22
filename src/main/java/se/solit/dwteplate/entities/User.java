@@ -1,9 +1,12 @@
-package se.solit.dwtemplate;
+package se.solit.dwteplate.entities;
+
+import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -87,30 +90,35 @@ public class User
 		return true;
 	}
 
-	protected User()
-	{
-	}
-
 	@Id
 	@Column(nullable = false, name = "username")
 	@OneToMany(cascade = CascadeType.REMOVE)
-	private String	username;
+	private String				username;
 
 	@Column(name = "name")
-	private String	name;
+	private String				name;
 
 	@Column(name = "email")
-	private String	email;
+	private String				email;
 
 	@Column(name = "password")
-	private String	password;
+	private String				password;
 
-	public User(final String paramName, final String paramUsername, final String paramPassword, final String paramEmail)
+	@ManyToMany
+	private Collection<Role>	roles;
+
+	public User()
+	{
+	}
+
+	public User(final String paramName, final String paramUsername, final String paramPassword,
+			final String paramEmail, Collection<Role> roles2)
 	{
 		this.name = paramName;
 		this.username = paramUsername;
 		this.password = paramPassword;
 		this.email = paramEmail;
+		this.roles = roles2;
 	}
 
 	public final void setName(final String name)
@@ -151,6 +159,16 @@ public class User
 	public final String getPassword()
 	{
 		return password;
+	}
+
+	public void setRoles(Collection<Role> roles)
+	{
+		this.roles = roles;
+	}
+
+	public Collection<Role> getRoles()
+	{
+		return roles;
 	}
 
 }

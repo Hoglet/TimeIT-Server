@@ -22,7 +22,20 @@
 				<td>E-mail</td>
 				<td><input type="text" name="email" value="${user.email}" /></td>
 			</tr>
+			<tr>
+				<td>Roles</td>
+				<td>
+				<#list roles as role>
+						<input type="checkbox" name="roles" value="${role.getName()}"
+						<#if role.getCheckedState() >
+							checked
+						</#if>
 
+						>
+						${role.getName()} <br>
+				</#list>
+				</td>
+			</tr>
 		</table>
 
 		<p>

@@ -1,17 +1,17 @@
-package se.solit.dwtemplate.accessors;
+package se.solit.dwtemplate.dao;
 
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwtemplate.User;
+import se.solit.dwteplate.entities.User;
 
-public class UserManager
+public class UserDAO
 {
 	private final EntityManagerFactory	emf;
 
-	public UserManager(EntityManagerFactory emf)
+	public UserDAO(EntityManagerFactory emf)
 	{
 		this.emf = emf;
 	}
