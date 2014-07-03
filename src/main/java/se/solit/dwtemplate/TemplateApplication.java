@@ -93,5 +93,4 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 
 //TODO: 1. Error management and logging...
 //TODO: 2. DB with settings (version of db for upgrades)
-//TODO: 3. Warning to users with old browsers (IE9 and older)
-//TODO: 4. Unit tests checking access
+//TODO: 3. Unit tests checking access

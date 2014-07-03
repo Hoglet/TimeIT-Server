@@ -3,50 +3,6 @@
 <!DOCTYPE HTML>
 <head>
 <#include "head.ftl">
-<style>
-#dialog {
-	background-color: white;
-	border: medium ridge;
-	border-radius: 9px; padding : 1em; position : fixed;
-	display: none;
-	position: fixed;
-	padding: 1em;
-}
-
-#shadyOverlay {
-	opacity: 0.50;
-	background-color: black; cursor : pointer;
-	height: 100%;
-	display: none;
-	position: fixed;
-	width: 100%;
-	cursor: pointer;
-}
-
-body.showDialog #shadyOverlay {
-	display: block;
-}
-
-body.showDialog #dialog {
-	position: absolute;
-	display: block;
-	opacity: 1;
-	z-index: 99;
-	visibility: visible;
-	margin-left: -10em;
-	margin-top: 2em;
-	box-shadow: 5px 5px 5px rgba(0,0,0,0.6);
-}
-
-#OKButton {
-	float: left;
-}
-
-#CancelButton {
-	float: right;
-}
-</style>
-
 </head>
 <html>
 <body>
