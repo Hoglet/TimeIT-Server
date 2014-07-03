@@ -39,12 +39,9 @@ public class UserEditView extends View
 
 		for (Role role : roles)
 		{
-			for (Role userRole : user.getRoles())
+			if (user.hasRole(role))
 			{
-				if (role.getName().equals(userRole.getName()))
-				{
-					role.setCheckedState(true);
-				}
+				role.setCheckedState(true);
 			}
 
 		}

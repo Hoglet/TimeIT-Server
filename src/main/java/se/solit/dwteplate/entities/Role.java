@@ -47,9 +47,28 @@ public class Role
 		return checked;
 	}
 
+	@Override
+	public boolean equals(Object other)
+	{
+		boolean result = false;
+		if (other instanceof Role)
+		{
+			Role otherRole = (Role)other;
+			result = name.equals(otherRole.getName());
+		}
+		return result;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return name.hashCode();
+	}
+
 	@Transient
 	private boolean	checked;
 
 	@Id
 	private String	name;
+
 }

@@ -171,4 +171,21 @@ public class User
 		return roles;
 	}
 
+	public boolean hasRole(Role op1)
+	{
+		return hasRole(op1.getName());
+	}
+
+	public boolean hasRole(String name)
+	{
+		for (Role role : roles)
+		{
+			if (role.getName().equals(name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

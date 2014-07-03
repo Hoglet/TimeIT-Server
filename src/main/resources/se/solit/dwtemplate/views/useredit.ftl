@@ -39,8 +39,8 @@
 		</table>
 
 		<p>
-			<input type="submit" name="editUser" value="save" />&nbsp; <input
-				type="submit" name="cancel" value="cancel" />&nbsp;
+			<input type="submit" name="submitType" value="save" />&nbsp; <input
+				type="submit" name="submitType" value="cancel" />&nbsp;
 		</p>
 	</form>
 	<#include "bottom.ftl">

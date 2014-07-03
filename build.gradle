@@ -47,6 +47,7 @@ run
 dependencies
 {
 	compile group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-views', version: dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: dropwizardVersion

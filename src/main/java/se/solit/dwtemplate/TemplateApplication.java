@@ -2,6 +2,7 @@ package se.solit.dwtemplate;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
@@ -16,6 +17,7 @@ import se.solit.dwtemplate.dao.RoleDAO;
 import se.solit.dwtemplate.resources.AdminResource;
 import se.solit.dwtemplate.resources.IndexResource;
 import se.solit.dwteplate.entities.Role;
+import se.solit.dwteplate.entities.User;
 
 public class TemplateApplication extends Application<TemplateConfiguration>
 {
@@ -49,6 +51,8 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 
 		environment.jersey().register(new IndexResource());
 		environment.jersey().register(new AdminResource(entityManagerFactory));
+		environment.jersey().register(
+				new BasicAuthProvider<User>(new MyAuthenticator(entityManagerFactory), "Authenticator"));
 	}
 
 	private EntityManagerFactory createJpaPersistFactory(DatabaseConfiguration conf)
@@ -84,9 +88,8 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 	}
 }
 
-//TODO: 1. Säkerhet, Enbart admin får komma åt/se "admin"
-//TODO: 2. Health checks
-//TODO: 3. Error management and logging...
-//TODO: 4. DB with settings (version of db for upgrades)
-//TODO: 5. Warning to users with old browsers (IE9 and older)
-
+//TODO: 1. Health checks
+//TODO: 2. Error management and logging...
+//TODO: 3. DB with settings (version of db for upgrades)
+//TODO: 4. Warning to users with old browsers (IE9 and older)
+//TODO: 5. Unit tests checking access

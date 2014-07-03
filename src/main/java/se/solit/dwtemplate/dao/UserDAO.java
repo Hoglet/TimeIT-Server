@@ -38,7 +38,6 @@ public class UserDAO
 	{
 		EntityManager em = emf.createEntityManager();
 		User user = em.find(User.class, username);
-		em.detach(user);
 		em.close();
 		return user;
 	}

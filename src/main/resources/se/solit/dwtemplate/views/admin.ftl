@@ -4,7 +4,7 @@
 <head>
 <#include "head.ftl">
 <style>
-#Confirm {
+#dialog {
 	background-color: white;
 	border: medium ridge;
 	border-radius: 9px; padding : 1em; position : fixed;
@@ -23,16 +23,19 @@
 	cursor: pointer;
 }
 
-body.showConfirm #shadyOverlay {
+body.showDialog #shadyOverlay {
 	display: block;
 }
 
-body.showConfirm #Confirm {
+body.showDialog #dialog {
 	position: absolute;
 	display: block;
 	opacity: 1;
 	z-index: 99;
 	visibility: visible;
+	margin-left: -10em;
+	margin-top: 2em;
+	box-shadow: 5px 5px 5px rgba(0,0,0,0.6);
 }
 
 #OKButton {
@@ -65,7 +68,7 @@ body.showConfirm #Confirm {
 					  <input type="submit" id="add" value="add" name="submitType"> <br>
 					  <input type="submit" id="edit" value="edit" name="submitType" disabled="true"> <br>
 					  <input type="button" id="delete" value="delete" onclick="deleteClicked()" disabled="true">
-						<div id="Confirm">
+						<div id="dialog">
 							<p>Are you sure you want to delete the selected user?</p>
 							<input type="submit" value="OK" name="submitType" id="OKButton">
 							<input type="button" value="Cancel" onclick="cancelClicked()"
@@ -87,10 +90,10 @@ body.showConfirm #Confirm {
 				}
 			}
 			function deleteClicked() {
-				document.body.classList.add('showConfirm');
+				document.body.classList.add('showDialog');
 			}
 			function cancelClicked() {
-				document.body.classList.remove('showConfirm');
+				document.body.classList.remove('showDialog');
 			}
 		</script>
 </body>

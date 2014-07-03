@@ -1,6 +1,6 @@
 package se.solit.dwtemplate.resources;
 
-import io.dropwizard.views.View;
+import io.dropwizard.auth.Auth;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import se.solit.dwtemplate.dao.RoleDAO;
 import se.solit.dwtemplate.dao.UserDAO;
@@ -42,31 +43,44 @@ public class AdminResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/")
-	public View admin()
+	public Response admin(@Auth User user)
 	{
-		return new AdminView(emf);
+		if (user.hasRole("Admin"))
+		{
+			return Response.ok(new AdminView(emf)).build();
+		}
+		else
+		{
+			return Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		}
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/edit")
-	public void userEdit(@FormParam("userName") String username, @FormParam("name") String name,
+	public void userEdit(@Auth User user, @FormParam("userName") String username, @FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
-			@FormParam("roles") List<String> roleIDs)
+			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		RoleDAO roleDAO = new RoleDAO(emf);
-		User user = userManager.getUser(username);
-		user.setName(name);
-		user.setEmail(email);
-		user.setPassword(password);
-		Collection<Role> roles = new ArrayList<Role>();
-		for (String id : roleIDs)
+		if (user.hasRole("Admin"))
 		{
-			roles.add(roleDAO.get(id));
+			if (response.equals("save"))
+			{
+				RoleDAO roleDAO = new RoleDAO(emf);
+				user = userManager.getUser(username);
+				user.setName(name);
+				user.setEmail(email);
+				user.setPassword(password);
+				Collection<Role> roles = new ArrayList<Role>();
+				for (String id : roleIDs)
+				{
+					roles.add(roleDAO.get(id));
+				}
+				user.setRoles(roles);
+				userManager.update(user);
+			}
 		}
-		user.setRoles(roles);
-		userManager.update(user);
 		redirect("/admin");
 	}
 
@@ -74,18 +88,24 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/add")
-	public void userAdd(@FormParam("userName") String username, @FormParam("name") String name,
+	public void userAdd(@Auth User user, @FormParam("userName") String username, @FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
-			@FormParam("roles") List<String> roleIDs)
+			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		RoleDAO roleDAO = new RoleDAO(emf);
-		Collection<Role> roles = new ArrayList<Role>();
-		for (String id : roleIDs)
+		if (user.hasRole("Admin"))
 		{
-			roles.add(roleDAO.get(id));
+			if (response.equals("save"))
+			{
+				RoleDAO roleDAO = new RoleDAO(emf);
+				Collection<Role> roles = new ArrayList<Role>();
+				for (String id : roleIDs)
+				{
+					roles.add(roleDAO.get(id));
+				}
+				user = new User(name, username, password, email, roles);
+				userManager.add(user);
+			}
 		}
-		User user = new User(name, username, password, email, roles);
-		userManager.add(user);
 		redirect("/admin");
 	}
 
@@ -107,28 +127,31 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user")
-	public View user(@FormParam("userSelector") List<String> users, @FormParam("submitType") String type)
+	public Response user(@Auth User user, @FormParam("userSelector") List<String> users,
+			@FormParam("submitType") String type)
 	{
-		View view = null;
-		if (type.equals("edit"))
+		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		if (user.hasRole("Admin"))
 		{
-			view = new UserEditView(users.get(0), emf);
+			if (type.equals("edit"))
+			{
+				response = Response.ok(new UserEditView(users.get(0), emf)).build();
+			}
+			else if (type.equals("add"))
+			{
+				response = Response.ok(new UserAddView(emf)).build();
+			}
+			else if (type.equals("OK"))
+			{
+				user = userManager.getUser(users.get(0));
+				userManager.delete(user);
+				redirect("/admin");
+			}
+			else
+			{
+				response = Response.ok(new AdminView(emf)).build();
+			}
 		}
-		else if (type.equals("add"))
-		{
-			view = new UserAddView(emf);
-		}
-		else if (type.equals("OK"))
-		{
-			User user = userManager.getUser(users.get(0));
-			userManager.delete(user);
-			redirect("/admin");
-		}
-		else
-		{
-			view = new AdminView(emf);
-		}
-		return view;
+		return response;
 	}
-
 }
