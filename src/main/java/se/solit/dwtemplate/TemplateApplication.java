@@ -42,6 +42,9 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 	{
 		EntityManagerFactory entityManagerFactory = createJpaPersistFactory(configuration.getDatabase());
 
+		final TemplateHealthCheck healthCheck = new TemplateHealthCheck(entityManagerFactory);
+		environment.healthChecks().register("databases", healthCheck);
+
 		// environment.jersey().getResourceConfig().getContainerRequestFilters().add(new AuthenticationFilter());
 
 		// filter.addMappingForServletNames();
@@ -88,8 +91,7 @@ public class TemplateApplication extends Application<TemplateConfiguration>
 	}
 }
 
-//TODO: 1. Health checks
-//TODO: 2. Error management and logging...
-//TODO: 3. DB with settings (version of db for upgrades)
-//TODO: 4. Warning to users with old browsers (IE9 and older)
-//TODO: 5. Unit tests checking access
+//TODO: 1. Error management and logging...
+//TODO: 2. DB with settings (version of db for upgrades)
+//TODO: 3. Warning to users with old browsers (IE9 and older)
+//TODO: 4. Unit tests checking access
