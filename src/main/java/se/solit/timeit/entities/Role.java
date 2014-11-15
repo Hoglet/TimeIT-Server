@@ -1,4 +1,4 @@
-package se.solit.dwteplate.entities;
+package se.solit.timeit.entities;
 
 import java.util.Collection;
 
@@ -14,6 +14,12 @@ public class Role
 {
 	@ManyToMany(mappedBy = "roles")
 	private Collection<User>	users;
+
+	@Transient
+	private boolean				checked;
+
+	@Id
+	private String				name;
 
 	protected Role()
 	{
@@ -64,11 +70,5 @@ public class Role
 	{
 		return name.hashCode();
 	}
-
-	@Transient
-	private boolean	checked;
-
-	@Id
-	private String	name;
 
 }

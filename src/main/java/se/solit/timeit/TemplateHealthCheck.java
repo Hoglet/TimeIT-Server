@@ -1,11 +1,11 @@
-package se.solit.dwtemplate;
+package se.solit.timeit;
 
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwtemplate.dao.RoleDAO;
-import se.solit.dwteplate.entities.Role;
+import se.solit.timeit.dao.RoleDAO;
+import se.solit.timeit.entities.Role;
 
 import com.codahale.metrics.health.HealthCheck;
 
@@ -24,7 +24,7 @@ public class TemplateHealthCheck extends HealthCheck
 		RoleDAO roleDAO = new RoleDAO(emf);
 		Collection<Role> roles = roleDAO.getRoles();
 
-		if (roles.size() < 1)
+		if (roles.isEmpty())
 		{
 			return Result.unhealthy("template doesn't include a name");
 		}

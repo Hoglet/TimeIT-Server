@@ -1,4 +1,4 @@
-package se.solit.dwtemplate;
+package se.solit.timeit;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -9,11 +9,9 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 public class AuthenticationFilter implements ContainerRequestFilter
 {
-	// private final AuthenticationDAO authenticationDAO;
 
 	public AuthenticationFilter()
 	{
-		// this.authenticationDAO = authenticationDAO;
 	}
 
 	@Override

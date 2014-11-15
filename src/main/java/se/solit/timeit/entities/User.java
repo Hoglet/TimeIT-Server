@@ -1,10 +1,11 @@
-package se.solit.dwteplate.entities;
+package se.solit.timeit.entities;
 
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -14,6 +15,40 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class User
 {
+	@Id
+	@Column(nullable = false, name = "username")
+	@OneToMany(cascade = CascadeType.REMOVE)
+	private String				username;
+
+	@Column(name = "name")
+	private String				name;
+
+	@Column(name = "email")
+	private String				email;
+
+	@Column(name = "password")
+	private String				password;
+
+	@ManyToMany
+	private Collection<Role>	roles;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
+	private Collection<Task>	tasks;
+
+	public User()
+	{
+	}
+
+	public User(final String paramName, final String paramUsername, final String paramPassword,
+			final String paramEmail, Collection<Role> roles2)
+	{
+		this.name = paramName;
+		this.username = paramUsername;
+		this.password = paramPassword;
+		this.email = paramEmail;
+		this.roles = roles2;
+	}
+
 	// CHECKSTYLE:OFF
 	@Override
 	public final int hashCode()
@@ -88,37 +123,6 @@ public class User
 			return false;
 		}
 		return true;
-	}
-
-	@Id
-	@Column(nullable = false, name = "username")
-	@OneToMany(cascade = CascadeType.REMOVE)
-	private String				username;
-
-	@Column(name = "name")
-	private String				name;
-
-	@Column(name = "email")
-	private String				email;
-
-	@Column(name = "password")
-	private String				password;
-
-	@ManyToMany
-	private Collection<Role>	roles;
-
-	public User()
-	{
-	}
-
-	public User(final String paramName, final String paramUsername, final String paramPassword,
-			final String paramEmail, Collection<Role> roles2)
-	{
-		this.name = paramName;
-		this.username = paramUsername;
-		this.password = paramPassword;
-		this.email = paramEmail;
-		this.roles = roles2;
 	}
 
 	public final void setName(final String name)

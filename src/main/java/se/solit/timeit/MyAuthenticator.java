@@ -1,4 +1,4 @@
-package se.solit.dwtemplate;
+package se.solit.timeit;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -6,8 +6,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwtemplate.dao.UserDAO;
-import se.solit.dwteplate.entities.User;
+import se.solit.timeit.dao.UserDAO;
+import se.solit.timeit.entities.User;
 
 import com.google.common.base.Optional;
 

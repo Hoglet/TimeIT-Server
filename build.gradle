@@ -1,20 +1,61 @@
 apply plugin: "java"
 apply plugin: "application"
 apply plugin: 'eclipse'
+apply plugin: "sonar-runner"
+apply plugin: "jacoco"
+apply plugin: 'project-report'
 
 sourceCompatibility='1.7'
 targetCompatibility='1.7'
-version = '1.0'
-dropwizardVersion = '0.7.+'
-h2Version = '1.4+'
-// Jukito for unit tests.
-jukitoVersion = '1.2'
+version='1.0'
+project.ext 
+{
+			dropwizardVersion='0.7.+'
+			h2Version = '1.4+'
+			// Jukito for unit tests.
+			jukitoVersion = '1.2'
+}
 
-mainClassName = 'se.solit.dwtemplate.TemplateApplication'
+mainClassName = 'se.solit.timeit.TimeITServerApplication'
 
 repositories
 {
 	mavenCentral()
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+
+test 
+{
+        testLogging 
+        {
+                // Show that tests are run in the command-line output
+                events 'started', 'passed'
+        }
+//      reportsDir = file("$buildDir/junit")
+}
+
+
+sonarRunner {
+    sonarProperties {
+        property "sonar.host.url", "http://localhost:9000"
+		property "sonar.projectName", "TimeITServer"
+		property "sonar.projectKey", "timeITServer"
+        property "sonar.jdbc.username", "hoglet"
+        property "sonar.jdbc.password", "gurka"
+    }
 }
 
 
@@ -22,7 +63,7 @@ jar
 {
 	manifest
 	{
-		attributes "Implementation-Title": "Template DropWizard"
+		attributes "Implementation-Title": "TimeIT Server"
 		attributes "Implementation-Version": version
 		attributes 'Main-Class': mainClassName
 	}
@@ -44,16 +85,30 @@ run
 	args 'server','./src/main/config/template-config.yml'
 }
 
+
+test 
+{
+	testLogging 
+	{
+		// Show that tests are run in the command-line output
+		events 'started', 'passed'
+	}
+}
+
 dependencies
 {
-	compile group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views', version: dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-core', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
+	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
 //	compile group: 'com.google.inject', name: 'guice', version: '3.0'
 //	compile group: 'com.google.inject.extensions', name: 'guice-persist', version: '3.0'
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 	testCompile group: 'org.jukito', name: 'jukito', version: jukitoVersion
+	compile group: 'junit', name: 'junit', version: '4.11'
 }

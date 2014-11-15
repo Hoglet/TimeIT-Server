@@ -1,4 +1,4 @@
-package se.solit.dwtemplate.views;
+package se.solit.timeit.views;
 
 import io.dropwizard.views.View;
 
@@ -6,10 +6,10 @@ import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwtemplate.dao.RoleDAO;
-import se.solit.dwtemplate.dao.UserDAO;
-import se.solit.dwteplate.entities.Role;
-import se.solit.dwteplate.entities.User;
+import se.solit.timeit.dao.RoleDAO;
+import se.solit.timeit.dao.UserDAO;
+import se.solit.timeit.entities.Role;
+import se.solit.timeit.entities.User;
 
 import com.google.common.base.Charsets;
 

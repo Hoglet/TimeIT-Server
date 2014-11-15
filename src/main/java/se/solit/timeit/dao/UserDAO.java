@@ -1,11 +1,11 @@
-package se.solit.dwtemplate.dao;
+package se.solit.timeit.dao;
 
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwteplate.entities.User;
+import se.solit.timeit.entities.User;
 
 public class UserDAO
 {

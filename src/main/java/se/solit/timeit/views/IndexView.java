@@ -1,4 +1,4 @@
-package se.solit.dwtemplate.views;
+package se.solit.timeit.views;
 
 import com.google.common.base.Charsets;
 

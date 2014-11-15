@@ -1,4 +1,4 @@
-package se.solit.dwtemplate.resources;
+package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
 
@@ -20,13 +20,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import se.solit.dwtemplate.dao.RoleDAO;
-import se.solit.dwtemplate.dao.UserDAO;
-import se.solit.dwtemplate.views.AdminView;
-import se.solit.dwtemplate.views.UserAddView;
-import se.solit.dwtemplate.views.UserEditView;
-import se.solit.dwteplate.entities.Role;
-import se.solit.dwteplate.entities.User;
+import se.solit.timeit.dao.RoleDAO;
+import se.solit.timeit.dao.UserDAO;
+import se.solit.timeit.entities.Role;
+import se.solit.timeit.entities.User;
+import se.solit.timeit.views.AdminView;
+import se.solit.timeit.views.UserAddView;
+import se.solit.timeit.views.UserEditView;
 
 @Path("/admin")
 public class AdminResource
@@ -59,27 +59,25 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/edit")
-	public void userEdit(@Auth User user, @FormParam("userName") String username, @FormParam("name") String name,
+	public void userEdit(@Auth User authorizedUser, @FormParam("userName") String username,
+			@FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		if (user.hasRole("Admin"))
+		if (authorizedUser.hasRole("Admin") && "save".equals(response))
 		{
-			if (response.equals("save"))
+			RoleDAO roleDAO = new RoleDAO(emf);
+			User user = userManager.getUser(username);
+			user.setName(name);
+			user.setEmail(email);
+			user.setPassword(password);
+			Collection<Role> roles = new ArrayList<Role>();
+			for (String id : roleIDs)
 			{
-				RoleDAO roleDAO = new RoleDAO(emf);
-				user = userManager.getUser(username);
-				user.setName(name);
-				user.setEmail(email);
-				user.setPassword(password);
-				Collection<Role> roles = new ArrayList<Role>();
-				for (String id : roleIDs)
-				{
-					roles.add(roleDAO.get(id));
-				}
-				user.setRoles(roles);
-				userManager.update(user);
+				roles.add(roleDAO.get(id));
 			}
+			user.setRoles(roles);
+			userManager.update(user);
 		}
 		redirect("/admin");
 	}
@@ -88,23 +86,21 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/add")
-	public void userAdd(@Auth User user, @FormParam("userName") String username, @FormParam("name") String name,
+	public void userAdd(@Auth User authorizedUser, @FormParam("userName") String username,
+			@FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		if (user.hasRole("Admin"))
+		if (authorizedUser.hasRole("Admin") && "save".equals(response))
 		{
-			if (response.equals("save"))
+			RoleDAO roleDAO = new RoleDAO(emf);
+			Collection<Role> roles = new ArrayList<Role>();
+			for (String id : roleIDs)
 			{
-				RoleDAO roleDAO = new RoleDAO(emf);
-				Collection<Role> roles = new ArrayList<Role>();
-				for (String id : roleIDs)
-				{
-					roles.add(roleDAO.get(id));
-				}
-				user = new User(name, username, password, email, roles);
-				userManager.add(user);
+				roles.add(roleDAO.get(id));
 			}
+			User user = new User(name, username, password, email, roles);
+			userManager.add(user);
 		}
 		redirect("/admin");
 	}
@@ -119,7 +115,7 @@ public class AdminResource
 		}
 		catch (URISyntaxException e)
 		{
-			e.printStackTrace();
+			System.out.println(e);
 		}
 	}
 
@@ -127,23 +123,23 @@ public class AdminResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user")
-	public Response user(@Auth User user, @FormParam("userSelector") List<String> users,
+	public Response user(@Auth User authorizedUser, @FormParam("userSelector") List<String> users,
 			@FormParam("submitType") String type)
 	{
 		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
-		if (user.hasRole("Admin"))
+		if (authorizedUser.hasRole("Admin"))
 		{
-			if (type.equals("edit"))
+			if ("edit".equals(type))
 			{
 				response = Response.ok(new UserEditView(users.get(0), emf)).build();
 			}
-			else if (type.equals("add"))
+			else if ("add".equals(type))
 			{
 				response = Response.ok(new UserAddView(emf)).build();
 			}
-			else if (type.equals("OK"))
+			else if ("OK".equals(type))
 			{
-				user = userManager.getUser(users.get(0));
+				User user = userManager.getUser(users.get(0));
 				userManager.delete(user);
 				redirect("/admin");
 			}

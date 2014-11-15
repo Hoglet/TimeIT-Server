@@ -1,4 +1,4 @@
-package se.solit.dwtemplate;
+package se.solit.timeit;
 
 import io.dropwizard.Configuration;
 
@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TemplateConfiguration extends Configuration
+public class TimeITConfiguration extends Configuration
 {
 	@NotEmpty
 	private String					template;

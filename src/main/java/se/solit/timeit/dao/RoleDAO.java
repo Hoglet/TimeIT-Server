@@ -1,11 +1,11 @@
-package se.solit.dwtemplate.dao;
+package se.solit.timeit.dao;
 
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import se.solit.dwteplate.entities.Role;
+import se.solit.timeit.entities.Role;
 
 public class RoleDAO
 {
@@ -39,21 +39,15 @@ public class RoleDAO
 	{
 
 		Role role = null;
-		try
-		{
-			EntityManager em = entityManagerFactory.createEntityManager();
-			em.getTransaction().begin();
-			role = em.find(Role.class, string);
-			em.getTransaction().commit();
-			em.close();
-		}
-		catch (Exception e)
-		{
-			String s = e.getMessage();
-		}
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.getTransaction().begin();
+		role = em.find(Role.class, string);
+		em.getTransaction().commit();
+		em.close();
 		return role;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<Role> getRoles()
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();

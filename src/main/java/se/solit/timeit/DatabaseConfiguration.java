@@ -1,4 +1,4 @@
-package se.solit.dwtemplate;
+package se.solit.timeit;
 
 import javax.validation.constraints.NotNull;
 
