@@ -23,6 +23,10 @@ repositories
 	mavenCentral()
 }
 
+
+sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
+sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
+
 jacoco {
     toolVersion = "0.7.1.201405082137"
     reportsDir = file("$buildDir/customJacocoReportDir")
@@ -46,18 +50,6 @@ test
         }
 //      reportsDir = file("$buildDir/junit")
 }
-
-
-sonarRunner {
-    sonarProperties {
-        property "sonar.host.url", "http://localhost:9000"
-		property "sonar.projectName", "TimeITServer"
-		property "sonar.projectKey", "timeITServer"
-        property "sonar.jdbc.username", "hoglet"
-        property "sonar.jdbc.password", "gurka"
-    }
-}
-
 
 jar
 {
@@ -85,15 +77,6 @@ run
 	args 'server','./src/main/config/template-config.yml'
 }
 
-
-test 
-{
-	testLogging 
-	{
-		// Show that tests are run in the command-line output
-		events 'started', 'passed'
-	}
-}
 
 dependencies
 {
