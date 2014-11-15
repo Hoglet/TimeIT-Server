@@ -73,16 +73,17 @@ public class testSyncResource
 		Task resultingTask = resultingTasks.get(0);
 		assertThat(resultingTask.equals(task));
 	}
-
-	@Test
-	public void testTasksSync()
-	{
-		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task("1", "newTask", "", false, 0, false, user);
-		tasksToSend.add(newTask);
-		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-				.type("application/json")
-				.put(returnType, tasksToSend);
-		assertThat(resultingTasks.size()).isEqualTo(2);
-	}
+	/*
+		@Test
+		public void testTasksSync()
+		{
+			List<Task> tasksToSend = new ArrayList<Task>();
+			Task newTask = new Task("1", "newTask", "", false, 0, false, user);
+			tasksToSend.add(newTask);
+			List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+					.type("application/json")
+					.put(returnType, tasksToSend);
+			assertThat(resultingTasks.size()).isEqualTo(2);
+		}
+		*/
 }
