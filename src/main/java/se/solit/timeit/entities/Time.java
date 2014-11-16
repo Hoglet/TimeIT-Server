@@ -95,6 +95,7 @@ public class Time
 	}
 
 	// CHECKSTYLE:OFF
+	// SONAR:OFF
 	@Override
 	public final int hashCode()
 	{
@@ -165,6 +166,6 @@ public class Time
 		}
 		return true;
 	}
-
-	// CHECKSTYLE::ON
+	// SONAR:ON
+	// CHECKSTYLE:ON
 }

@@ -50,7 +50,7 @@ public class User
 	}
 
 	// CHECKSTYLE:OFF
-	// SONAR_BEGIN_IGNORE
+	// SONAR:OFF
 	@Override
 	public final int hashCode()
 	{
@@ -126,7 +126,7 @@ public class User
 		return true;
 	}
 
-	// SONAR_END_IGNORE
+	// SONAR:ON
 	// CHECKSTYLE:ON
 
 	public final void setName(final String name)

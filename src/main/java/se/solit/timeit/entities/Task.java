@@ -100,6 +100,7 @@ public class Task
 	}
 
 	// CHECKSTYLE:OFF
+	// SONAR:OFF
 	@Override
 	public final boolean equals(final Object obj)
 	{
@@ -190,6 +191,7 @@ public class Task
 		return result;
 	}
 
+	// SONAR:ON
 	// CHECKSTYLE:ON
 
 	public final void setName(final String name2)
