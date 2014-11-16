@@ -13,7 +13,7 @@ import org.junit.Test;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
 
-public class UserTest
+public class TestUser
 {
 
 	private static final String	JUST_A_STRING	= "Apa";
