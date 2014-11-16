@@ -34,8 +34,7 @@ public class SyncResource
 			throws SQLException
 	{
 		TaskDAO taskDAO = new TaskDAO(emf);
-		Task task = taskDAO.getTask(id);
-		return task;
+		return taskDAO.getTask(id);
 	}
 
 	@GET
@@ -44,8 +43,7 @@ public class SyncResource
 			throws SQLException
 	{
 		TaskDAO taskDAO = new TaskDAO(emf);
-		Collection<Task> tasks = taskDAO.getTasks(user);
-		return tasks;
+		return taskDAO.getTasks(user);
 	}
 
 	@PUT

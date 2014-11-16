@@ -31,6 +31,7 @@ import se.solit.timeit.views.UserEditView;
 @Path("/admin")
 public class AdminResource
 {
+	private static final String			ADMIN_PATH	= "/admin";
 	private final EntityManagerFactory	emf;
 	private final UserDAO				userManager;
 
@@ -45,7 +46,7 @@ public class AdminResource
 	@Path("/")
 	public Response admin(@Auth User user)
 	{
-		if (user.hasRole("Admin"))
+		if (user.hasRole(Role.ADMIN))
 		{
 			return Response.ok(new AdminView(emf)).build();
 		}
@@ -64,7 +65,7 @@ public class AdminResource
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		if (authorizedUser.hasRole("Admin") && "save".equals(response))
+		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
 		{
 			RoleDAO roleDAO = new RoleDAO(emf);
 			User user = userManager.getUser(username);
@@ -79,7 +80,7 @@ public class AdminResource
 			user.setRoles(roles);
 			userManager.update(user);
 		}
-		redirect("/admin");
+		redirect(ADMIN_PATH);
 	}
 
 	@POST
@@ -91,7 +92,7 @@ public class AdminResource
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
 	{
-		if (authorizedUser.hasRole("Admin") && "save".equals(response))
+		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
 		{
 			RoleDAO roleDAO = new RoleDAO(emf);
 			Collection<Role> roles = new ArrayList<Role>();
@@ -102,7 +103,7 @@ public class AdminResource
 			User user = new User(name, username, password, email, roles);
 			userManager.add(user);
 		}
-		redirect("/admin");
+		redirect(ADMIN_PATH);
 	}
 
 	private void redirect(String destination)
@@ -127,7 +128,7 @@ public class AdminResource
 			@FormParam("submitType") String type)
 	{
 		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
-		if (authorizedUser.hasRole("Admin"))
+		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			if ("edit".equals(type))
 			{
@@ -141,7 +142,7 @@ public class AdminResource
 			{
 				User user = userManager.getUser(users.get(0));
 				userManager.delete(user);
-				redirect("/admin");
+				redirect(ADMIN_PATH);
 			}
 			else
 			{

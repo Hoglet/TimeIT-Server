@@ -60,15 +60,6 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
 
-		/*		UserDAO userDAO = new UserDAO(emf);
-
-				User user = userDAO.getUser("tester");
-
-				TaskDAO taskDAO = new TaskDAO(emf);
-				Task task = new Task(UUID.randomUUID().toString(), "Test", "", false, 0, false, user);
-				taskDAO.add(task);
-		*/
-
 		environment.jersey().register(new IndexResource());
 		environment.jersey().register(new SyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
@@ -92,9 +83,9 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 	private void populateTables(EntityManagerFactory emf)
 	{
 		RoleDAO roleDAO = new RoleDAO(emf);
-		if (roleDAO.get("Admin") == null)
+		if (roleDAO.get(Role.ADMIN) == null)
 		{
-			Role role = new Role("Admin");
+			Role role = new Role(Role.ADMIN);
 			roleDAO.add(role);
 		}
 	}
@@ -115,5 +106,3 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		}
 	}
 }
-
-//TODO: Unit tests checking access

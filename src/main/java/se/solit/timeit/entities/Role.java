@@ -12,6 +12,8 @@ import javax.persistence.Transient;
 @Table(name = "role")
 public class Role
 {
+	public static final String	ADMIN	= "Admin";
+
 	@ManyToMany(mappedBy = "roles")
 	private Collection<User>	users;
 

@@ -23,12 +23,13 @@ import se.solit.timeit.resources.SyncResource;
 
 import com.sun.jersey.api.client.GenericType;
 
-public class testSyncResource
+public class TestSyncResource
 {
+	private static final String				TESTMAN_ID	= "testman";
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 	private static UserDAO					userdao		= new UserDAO(emf);
 	private static TaskDAO					taskdao		= new TaskDAO(emf);
-	private static final User				user		= new User("testman", "testman", "password", "",
+	private static final User				user		= new User(TESTMAN_ID, TESTMAN_ID, "password", "",
 																new ArrayList<Role>());
 	private static Task						task		= new Task("123", "Task1", "", false, 0, false, user);
 
@@ -37,13 +38,13 @@ public class testSyncResource
 														};
 
 	@ClassRule
-	public static ResourceTestRule			resources	= ResourceTestRule.builder().addResource(new SyncResource(emf))
+	public static final ResourceTestRule	resources	= ResourceTestRule.builder().addResource(new SyncResource(emf))
 																.build();
 
 	@Before
-	public void setUp() throws Exception
+	public void setUp()
 	{
-		User u = userdao.getUser("testman");
+		User u = userdao.getUser(TESTMAN_ID);
 		if (u == null)
 		{
 			userdao.add(user);
