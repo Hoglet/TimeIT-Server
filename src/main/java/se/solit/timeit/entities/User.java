@@ -182,11 +182,14 @@ public class User
 
 	public boolean hasRole(String name)
 	{
-		for (Role role : roles)
+		if (roles != null)
 		{
-			if (role.getName().equals(name))
+			for (Role role : roles)
 			{
-				return true;
+				if (role.getName().equals(name))
+				{
+					return true;
+				}
 			}
 		}
 		return false;
