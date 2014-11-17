@@ -48,7 +48,6 @@ public class SyncResource
 
 	@PUT
 	@Path("/tasks/{user}")
-	@Consumes({ MediaType.APPLICATION_JSON })
 	public final Collection<Task> tasksSync(
 			@PathParam("user") final String user, final List<Task> paramTasks)
 			throws SQLException
