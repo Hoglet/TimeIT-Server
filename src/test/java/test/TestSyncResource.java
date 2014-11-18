@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -55,6 +56,12 @@ public class TestSyncResource
 	@After
 	public void tearDown()
 	{
+	}
+
+	@AfterClass
+	public static void shutDown()
+	{
+		emf.close();
 	}
 
 	@Test
