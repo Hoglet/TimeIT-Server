@@ -68,8 +68,18 @@ public class TestTime
 	@Test
 	public final void testEqualsObject()
 	{
-		Time x = new Time("1234", 0, 1, false, 0, task1);
-		Time y = new Time("1234", 0, 1, false, 0, task1);
+		Time x = new Time(null, 0, 1, false, 0, task1);
+		Time y = new Time(null, 0, 1, false, 0, task1);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new Time("1234", 0, 1, false, 0, null);
+		y = new Time("1234", 0, 1, false, 0, null);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new Time("1234", 0, 1, false, 0, task1);
+		y = new Time("1234", 0, 1, false, 0, task1);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
