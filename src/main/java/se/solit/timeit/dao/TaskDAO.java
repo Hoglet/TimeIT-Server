@@ -37,10 +37,6 @@ public class TaskDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 
@@ -57,10 +53,6 @@ public class TaskDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}
