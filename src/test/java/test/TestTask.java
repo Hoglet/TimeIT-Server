@@ -115,6 +115,26 @@ public class TestTask
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
+		x = new Task(null, JUST_A_STRING, JUST_A_STRING, false, 0, false, user);
+		y = new Task(null, JUST_A_STRING, JUST_A_STRING, false, 0, false, user);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new Task(JUST_A_STRING, null, JUST_A_STRING, false, 0, false, user);
+		y = new Task(JUST_A_STRING, null, JUST_A_STRING, false, 0, false, user);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, user);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 0, false, null);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 0, false, null);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
 		assertFalse(x.equals(null));
 		assertTrue(x.equals(x));
 		assertFalse(x.equals(""));
