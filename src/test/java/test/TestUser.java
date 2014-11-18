@@ -70,6 +70,8 @@ public class TestUser
 	public void testEquals_Symmetric()
 	{
 		Collection<Role> roles = new ArrayList<Role>();
+		Collection<Role> roles2 = new ArrayList<Role>();
+
 		User x = new User("Test Tester", "Tester", "Password", "email", roles); // equals and hashCode check name field value
 		User y = new User("Test Tester", "Tester", "Password", "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
@@ -95,6 +97,17 @@ public class TestUser
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
+		y = new User("Test Tester", "Tester", "Password", "email", null);
+		assertFalse(x.equals(y));
+		assertFalse(y.equals(x));
+		assertFalse(x.hashCode() == y.hashCode());
+
+		roles2.add(new Role("Apa"));
+		y = new User("Test Tester", "Tester", "Password", "email", roles2);
+		assertFalse(x.equals(y));
+		assertFalse(y.equals(x));
+		assertFalse(x.hashCode() == y.hashCode());
+
 		x = new User(null, "Tester", "Password", "email", roles);
 		y = new User(null, "Tester", "Password", "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
@@ -112,6 +125,11 @@ public class TestUser
 
 		x = new User("Test Tester", "Tester", "Password", null, roles);
 		y = new User("Test Tester", "Tester", "Password", null, roles);
+		assertTrue(x.equals(y) && y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		x = new User("Test Tester", "Tester", "Password", null, null);
+		y = new User("Test Tester", "Tester", "Password", null, null);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 

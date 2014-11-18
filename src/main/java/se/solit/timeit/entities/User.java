@@ -60,6 +60,7 @@ public class User
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		return result;
 	}
 
@@ -123,6 +124,19 @@ public class User
 		{
 			return false;
 		}
+
+		if (roles == null)
+		{
+			if (other.roles != null)
+			{
+				return false;
+			}
+		}
+		else if (!roles.equals(other.roles))
+		{
+			return false;
+		}
+
 		return true;
 	}
 
