@@ -5,7 +5,6 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -31,9 +30,6 @@ public class User
 
 	@ManyToMany
 	private Collection<Role>	roles;
-
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
-	private Collection<Task>	tasks;
 
 	public User()
 	{

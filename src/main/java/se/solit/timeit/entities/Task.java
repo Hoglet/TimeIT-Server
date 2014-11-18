@@ -1,15 +1,11 @@
 package se.solit.timeit.entities;
 
-import java.util.Collection;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,21 +16,18 @@ public class Task
 {
 	@Id
 	@Column(nullable = false)
-	private String				id;
-	private String				name;
-	private String				parent;
-	private boolean				completed;
-	private long				lastChange;
-	private boolean				deleted;
-
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "task")
-	private Collection<Time>	times;
+	private String	id;
+	private String	name;
+	private String	parent;
+	private boolean	completed;
+	private long	lastChange;
+	private boolean	deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner", nullable = false)
 	//@JsonSerialize(using = UserToIDSerializer.class)
 	@JsonSerialize(using = UserSerializer.class)
-	private User				owner;
+	private User	owner;
 
 	protected Task()
 	{

@@ -1,10 +1,7 @@
 package se.solit.timeit.entities;
 
-import java.util.Collection;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -13,9 +10,6 @@ import javax.persistence.Transient;
 public class Role
 {
 	public static final String	ADMIN	= "Admin";
-
-	@ManyToMany(mappedBy = "roles")
-	private Collection<User>	users;
 
 	@Transient
 	private boolean				checked;
