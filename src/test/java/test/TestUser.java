@@ -64,6 +64,7 @@ public class TestUser
 		Collection<Role> resultingRoles = user.getRoles();
 		assertEquals(resultingRoles.size(), 1);
 		assertEquals(user.hasRole(adminRole), true);
+		assertEquals(user.hasRole(""), false);
 	}
 
 	@Test
