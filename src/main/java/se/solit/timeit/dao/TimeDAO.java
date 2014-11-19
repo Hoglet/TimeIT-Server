@@ -35,10 +35,6 @@ public class TimeDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}
@@ -54,10 +50,6 @@ public class TimeDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}

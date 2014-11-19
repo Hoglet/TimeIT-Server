@@ -27,10 +27,6 @@ public class RoleDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}

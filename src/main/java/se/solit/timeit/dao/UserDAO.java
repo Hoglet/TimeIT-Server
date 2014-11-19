@@ -53,10 +53,6 @@ public class UserDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}
@@ -72,10 +68,6 @@ public class UserDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}
