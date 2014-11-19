@@ -45,19 +45,39 @@ public class UserDAO
 	public void update(User user)
 	{
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.merge(user);
-		em.getTransaction().commit();
-		em.close();
+		try
+		{
+			em.getTransaction().begin();
+			em.merge(user);
+			em.getTransaction().commit();
+		}
+		finally
+		{
+			if (em.getTransaction().isActive())
+			{
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 
 	public void delete(User user)
 	{
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.remove(em.getReference(User.class, user.getUsername()));
-		em.getTransaction().commit();
-		em.close();
+		try
+		{
+			em.getTransaction().begin();
+			em.remove(em.getReference(User.class, user.getUsername()));
+			em.getTransaction().commit();
+		}
+		finally
+		{
+			if (em.getTransaction().isActive())
+			{
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 
 }
