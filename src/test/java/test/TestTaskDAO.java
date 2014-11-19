@@ -32,8 +32,8 @@ public class TestTaskDAO
 	private static TaskDAO				taskdao	= new TaskDAO(emf);
 	private static User					user	= new User("testman", "Test Tester", "password", "",
 														new ArrayList<Role>());
-	private static Task					task	= new Task("123", "Task1", "", false, 0, false, user);
-	private final EntityManager			em		= emf.createEntityManager();							;
+	private static Task					task	= new Task("123", "Task1", "", false, 1000, false, user);
+	private final EntityManager			em		= emf.createEntityManager();								;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -71,6 +71,18 @@ public class TestTaskDAO
 		taskdao.update(task2);
 		Task task3 = taskdao.getTask(task.getID());
 		assertEquals(task3.getName(), "Tjohopp");
+
+		try
+		{
+			task3.setOwner(null);
+			taskdao.update(task3);
+			assertTrue("Should not allow null user", false);
+		}
+		catch (Exception e)
+		{
+			// Success
+		}
+
 	}
 
 	@Test
@@ -82,6 +94,36 @@ public class TestTaskDAO
 		resultingTasks = taskdao.getTasks(user.getUsername());
 		assertEquals(resultingTasks.size(), 1);
 
+	}
+
+	@Test
+	public final void testAddTwice() throws SQLException
+	{
+		try
+		{
+			taskdao.add(task);
+			taskdao.add(task);
+			assertTrue("Should not allow adding twice", false);
+		}
+		catch (Exception e)
+		{
+			// Success
+		}
+	}
+
+	@Test
+	public final void testAddWithoutOwner() throws SQLException
+	{
+		try
+		{
+			Task badTask = new Task("123", "Task1", "", false, 0, false, null);
+			taskdao.add(badTask);
+			assertTrue("Should not allow null user", false);
+		}
+		catch (Exception e)
+		{
+			// Success
+		}
 	}
 
 	@Test
@@ -97,6 +139,13 @@ public class TestTaskDAO
 		assertEquals(resultingTasks.size(), 1);
 		Task t2 = resultingTasks.iterator().next();
 		assertTrue(t2.getName().equals("TWo"));
+
+		t2.setLastChange(900);
+		Task[] tasks2 = new Task[] { task };
+		taskdao.updateOrAdd(tasks2);
+		Task t3 = taskdao.getTask(task.getID());
+		assertEquals("Should not update if change time is older than current", t3, task);
+
 	}
 
 	@Test

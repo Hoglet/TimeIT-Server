@@ -24,8 +24,8 @@ public class TaskDAO
 		EntityManager em = emf.createEntityManager();
 		try
 		{
-			Task task = em.find(Task.class, paramTask.getID());
 			em.getTransaction().begin();
+			Task task = em.find(Task.class, paramTask.getID());
 			task.setName(paramTask.getName());
 			task.setParent(paramTask.getParent());
 			task.setCompleted(paramTask.getCompleted());
@@ -37,10 +37,6 @@ public class TaskDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 
@@ -57,10 +53,6 @@ public class TaskDAO
 		}
 		finally
 		{
-			if (em.getTransaction().isActive())
-			{
-				em.getTransaction().rollback();
-			}
 			em.close();
 		}
 	}
