@@ -7,12 +7,16 @@ import static org.junit.Assert.assertTrue;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import se.solit.timeit.dao.TaskDAO;
@@ -23,28 +27,38 @@ import se.solit.timeit.entities.User;
 
 public class TestTaskDAO
 {
-	private static EntityManagerFactory	emf;
-	private static UserDAO				userdao;
-	private static TaskDAO				taskdao;
-	private static Task					task;
-	private static User					user;
+	private static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
+	private static UserDAO				userdao	= new UserDAO(emf);
+	private static TaskDAO				taskdao	= new TaskDAO(emf);
+	private static User					user	= new User("testman", "Test Tester", "password", "",
+														new ArrayList<Role>());
+	private static Task					task	= new Task("123", "Task1", "", false, 0, false, user);
+	private final EntityManager			em		= emf.createEntityManager();							;
+
+	@BeforeClass
+	public static void beforeClass()
+	{
+		userdao.add(user);
+	}
 
 	@Before
 	public void setUp() throws Exception
 	{
-		emf = Persistence.createEntityManagerFactory("test");
-		userdao = new UserDAO(emf);
-		user = new User("testman", "Test Tester", "password", "",
-				new ArrayList<Role>());
-		userdao.add(user);
-		task = new Task("123", "Task1", "", false, 0, false, user);
-		taskdao = new TaskDAO(emf);
+
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
-		emf.close();
+		em.getTransaction().begin();
+		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t",
+				Task.class);
+		List<Task> tasks = getQuery.getResultList();
+		for (Task task : tasks)
+		{
+			em.remove(task);
+		}
+		em.getTransaction().commit();
 	}
 
 	@Test

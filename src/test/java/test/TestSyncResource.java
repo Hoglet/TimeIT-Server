@@ -6,12 +6,15 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -30,6 +33,7 @@ public class TestSyncResource
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 	private static UserDAO					userdao		= new UserDAO(emf);
 	private static TaskDAO					taskdao		= new TaskDAO(emf);
+	private final EntityManager				em			= emf.createEntityManager();
 	private static final User				user		= new User(TESTMAN_ID, TESTMAN_ID, "password", "",
 																new ArrayList<Role>());
 	private static Task						task		= new Task("123", "Task1", "", false, 0, false, user);
@@ -42,20 +46,31 @@ public class TestSyncResource
 	public static final ResourceTestRule	resources	= ResourceTestRule.builder().addResource(new SyncResource(emf))
 																.build();
 
+	@BeforeClass
+	public static void BeforeClass()
+	{
+		userdao.add(user);
+
+	}
+
 	@Before
 	public void setUp()
 	{
-		User u = userdao.getUser(TESTMAN_ID);
-		if (u == null)
-		{
-			userdao.add(user);
-			taskdao.add(task);
-		}
 	}
 
 	@After
 	public void tearDown()
 	{
+		em.getTransaction().begin();
+		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t",
+				Task.class);
+		List<Task> tasks = getQuery.getResultList();
+		for (Task task : tasks)
+		{
+			em.remove(task);
+		}
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@AfterClass
@@ -67,6 +82,7 @@ public class TestSyncResource
 	@Test
 	public void testTaskGet()
 	{
+		taskdao.add(task);
 		String path = "/sync/task/" + task.getID();
 		Task resultingTask = resources.client().resource(path).get(Task.class);
 		assertThat(resultingTask.equals(task));
@@ -75,6 +91,7 @@ public class TestSyncResource
 	@Test
 	public void testTasksGet()
 	{
+		taskdao.add(task);
 		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
 				.get(returnType);
 		assertThat(resultingTasks.size()).isEqualTo(1);

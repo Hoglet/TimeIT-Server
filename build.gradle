@@ -10,10 +10,9 @@ targetCompatibility='1.7'
 version='1.0'
 project.ext 
 {
-			dropwizardVersion='0.7.+'
-			h2Version = '1.4+'
-			// Jukito for unit tests.
-			jukitoVersion = '1.2'
+	dropwizardVersion='0.7.+'
+	h2Version = '1.4+'
+	derbyversion = '10.11+'
 }
 
 mainClassName = 'se.solit.timeit.TimeITServerApplication'
@@ -89,9 +88,9 @@ dependencies
 	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
 	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
+	compile group: 'org.apache.derby', name: 'derby', version: derbyversion
 //	compile group: 'com.google.inject', name: 'guice', version: '3.0'
 //	compile group: 'com.google.inject.extensions', name: 'guice-persist', version: '3.0'
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
-	testCompile group: 'org.jukito', name: 'jukito', version: jukitoVersion
-	compile group: 'junit', name: 'junit', version: '4.11'
+//	compile group: 'junit', name: 'junit', version: '4.11'
 }
