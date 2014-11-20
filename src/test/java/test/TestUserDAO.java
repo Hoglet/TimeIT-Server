@@ -38,12 +38,6 @@ public class TestUserDAO
 	}
 
 	@Test
-	public final void testGetUsers()
-	{
-
-	}
-
-	@Test
 	public final void testGetUser()
 	{
 		User user = new User("Test Tester", "tester", "password", "email", null);
@@ -63,11 +57,4 @@ public class TestUserDAO
 		assertEquals(u3, u2);
 
 	}
-
-	@Test
-	public final void testDelete()
-	{
-
-	}
-
 }
