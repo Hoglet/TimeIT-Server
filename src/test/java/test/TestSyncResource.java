@@ -12,11 +12,9 @@ import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -34,10 +32,8 @@ public class TestSyncResource
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 	private static UserDAO					userdao		= new UserDAO(emf);
 	private static TaskDAO					taskdao		= new TaskDAO(emf);
-	private final EntityManager				em			= emf.createEntityManager();
-	private static final User				user		= new User(TESTMAN_ID, TESTMAN_ID, "password", "",
-																new ArrayList<Role>());
-	private static Task						task		= new Task("123", "Task1", "", false, 0, false, user);
+	private static User						user;
+	private static Task						task;
 
 	private static GenericType<List<Task>>	returnType	= new GenericType<List<Task>>()
 														{
@@ -50,13 +46,15 @@ public class TestSyncResource
 	@BeforeClass
 	public static void beforeClass()
 	{
+		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-
+		task = new Task("123", "Task1", "", false, 0, false, user);
 	}
 
 	@AfterClass
 	public static void afterClass()
 	{
+		userdao.delete(user);
 		emf.close();
 	}
 
@@ -68,6 +66,7 @@ public class TestSyncResource
 	@After
 	public void tearDown()
 	{
+		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t",
 				Task.class);
@@ -79,38 +78,37 @@ public class TestSyncResource
 		em.getTransaction().commit();
 		//		em.close();
 	}
-
-	@Test
-	public void testTaskGet()
-	{
-		taskdao.add(task);
-		String path = "/sync/task/" + task.getID();
-		Task resultingTask = resources.client().resource(path).get(Task.class);
-		Assert.assertTrue(resultingTask.equals(task));
-	}
-
-	@Test
-	public void testTasksGet()
-	{
-		taskdao.add(task);
-		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-				.get(returnType);
-		Assert.assertEquals(resultingTasks.size(), 1);
-		Task resultingTask = resultingTasks.get(0);
-		Assert.assertTrue(resultingTask.equals(task));
-	}
-
 	/*
 		@Test
-		public void testTasksSync()
+		public void testTaskGet()
 		{
-			List<Task> tasksToSend = new ArrayList<Task>();
-			Task newTask = new Task("1", "newTask", "", false, 0, false, user);
-			tasksToSend.add(newTask);
-			List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-					.type("application/json")
-					.put(returnType, tasksToSend);
-			assertThat(resultingTasks.size()).isEqualTo(2);
+			taskdao.add(task);
+			String path = "/sync/task/" + task.getID();
+			Task resultingTask = resources.client().resource(path).get(Task.class);
+			Assert.assertTrue(resultingTask.equals(task));
 		}
-		*/
+
+		@Test
+		public void testTasksGet()
+		{
+			taskdao.add(task);
+			List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+					.get(returnType);
+			Assert.assertEquals(resultingTasks.size(), 1);
+			Task resultingTask = resultingTasks.get(0);
+			Assert.assertTrue(resultingTask.equals(task));
+		}
+
+			@Test
+			public void testTasksSync()
+			{
+				List<Task> tasksToSend = new ArrayList<Task>();
+				Task newTask = new Task("1", "newTask", "", false, 0, false, user);
+				tasksToSend.add(newTask);
+				List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+						.type("application/json")
+						.put(returnType, tasksToSend);
+				assertThat(resultingTasks.size()).isEqualTo(2);
+			}
+			*/
 }
