@@ -115,26 +115,47 @@ public class TestTimeDAO
 	}
 
 	@Test
-	public final void testUpdateOrAdd() throws SQLException
+	public final void testUpdateOrAdd_addOnEmpty() throws SQLException
 	{
 		Time time = new Time("123", 0, 1000, false, 0, task);
 		Time[] timeArray = new Time[] { time };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Assert.assertEquals(times.size(), 1);
+	}
+
+	@Test
+	public final void testUpdateOrAdd_update() throws SQLException
+	{
+		Time time = new Time("123", 0, 1000, false, 0, task);
+		timedao.add(time);
 		Time t2 = new Time("123", 500, 1000, false, 1000, task);
-		timeArray[0] = t2;
+		Time[] timeArray = new Time[] { t2 };
 		timedao.updateOrAdd(timeArray);
-		times = timedao.getTimes(user.getUsername());
+		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Time result = (Time)times.toArray()[0];
 		Assert.assertEquals("R2", result.getStart(), t2.getStart());
+	}
+
+	@Test
+	public final void testUpdateOrAdd_noUpdatWhenOlder() throws SQLException
+	{
+		Time time = new Time("123", 0, 1000, false, 1000, task);
+		timedao.add(time);
 		Time t3 = new Time("123", 700, 1000, false, 900, task);
-		timeArray[0] = t3;
+		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
-		times = timedao.getTimes(user.getUsername());
-		result = (Time)times.toArray()[0];
-		Assert.assertEquals("R3", result.getStart(), t2.getStart());
-		//Getting coverage on optimization (only update if different)
+		Collection<Time> times = timedao.getTimes(user.getUsername());
+		Time result = (Time)times.toArray()[0];
+		Assert.assertEquals("R3", result.getStart(), time.getStart());
+	}
+
+	@Test
+	public final void testUpdateOrAdd_dummy() throws SQLException
+	{
+		Time t3 = new Time("123", 700, 1000, false, 900, task);
+		Time[] timeArray = new Time[] { t3 };
+		timedao.updateOrAdd(timeArray);
 		timedao.updateOrAdd(timeArray);
 	}
 }
