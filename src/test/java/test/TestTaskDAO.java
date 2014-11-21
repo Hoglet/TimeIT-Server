@@ -135,25 +135,51 @@ public class TestTaskDAO
 	}
 
 	@Test
-	public final void testUpdateOrAdd() throws SQLException
+	public final void testUpdateOrAddOnEmpty() throws SQLException
 	{
-		assertEquals(taskdao.getTasks(user.getUsername()).size(), 0);
 		Task[] tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(taskdao.getTasks(user.getUsername()).size(), 1);
+	}
+
+	@Test
+	public final void testUpdateOrAdd_change() throws SQLException
+	{
+		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task[] tasks = new Task[] { task };
+		taskdao.add(task);
 		task.setName("TWo");
+		tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
 		assertEquals(resultingTasks.size(), 1);
 		Task t2 = resultingTasks.iterator().next();
 		assertTrue(t2.getName().equals("TWo"));
+	}
 
-		t2.setLastChange(900);
-		Task[] tasks2 = new Task[] { task };
-		taskdao.updateOrAdd(tasks2);
-		Task t3 = taskdao.getTask(task.getID());
-		assertEquals("Should not update if change time is older than current", t3, task);
+	@Test
+	public final void testUpdateOrAdd_noChangeIfOlder() throws SQLException
+	{
+		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task[] tasks = new Task[] { task };
+		taskdao.add(task);
 
+		task = new Task("123", "Task2", "", false, 90, false, user);
+		tasks = new Task[] { task };
+		taskdao.updateOrAdd(tasks);
+		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
+		assertEquals(resultingTasks.size(), 1);
+		Task t2 = resultingTasks.iterator().next();
+		assertTrue(t2.getName().equals("Task1"));
+	}
+
+	@Test
+	public final void testUpdateOrAdd_noDifferense() throws SQLException
+	{
+		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task[] tasks = new Task[] { task };
+		taskdao.updateOrAdd(tasks);
+		taskdao.updateOrAdd(tasks);
 	}
 
 	@Test
