@@ -1,6 +1,5 @@
 package se.solit.timeit.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,7 +14,7 @@ public class Time
 	@Column(nullable = false)
 	private String	id;
 
-	@ManyToOne(targetEntity = Task.class, cascade = CascadeType.PERSIST)
+	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
 	private Task	task;
 	private long	start;
@@ -96,8 +95,9 @@ public class Time
 
 	// CHECKSTYLE:OFF
 	// SONAR:OFF
+
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
@@ -111,61 +111,40 @@ public class Time
 	}
 
 	@Override
-	public final boolean equals(final Object obj)
+	public boolean equals(Object obj)
 	{
 		if (this == obj)
-		{
 			return true;
-		}
 		if (obj == null)
-		{
 			return false;
-		}
 		if (getClass() != obj.getClass())
-		{
 			return false;
-		}
 		Time other = (Time)obj;
 		if (changed != other.changed)
-		{
 			return false;
-		}
 		if (deleted != other.deleted)
-		{
 			return false;
-		}
 		if (id == null)
 		{
 			if (other.id != null)
-			{
 				return false;
-			}
 		}
 		else if (!id.equals(other.id))
-		{
 			return false;
-		}
 		if (start != other.start)
-		{
 			return false;
-		}
 		if (stop != other.stop)
-		{
 			return false;
-		}
 		if (task == null)
 		{
 			if (other.task != null)
-			{
 				return false;
-			}
 		}
 		else if (!task.equals(other.task))
-		{
 			return false;
-		}
 		return true;
 	}
+
 	// SONAR:ON
 	// CHECKSTYLE:ON
 }

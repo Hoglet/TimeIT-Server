@@ -1,6 +1,5 @@
 package test;
 
-import static org.fest.assertions.api.Assertions.assertThat;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -29,6 +29,7 @@ import com.sun.jersey.api.client.GenericType;
 
 public class TestSyncResource
 {
+
 	private static final String				TESTMAN_ID	= "testman";
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 	private static UserDAO					userdao		= new UserDAO(emf);
@@ -47,10 +48,16 @@ public class TestSyncResource
 																.build();
 
 	@BeforeClass
-	public static void BeforeClass()
+	public static void beforeClass()
 	{
 		userdao.add(user);
 
+	}
+
+	@AfterClass
+	public static void afterClass()
+	{
+		emf.close();
 	}
 
 	@Before
@@ -70,13 +77,7 @@ public class TestSyncResource
 			em.remove(task);
 		}
 		em.getTransaction().commit();
-		em.close();
-	}
-
-	@AfterClass
-	public static void shutDown()
-	{
-		emf.close();
+		//		em.close();
 	}
 
 	@Test
@@ -85,7 +86,7 @@ public class TestSyncResource
 		taskdao.add(task);
 		String path = "/sync/task/" + task.getID();
 		Task resultingTask = resources.client().resource(path).get(Task.class);
-		assertThat(resultingTask.equals(task));
+		Assert.assertTrue(resultingTask.equals(task));
 	}
 
 	@Test
@@ -94,10 +95,11 @@ public class TestSyncResource
 		taskdao.add(task);
 		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
 				.get(returnType);
-		assertThat(resultingTasks.size()).isEqualTo(1);
+		Assert.assertEquals(resultingTasks.size(), 1);
 		Task resultingTask = resultingTasks.get(0);
-		assertThat(resultingTask.equals(task));
+		Assert.assertTrue(resultingTask.equals(task));
 	}
+
 	/*
 		@Test
 		public void testTasksSync()

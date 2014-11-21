@@ -1,13 +1,13 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,9 +17,8 @@ import se.solit.timeit.entities.User;
 public class TestUserDAO
 {
 
-	public EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
-	private UserDAO				userdao;
-	private User				user;
+	public static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
+	private UserDAO						userdao;
 
 	@Before
 	public void setUp() throws Exception
@@ -37,13 +36,19 @@ public class TestUserDAO
 		}
 	}
 
+	@AfterClass
+	public static void afterClass()
+	{
+		emf.close();
+	}
+
 	@Test
 	public final void testGetUser()
 	{
 		User user = new User("Test Tester", "tester", "password", "email", null);
 		userdao.add(user);
 		User u2 = userdao.getUser(user.getUsername());
-		assertEquals(u2, user);
+		Assert.assertEquals(u2, user);
 	}
 
 	@Test
@@ -54,7 +59,7 @@ public class TestUserDAO
 		User u2 = new User("Test Tester", "tester", "better password", "email", null);
 		userdao.update(u2);
 		User u3 = userdao.getUser(user.getUsername());
-		assertEquals(u3, u2);
-
+		Assert.assertEquals(u3, u2);
 	}
+
 }

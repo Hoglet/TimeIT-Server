@@ -24,13 +24,8 @@ public class TimeDAO
 		EntityManager em = entityManagerFactory.createEntityManager();
 		try
 		{
-			Time item = em.find(Time.class, paramTimeItem.getUUID());
 			em.getTransaction().begin();
-			item.setTask(paramTimeItem.getTask());
-			item.setStart(paramTimeItem.getStart());
-			item.setStop(paramTimeItem.getStop());
-			item.setDeleted(paramTimeItem.getDeleted());
-			item.setChanged(paramTimeItem.getChanged());
+			em.merge(paramTimeItem);
 			em.getTransaction().commit();
 		}
 		finally
@@ -67,7 +62,7 @@ public class TimeDAO
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();
 		TypedQuery<Time> getTimesQuery = em.createQuery(
-				"SELECT t FROM TimeItem t WHERE t.task.owner.username = :username", Time.class);
+				"SELECT t FROM Time t WHERE t.task.owner.username = :username", Time.class);
 		getTimesQuery.setParameter("username", username);
 		List<Time> items = getTimesQuery.getResultList();
 		em.close();

@@ -15,6 +15,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,6 +60,13 @@ public class TestTaskDAO
 			em.remove(task);
 		}
 		em.getTransaction().commit();
+	}
+
+	@AfterClass
+	public static void afterClass()
+	{
+		userdao.delete(user);
+		emf.close();
 	}
 
 	@Test
