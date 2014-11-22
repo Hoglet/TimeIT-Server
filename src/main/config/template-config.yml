@@ -1,5 +1,4 @@
-template: abc
-defaultName: The template
+defaultName: TimeIT Server
 
 database:
   # the name of your JDBC driver

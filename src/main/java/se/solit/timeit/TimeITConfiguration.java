@@ -12,26 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TimeITConfiguration extends Configuration
 {
 	@NotEmpty
-	private String					template;
-
-	@NotEmpty
 	private String					defaultName	= "Stranger";
 
 	@NotNull
 	@Valid
 	private DatabaseConfiguration	database;
-
-	@JsonProperty
-	public String getTemplate()
-	{
-		return template;
-	}
-
-	@JsonProperty
-	public void setTemplate(String template)
-	{
-		this.template = template;
-	}
 
 	@JsonProperty
 	public String getDefaultName()
