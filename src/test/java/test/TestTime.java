@@ -9,11 +9,13 @@ import org.junit.Test;
 
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
+import se.solit.timeit.entities.User;
 
 public class TestTime
 {
-	private static final Task	task1	= new Task("1", "task1", "parent", false, 0, false, null);
-	private static final Task	task2	= new Task("2", "task2", "parent", false, 0, false, null);
+	private static final User	owner	= new User("123", "", "", "", null);
+	private static final Task	task1	= new Task("1", "task1", "parent", false, 0, false, owner);
+	private static final Task	task2	= new Task("2", "task2", "parent", false, 0, false, owner);
 	private Time				time;
 
 	@Before

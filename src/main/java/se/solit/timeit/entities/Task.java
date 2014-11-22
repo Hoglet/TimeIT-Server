@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import se.solit.timeit.serializers.UserSerializer;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
@@ -43,13 +45,17 @@ public class Task
 			init(final String paramID, final String paramName, final String paramParent, final boolean paramCompleted,
 					final long paramLastChange, final boolean paramDeleted, final User paramOwner)
 	{
+		if (paramID == null)
+		{
+			throw new NullPointerException("id is not allowed to be null");
+		}
 		id = paramID;
 		name = paramName;
 		parent = paramParent;
 		lastChange = paramLastChange;
 		completed = paramCompleted;
 		deleted = paramDeleted;
-		owner = paramOwner;
+		setOwner(paramOwner);
 	}
 
 	public final void setLastChange(final long lastChange2)
@@ -118,14 +124,7 @@ public class Task
 		{
 			return false;
 		}
-		if (id == null)
-		{
-			if (other.id != null)
-			{
-				return false;
-			}
-		}
-		else if (!id.equals(other.id))
+		if (!id.equals(other.id))
 		{
 			return false;
 		}
@@ -144,14 +143,7 @@ public class Task
 		{
 			return false;
 		}
-		if (owner == null)
-		{
-			if (other.owner != null)
-			{
-				return false;
-			}
-		}
-		else if (!owner.equals(other.owner))
+		if (owner.getUsername().equals(other.owner.getUsername()) == false)
 		{
 			return false;
 		}
@@ -176,10 +168,10 @@ public class Task
 		int result = 1;
 		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + (deleted ? 1231 : 1237);
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + id.hashCode();
 		result = prime * result + (int)(lastChange ^ (lastChange >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		result = prime * result + owner.getUsername().hashCode();
 		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
 		return result;
 	}
@@ -209,6 +201,10 @@ public class Task
 
 	public final void setOwner(final User owner2)
 	{
+		if (owner2 == null)
+		{
+			throw new NullPointerException("Owner is not allowed to be null");
+		}
 		owner = owner2;
 	}
 

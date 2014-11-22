@@ -100,7 +100,7 @@ public class AdminResource
 			{
 				roles.add(roleDAO.get(id));
 			}
-			User user = new User(name, username, password, email, roles);
+			User user = new User(username, name, password, email, roles);
 			userManager.add(user);
 		}
 		redirect(ADMIN_PATH);

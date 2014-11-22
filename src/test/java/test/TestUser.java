@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,17 +27,24 @@ public class TestUser
 	}
 
 	@Test
+	public final void forceUsername()
+	{
+		try
+		{
+			User user = new User(null, "", "", "", null);
+			Assert.assertTrue("Should not allow null user", false);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(NullPointerException.class, e.getClass());
+		}
+	}
+
+	@Test
 	public void testSetName()
 	{
 		user.setName(JUST_A_STRING);
 		assertEquals(user.getName(), JUST_A_STRING);
-	}
-
-	@Test
-	public void testSetUsername()
-	{
-		user.setUsername(JUST_A_STRING);
-		assertEquals(user.getUsername(), JUST_A_STRING);
 	}
 
 	@Test
@@ -73,64 +81,54 @@ public class TestUser
 		Collection<Role> roles = new ArrayList<Role>();
 		Collection<Role> roles2 = new ArrayList<Role>();
 
-		User x = new User("Test Tester", "Tester", "Password", "email", roles); // equals and hashCode check name field value
-		User y = new User("Test Tester", "Tester", "Password", "email", roles);
+		User x = new User("testman", "Test Tester", "Password", "email", roles); // equals and hashCode check name field value
+		User y = new User("testman", "Test Tester", "Password", "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new User(null, "Tester", "Password", "email", roles);
+		y = new User("testman", null, "Password", "email", roles);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new User("Test Tester", null, "Password", "email", roles);
+		y = new User("testman", "Test Tester", null, "email", roles);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new User("Test Tester", "Tester", null, "email", roles);
+		y = new User("testman", "Test Tester", "Password", null, roles);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new User("Test Tester", "Tester", "Password", null, roles);
-		assertFalse(x.equals(y));
-		assertFalse(y.equals(x));
-		assertFalse(x.hashCode() == y.hashCode());
-
-		y = new User("Test Tester", "Tester", "Password", "email", null);
+		y = new User("testman", "Test Tester", "Password", "email", null);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
 		roles2.add(new Role("Apa"));
-		y = new User("Test Tester", "Tester", "Password", "email", roles2);
+		y = new User("testman", "Test Tester", "Password", "email", roles2);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		x = new User(null, "Tester", "Password", "email", roles);
-		y = new User(null, "Tester", "Password", "email", roles);
+		x = new User("testman", null, "Password", "email", roles);
+		y = new User("testman", null, "Password", "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new User("Test Tester", null, "Password", "email", roles);
-		y = new User("Test Tester", null, "Password", "email", roles);
+		x = new User("testman", "Test Tester", null, "email", roles);
+		y = new User("testman", "Test Tester", null, "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new User("Test Tester", "Tester", null, "email", roles);
-		y = new User("Test Tester", "Tester", null, "email", roles);
+		x = new User("testman", "Test Tester", "Password", null, roles);
+		y = new User("testman", "Test Tester", "Password", null, roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new User("Test Tester", "Tester", "Password", null, roles);
-		y = new User("Test Tester", "Tester", "Password", null, roles);
-		assertTrue(x.equals(y) && y.equals(x));
-		assertTrue(x.hashCode() == y.hashCode());
-
-		x = new User("Test Tester", "Tester", "Password", null, null);
-		y = new User("Test Tester", "Tester", "Password", null, null);
+		x = new User("testman", "Test Tester", "Password", null, null);
+		y = new User("testman", "Test Tester", "Password", null, null);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 

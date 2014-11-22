@@ -12,10 +12,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -115,7 +117,7 @@ public class TestTaskDAO
 		}
 		catch (Exception e)
 		{
-			// Success
+			Assert.assertEquals(RollbackException.class, e.getClass());
 		}
 	}
 
@@ -130,7 +132,7 @@ public class TestTaskDAO
 		}
 		catch (Exception e)
 		{
-			// Success
+			Assert.assertEquals(NullPointerException.class, e.getClass());
 		}
 	}
 

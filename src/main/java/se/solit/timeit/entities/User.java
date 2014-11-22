@@ -35,9 +35,13 @@ public class User
 	{
 	}
 
-	public User(final String paramName, final String paramUsername, final String paramPassword,
+	public User(final String paramUsername, final String paramName, final String paramPassword,
 			final String paramEmail, Collection<Role> roles2)
 	{
+		if (paramUsername == null)
+		{
+			throw new NullPointerException("Username has to be set");
+		}
 		this.name = paramName;
 		this.username = paramUsername;
 		this.password = paramPassword;
@@ -55,7 +59,7 @@ public class User
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + username.hashCode();
 		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		return result;
 	}
@@ -109,14 +113,7 @@ public class User
 		{
 			return false;
 		}
-		if (username == null)
-		{
-			if (other.username != null)
-			{
-				return false;
-			}
-		}
-		else if (!username.equals(other.username))
+		if (!username.equals(other.username))
 		{
 			return false;
 		}
@@ -142,11 +139,6 @@ public class User
 	public final void setName(final String name)
 	{
 		this.name = name;
-	}
-
-	public final void setUsername(final String username)
-	{
-		this.username = username;
 	}
 
 	public final void setEmail(final String email)

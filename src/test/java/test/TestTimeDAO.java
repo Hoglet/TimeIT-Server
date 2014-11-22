@@ -36,7 +36,7 @@ public class TestTimeDAO
 	@BeforeClass
 	public static void beforeClass()
 	{
-		user = new User("Test Tester", "testman", "password", "", null);
+		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
 		task = new Task("123", "Task1", "", false, 1000, false, user);

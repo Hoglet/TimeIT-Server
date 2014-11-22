@@ -1,6 +1,8 @@
-package se.solit.timeit.entities;
+package se.solit.timeit.serializers;
 
 import java.io.IOException;
+
+import se.solit.timeit.entities.User;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;

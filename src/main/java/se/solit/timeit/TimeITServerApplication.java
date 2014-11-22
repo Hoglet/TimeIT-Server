@@ -18,12 +18,10 @@ import org.eclipse.jetty.server.session.SessionHandler;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.entities.Role;
-import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
 import se.solit.timeit.resources.SyncResource;
-import se.solit.timeit.serializers.TaskDeSerializer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -54,7 +52,6 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.healthChecks().register("databases", healthCheck);
 
 		SimpleModule module = new SimpleModule("MyModule");
-		module.addDeserializer(Task.class, new TaskDeSerializer(emf));
 		environment.getObjectMapper().registerModule(module);
 
 		environment.jersey().register(HttpSessionProvider.class);
