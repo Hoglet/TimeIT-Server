@@ -20,7 +20,7 @@ public class DatabaseHealthCheck extends HealthCheck
 	}
 
 	@Override
-	protected Result check() throws Exception
+	public Result check() throws Exception
 	{
 		Collection<Role> roles = roleDAO.getRoles();
 		if (roles.isEmpty())
