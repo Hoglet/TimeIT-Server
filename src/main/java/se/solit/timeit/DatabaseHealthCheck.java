@@ -9,24 +9,23 @@ import se.solit.timeit.entities.Role;
 
 import com.codahale.metrics.health.HealthCheck;
 
-public class TemplateHealthCheck extends HealthCheck
+public class DatabaseHealthCheck extends HealthCheck
 {
-	EntityManagerFactory	emf;
 
-	public TemplateHealthCheck(EntityManagerFactory entityManagerFactory)
+	private final RoleDAO	roleDAO;
+
+	public DatabaseHealthCheck(EntityManagerFactory emf)
 	{
-		emf = entityManagerFactory;
+		roleDAO = new RoleDAO(emf);
 	}
 
 	@Override
 	protected Result check() throws Exception
 	{
-		RoleDAO roleDAO = new RoleDAO(emf);
 		Collection<Role> roles = roleDAO.getRoles();
-
 		if (roles.isEmpty())
 		{
-			return Result.unhealthy("template doesn't include a name");
+			return Result.unhealthy("No roles in database");
 		}
 		return Result.healthy();
 	}

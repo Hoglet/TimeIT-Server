@@ -51,7 +51,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 	{
 		EntityManagerFactory emf = createJpaPersistFactory(configuration.getDatabase());
 
-		final TemplateHealthCheck healthCheck = new TemplateHealthCheck(emf);
+		final DatabaseHealthCheck healthCheck = new DatabaseHealthCheck(emf);
 		environment.healthChecks().register("databases", healthCheck);
 
 		SimpleModule module = new SimpleModule("MyModule");
