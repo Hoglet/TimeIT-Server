@@ -87,6 +87,11 @@ public class TestUser
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
+		y = new User("agda", "Test Tester", "Password", "email", roles);
+		assertFalse(x.equals(y));
+		assertFalse(y.equals(x));
+		assertFalse(x.hashCode() == y.hashCode());
+
 		y = new User("testman", null, "Password", "email", roles);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
