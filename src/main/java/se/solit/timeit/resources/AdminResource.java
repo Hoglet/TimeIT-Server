@@ -64,6 +64,7 @@ public class AdminResource
 			@FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
+			throws URISyntaxException
 	{
 		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
 		{
@@ -91,6 +92,7 @@ public class AdminResource
 			@FormParam("name") String name,
 			@FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
+			throws URISyntaxException
 	{
 		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
 		{
@@ -106,18 +108,12 @@ public class AdminResource
 		redirect(ADMIN_PATH);
 	}
 
-	private void redirect(String destination)
+	private void redirect(String destination) throws URISyntaxException
 	{
-		try
-		{
-			URI uri = new URI(destination);
-			Response response = Response.seeOther(uri).build();
-			throw new WebApplicationException(response);
-		}
-		catch (URISyntaxException e)
-		{
-			System.out.println(e);
-		}
+		URI uri = new URI(destination);
+		Response response = Response.seeOther(uri).build();
+		throw new WebApplicationException(response);
+
 	}
 
 	@POST
@@ -125,7 +121,7 @@ public class AdminResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user")
 	public Response user(@Auth User authorizedUser, @FormParam("userSelector") List<String> users,
-			@FormParam("submitType") String type)
+			@FormParam("submitType") String type) throws URISyntaxException
 	{
 		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))

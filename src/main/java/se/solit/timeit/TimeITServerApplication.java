@@ -11,6 +11,8 @@ import io.dropwizard.views.ViewBundle;
 import javax.persistence.EntityManagerFactory;
 
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
@@ -22,7 +24,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 public class TimeITServerApplication extends Application<TimeITConfiguration>
 {
 
-	private static String[]	args	= { "server", "./src/main/config/template-config.yml" };
+	private static String[]		args	= { "server", "./src/main/config/template-config.yml" };
+	private static final Logger	LOGGER	= LoggerFactory.getLogger(TimeITServerApplication.class);
 
 	@Override
 	public String getName()
@@ -59,7 +62,8 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 				new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
 	}
 
-	public static void main(String[] opArgs)
+	// SONAR:OFF
+	public static void main(String[] opArgs) throws Exception
 	{
 		if (opArgs.length > 0)
 		{
@@ -71,7 +75,9 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		}
 		catch (Exception e)
 		{
-			System.out.println(e);
+			LOGGER.error(e.toString());
+			throw e;
 		}
 	}
+	// SONAR:ON
 }
