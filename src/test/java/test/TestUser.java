@@ -31,8 +31,9 @@ public class TestUser
 	{
 		try
 		{
-			User user = new User(null, "", "", "", null);
+			user = new User(null, "", "", "", null);
 			Assert.assertTrue("Should not allow null user", false);
+			user.setEmail("");
 		}
 		catch (Exception e)
 		{

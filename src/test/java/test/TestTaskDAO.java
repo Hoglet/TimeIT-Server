@@ -35,8 +35,7 @@ public class TestTaskDAO
 	private static TaskDAO				taskdao	= new TaskDAO(emf);
 	private static User					user	= new User("testman", "Test Tester", "password", "",
 														new ArrayList<Role>());
-	private static Task					task	= new Task("123", "Task1", "", false, 1000, false, user);
-	private final EntityManager			em		= emf.createEntityManager();								;
+	private final EntityManager			em		= emf.createEntityManager();						;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -74,6 +73,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdate() throws SQLException
 	{
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		taskdao.add(task);
 		Task task2 = taskdao.getTask(task.getID());
 		task2.setName("Tjohopp");
@@ -98,6 +98,7 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTasks() throws SQLException
 	{
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
 		assertEquals(resultingTasks.size(), 0);
 		taskdao.add(task);
@@ -109,6 +110,7 @@ public class TestTaskDAO
 	@Test
 	public final void testAddTwice() throws SQLException
 	{
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		try
 		{
 			taskdao.add(task);
@@ -139,6 +141,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAddOnEmpty() throws SQLException
 	{
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(taskdao.getTasks(user.getUsername()).size(), 1);
@@ -147,7 +150,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_change() throws SQLException
 	{
-		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 		task.setName("TWo");
@@ -162,7 +165,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_noChangeIfOlder() throws SQLException
 	{
-		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 
@@ -178,7 +181,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_noDifferense() throws SQLException
 	{
-		task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		taskdao.updateOrAdd(tasks);
@@ -187,6 +190,7 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTask()
 	{
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		Task resultingTask = taskdao.getTask(task.getID());
 		assertEquals(resultingTask, null);
 		taskdao.add(task);

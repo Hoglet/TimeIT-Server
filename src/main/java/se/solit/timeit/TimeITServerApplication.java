@@ -21,7 +21,7 @@ import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
-import se.solit.timeit.resources.SyncResource;
+import se.solit.timeit.resources.TaskSyncResource;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -58,7 +58,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.servlets().setSessionHandler(new SessionHandler());
 
 		environment.jersey().register(new IndexResource());
-		environment.jersey().register(new SyncResource(emf));
+		environment.jersey().register(new TaskSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
 		environment.jersey().register(
 				new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));

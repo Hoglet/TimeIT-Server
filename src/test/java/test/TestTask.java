@@ -23,12 +23,10 @@ public class TestTask
 	private static final String	JUST_A_STRING	= "Apa";
 	private static final User	user			= new User("U", "Ser", "Password", "email", null);
 	private static final User	other			= new User("U2", "Ser", "Password", "email", null);
-	private Task				task;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		task = new Task("1", "", "", false, 0, false, user);
 	}
 
 	@Test
@@ -49,6 +47,7 @@ public class TestTask
 		{
 			Task task = new Task(null, "", "", false, 0, false, user);
 			Assert.assertTrue("Should not allow null user", false);
+			task.setCompleted(true);
 		}
 		catch (Exception e)
 		{
@@ -59,6 +58,7 @@ public class TestTask
 	@Test
 	public final void testSetName()
 	{
+		Task task = new Task("123", "", "", false, 0, false, user);
 		task.setName(JUST_A_STRING);
 		assertEquals(task.getName(), JUST_A_STRING);
 	}
@@ -66,6 +66,7 @@ public class TestTask
 	@Test
 	public final void testSetParent()
 	{
+		Task task = new Task("123", "", "", false, 0, false, user);
 		task.setParent(JUST_A_STRING);
 		assertEquals(task.getParent(), JUST_A_STRING);
 	}
@@ -73,6 +74,7 @@ public class TestTask
 	@Test
 	public final void testSetCompleted()
 	{
+		Task task = new Task("123", "", "", false, 0, false, user);
 		task.setCompleted(true);
 		assertTrue(task.getCompleted());
 	}
@@ -80,7 +82,7 @@ public class TestTask
 	@Test
 	public final void testSetOwner()
 	{
-		assertFalse(task.getOwner().equals(other));
+		Task task = new Task("123", "", "", false, 0, false, user);
 		task.setOwner(other);
 		assertTrue(task.getOwner().equals(other));
 	}

@@ -93,15 +93,6 @@ public class TestTimeDAO
 		timedao.update(t2);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Time result = (Time)times.toArray()[0];
-		//Assert.assertEquals(t2.getUUID(), result.getUUID());
-		//Assert.assertEquals(t2.getStart(), result.getStart());
-		//Assert.assertEquals(t2.getStop(), result.getStop());
-		//Assert.assertEquals(t2.getDeleted(), result.getDeleted());
-		//Assert.assertEquals(t2.getChanged(), result.getChanged());
-		Task task1 = t2.getTask();
-		Task task2 = result.getTask();
-		//Assert.assertEquals(task2.getName(), task1.getName());
-		//Assert.assertEquals(t2.getTask(), result.getTask());
 		Assert.assertTrue(t2.equals(result));
 	}
 

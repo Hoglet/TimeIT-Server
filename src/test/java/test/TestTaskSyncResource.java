@@ -12,20 +12,22 @@ import javax.persistence.TypedQuery;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.resources.SyncResource;
+import se.solit.timeit.resources.TaskSyncResource;
 
 import com.sun.jersey.api.client.GenericType;
 
-public class TestSyncResource
+public class TestTaskSyncResource
 {
 
 	private static final String				TESTMAN_ID	= "testman";
@@ -40,7 +42,8 @@ public class TestSyncResource
 														};
 
 	@ClassRule
-	public static final ResourceTestRule	resources	= ResourceTestRule.builder().addResource(new SyncResource(emf))
+	public static final ResourceTestRule	resources	= ResourceTestRule.builder()
+																.addResource(new TaskSyncResource(emf))
 																.build();
 
 	@BeforeClass
@@ -78,37 +81,27 @@ public class TestSyncResource
 		em.getTransaction().commit();
 		//		em.close();
 	}
-	/*
-		@Test
-		public void testTaskGet()
-		{
-			taskdao.add(task);
-			String path = "/sync/task/" + task.getID();
-			Task resultingTask = resources.client().resource(path).get(Task.class);
-			Assert.assertTrue(resultingTask.equals(task));
-		}
 
-		@Test
-		public void testTasksGet()
-		{
-			taskdao.add(task);
-			List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-					.get(returnType);
-			Assert.assertEquals(resultingTasks.size(), 1);
-			Task resultingTask = resultingTasks.get(0);
-			Assert.assertTrue(resultingTask.equals(task));
-		}
+	@Test
+	public void testTasksGet()
+	{
+		taskdao.add(task);
+		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+				.get(returnType);
+		Assert.assertEquals(resultingTasks.size(), 1);
+		Task resultingTask = resultingTasks.get(0);
+		Assert.assertTrue(resultingTask.equals(task));
+	}
 
-			@Test
-			public void testTasksSync()
-			{
-				List<Task> tasksToSend = new ArrayList<Task>();
-				Task newTask = new Task("1", "newTask", "", false, 0, false, user);
-				tasksToSend.add(newTask);
-				List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-						.type("application/json")
-						.put(returnType, tasksToSend);
-				assertThat(resultingTasks.size()).isEqualTo(2);
-			}
-			*/
+	@Test
+	public void testTasksSync()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task newTask = new Task("1", "newTask", "", false, 0, false, user);
+		tasksToSend.add(newTask);
+		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+				.type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
+	}
 }
