@@ -13,11 +13,13 @@ public class AdminView extends View
 {
 
 	private final UserDAO	userManager;
+	private final User		user;
 
-	public AdminView(EntityManagerFactory emf)
+	public AdminView(EntityManagerFactory emf, User user2)
 	{
 		super("admin.ftl");
 		userManager = new UserDAO(emf);
+		user = user2;
 	}
 
 	public Collection<User> getUsers()
@@ -25,4 +27,8 @@ public class AdminView extends View
 		return userManager.getUsers();
 	}
 
+	public User getCurrentUser()
+	{
+		return user;
+	}
 }

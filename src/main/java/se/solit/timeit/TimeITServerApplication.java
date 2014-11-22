@@ -8,6 +8,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import javax.persistence.Persistence;
 import org.eclipse.jetty.server.session.SessionHandler;
 
 import se.solit.timeit.dao.RoleDAO;
+import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
@@ -84,6 +87,11 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		{
 			Role role = new Role(Role.ADMIN);
 			roleDAO.add(role);
+			Collection<Role> roles = new ArrayList<Role>();
+			roles.add(role);
+			User user = new User("admin", "", "admin", "", roles);
+			UserDAO userDAO = new UserDAO(emf);
+			userDAO.add(user);
 		}
 	}
 

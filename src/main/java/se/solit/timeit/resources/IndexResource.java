@@ -17,6 +17,6 @@ public class IndexResource
 	@Produces("text/html;charset=UTF-8")
 	public View landingPage(@Auth User user)
 	{
-		return new IndexView();
+		return new IndexView(user);
 	}
 }

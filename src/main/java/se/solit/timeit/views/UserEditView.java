@@ -18,13 +18,15 @@ public class UserEditView extends View
 	private final String	username;
 	private final RoleDAO	roleDAO;
 	private final UserDAO	userDAO;
+	private final User		user;
 
-	public UserEditView(String username, EntityManagerFactory emf)
+	public UserEditView(String username, EntityManagerFactory emf, User currentUser)
 	{
 		super("useredit.ftl", Charsets.UTF_8);
 		userDAO = new UserDAO(emf);
 		roleDAO = new RoleDAO(emf);
 		this.username = username;
+		user = currentUser;
 	}
 
 	public User getUser()
@@ -32,14 +34,19 @@ public class UserEditView extends View
 		return userDAO.getUser(username);
 	}
 
+	public User getCurrentUser()
+	{
+		return user;
+	}
+
 	public Collection<Role> getRoles()
 	{
-		User user = userDAO.getUser(username);
+		User u = userDAO.getUser(username);
 		Collection<Role> roles = roleDAO.getRoles();
 
 		for (Role role : roles)
 		{
-			if (user.hasRole(role))
+			if (u.hasRole(role))
 			{
 				role.setCheckedState(true);
 			}

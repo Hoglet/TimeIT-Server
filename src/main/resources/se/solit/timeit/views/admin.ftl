@@ -7,6 +7,7 @@
 <html>
 <body>
 	<div id="shadyOverlay"></div>
+	
 	<#include "top.ftl">
 	<h1>Administration</h1>
 	<h2>Users</h2>
@@ -16,9 +17,9 @@
 				<tr>
 
 					<td><select multiple="multiple" name="userSelector" id="userSelector"
-						onchange="selectionChanged()"> <#list users as user>
-							<option value="${user.username}">${user.username}
-								(${user.name})</option> </#list>
+						onchange="selectionChanged()"> <#list users as u>
+							<option value="${u.username}">${u.username}
+								(${u.name})</option> </#list>
 					</select></td>
 					<td valign="top">
 					  <input type="submit" id="add" value="add" name="submitType"> <br>

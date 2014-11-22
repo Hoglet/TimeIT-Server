@@ -48,7 +48,7 @@ public class AdminResource
 	{
 		if (user.hasRole(Role.ADMIN))
 		{
-			return Response.ok(new AdminView(emf)).build();
+			return Response.ok(new AdminView(emf, user)).build();
 		}
 		else
 		{
@@ -132,11 +132,11 @@ public class AdminResource
 		{
 			if ("edit".equals(type))
 			{
-				response = Response.ok(new UserEditView(users.get(0), emf)).build();
+				response = Response.ok(new UserEditView(users.get(0), emf, authorizedUser)).build();
 			}
 			else if ("add".equals(type))
 			{
-				response = Response.ok(new UserAddView(emf)).build();
+				response = Response.ok(new UserAddView(emf, authorizedUser)).build();
 			}
 			else if ("OK".equals(type))
 			{
@@ -146,7 +146,7 @@ public class AdminResource
 			}
 			else
 			{
-				response = Response.ok(new AdminView(emf)).build();
+				response = Response.ok(new AdminView(emf, authorizedUser)).build();
 			}
 		}
 		return response;

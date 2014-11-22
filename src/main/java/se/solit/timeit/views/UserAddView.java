@@ -8,22 +8,29 @@ import javax.persistence.EntityManagerFactory;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.entities.Role;
+import se.solit.timeit.entities.User;
 
 import com.google.common.base.Charsets;
 
 public class UserAddView extends View
 {
-	private final EntityManagerFactory	emf;
+	private final User		user;
+	private final RoleDAO	roleDAO;
 
-	public UserAddView(EntityManagerFactory emf)
+	public UserAddView(EntityManagerFactory emf, User user2)
 	{
 		super("useradd.ftl", Charsets.UTF_8);
-		this.emf = emf;
+		roleDAO = new RoleDAO(emf);
+		user = user2;
 	}
 
 	public Collection<Role> getRoles()
 	{
-		RoleDAO roleDAO = new RoleDAO(emf);
 		return roleDAO.getRoles();
+	}
+
+	public User getCurrentUser()
+	{
+		return user;
 	}
 }

@@ -1,6 +1,7 @@
 <#-- @ftlvariable name="" type="se.solit.dwtemplate.resources.LandingView" -->
 <!DOCTYPE HTML>
 <head>
+
 <#include "head.ftl">
 </head>
 <html>
