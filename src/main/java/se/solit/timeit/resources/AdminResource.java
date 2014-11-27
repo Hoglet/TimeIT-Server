@@ -134,7 +134,7 @@ public class AdminResource
 			{
 				User user = userManager.getUser(users.get(0));
 				userManager.delete(user);
-				throw redirect(ADMIN_PATH);
+				response = Response.ok(new AdminView(emf, authorizedUser)).build();
 			}
 			else
 			{
