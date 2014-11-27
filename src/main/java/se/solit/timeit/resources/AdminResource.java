@@ -31,9 +31,9 @@ import se.solit.timeit.views.UserEditView;
 @Path("/admin")
 public class AdminResource
 {
-	private static final String			ADMIN_PATH	= "/admin";
-	private final EntityManagerFactory	emf;
-	private final UserDAO				userManager;
+	private static final String ADMIN_PATH = "/admin";
+	private final EntityManagerFactory emf;
+	private final UserDAO userManager;
 
 	public AdminResource(EntityManagerFactory emf)
 	{
@@ -61,12 +61,10 @@ public class AdminResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/edit")
 	public void userEdit(@Auth User authorizedUser, @FormParam("userName") String username,
-			@FormParam("name") String name,
-			@FormParam("password") String password, @FormParam("email") String email,
-			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
-			throws URISyntaxException
+			@FormParam("name") String name, @FormParam("password") String password, @FormParam("email") String email,
+			@FormParam("roles") List<String> roleIDs) throws URISyntaxException
 	{
-		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
+		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			RoleDAO roleDAO = new RoleDAO(emf);
 			User user = userManager.getUser(username);
@@ -81,7 +79,7 @@ public class AdminResource
 			user.setRoles(roles);
 			userManager.update(user);
 		}
-		redirect(ADMIN_PATH);
+		throw redirect(ADMIN_PATH);
 	}
 
 	@POST
@@ -89,12 +87,10 @@ public class AdminResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/user/add")
 	public void userAdd(@Auth User authorizedUser, @FormParam("userName") String username,
-			@FormParam("name") String name,
-			@FormParam("password") String password, @FormParam("email") String email,
-			@FormParam("roles") List<String> roleIDs, @FormParam("submitType") String response)
-			throws URISyntaxException
+			@FormParam("name") String name, @FormParam("password") String password, @FormParam("email") String email,
+			@FormParam("roles") List<String> roleIDs) throws URISyntaxException
 	{
-		if (authorizedUser.hasRole(Role.ADMIN) && "save".equals(response))
+		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			RoleDAO roleDAO = new RoleDAO(emf);
 			Collection<Role> roles = new ArrayList<Role>();
@@ -105,14 +101,14 @@ public class AdminResource
 			User user = new User(username, name, password, email, roles);
 			userManager.add(user);
 		}
-		redirect(ADMIN_PATH);
+		throw redirect(ADMIN_PATH);
 	}
 
-	private void redirect(String destination) throws URISyntaxException
+	private WebApplicationException redirect(String destination) throws URISyntaxException
 	{
 		URI uri = new URI(destination);
 		Response response = Response.seeOther(uri).build();
-		throw new WebApplicationException(response);
+		return new WebApplicationException(response);
 
 	}
 
@@ -138,7 +134,7 @@ public class AdminResource
 			{
 				User user = userManager.getUser(users.get(0));
 				userManager.delete(user);
-				redirect(ADMIN_PATH);
+				throw redirect(ADMIN_PATH);
 			}
 			else
 			{

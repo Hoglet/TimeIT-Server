@@ -48,5 +48,8 @@ public class TestDatabase
 
 		//Get full coverage
 		EntityManagerFactory emf2 = db.createJpaPersistFactory();
+		emf.close();
+		emf2.close();
+
 	}
 }

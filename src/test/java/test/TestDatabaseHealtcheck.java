@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ import com.codahale.metrics.health.HealthCheck.Result;
 
 public class TestDatabaseHealtcheck
 {
-	private final EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");	;
+	private final static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");	;
 
 	@Before
 	public void setUp() throws Exception
@@ -38,6 +39,12 @@ public class TestDatabaseHealtcheck
 			em.remove(em.getReference(Role.class, role.getName()));
 		}
 		em.getTransaction().commit();
+	}
+
+	@AfterClass
+	public static void afterClass()
+	{
+		emf.close();
 	}
 
 	@Test

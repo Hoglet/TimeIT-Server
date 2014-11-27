@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,10 +21,10 @@ import se.solit.timeit.entities.Role;
 public class TestRoleDAO
 {
 
-	public EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
-	private final RoleDAO		roledao	= new RoleDAO(emf);
-	private final Role			role	= new Role("TEST");
-	private final EntityManager	em		= emf.createEntityManager();
+	public static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
+	private final RoleDAO				roledao	= new RoleDAO(emf);
+	private final Role					role	= new Role("TEST");
+	private final EntityManager			em		= emf.createEntityManager();
 
 	@Before
 	public void setUp() throws Exception
@@ -43,6 +44,12 @@ public class TestRoleDAO
 			em.remove(role);
 		}
 		em.getTransaction().commit();
+	}
+
+	@AfterClass
+	public static void afterClass()
+	{
+		emf.close();
 	}
 
 	@Test
