@@ -1,15 +1,23 @@
 package entities;
 
+import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import io.dropwizard.jackson.Jackson;
 
+import java.io.IOException;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class TestTime
 {
@@ -22,6 +30,18 @@ public class TestTime
 	public void setUp() throws Exception
 	{
 		time = new Time("1234", 0, 1, false, 0, task1);
+	}
+
+	@Test
+	public final void serializeToJSON() throws IOException
+	{
+		ObjectMapper MAPPER = Jackson.newObjectMapper();
+		User user = new User("testman", "Test Tester", "password", "", null);
+		Task task = new Task("123", "Task1", "", false, 1000, false, user);
+		Time time = new Time("uuid", 10, 100, false, 100, task);
+		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+		String jsonString = MAPPER.writeValueAsString(time);
+		Assert.assertEquals(fixture("fixtures/time.json"), jsonString);
 	}
 
 	@Test

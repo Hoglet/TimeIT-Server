@@ -6,6 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import se.solit.timeit.serializers.TaskSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 @Entity
 public class Time
 {
@@ -16,6 +20,7 @@ public class Time
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
+	@JsonSerialize(using = TaskSerializer.class)
 	private Task	task;
 	private long	start;
 	private long	stop;
@@ -26,8 +31,7 @@ public class Time
 	{
 	}
 
-	public Time(final String paramUuid, final long paramStart,
-			final long paramStop, final boolean paramDeleted,
+	public Time(final String paramUuid, final long paramStart, final long paramStop, final boolean paramDeleted,
 			final long paramChanged, final Task paramTask)
 	{
 		id = paramUuid;
@@ -101,11 +105,11 @@ public class Time
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int)(changed ^ (changed >>> 32));
+		result = prime * result + (int) (changed ^ (changed >>> 32));
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + (int)(start ^ (start >>> 32));
-		result = prime * result + (int)(stop ^ (stop >>> 32));
+		result = prime * result + (int) (start ^ (start >>> 32));
+		result = prime * result + (int) (stop ^ (stop >>> 32));
 		result = prime * result + ((task == null) ? 0 : task.hashCode());
 		return result;
 	}
@@ -119,7 +123,7 @@ public class Time
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Time other = (Time)obj;
+		Time other = (Time) obj;
 		if (changed != other.changed)
 			return false;
 		if (deleted != other.deleted)
