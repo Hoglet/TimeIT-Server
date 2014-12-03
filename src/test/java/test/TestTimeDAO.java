@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.junit.After;
@@ -25,13 +26,13 @@ import se.solit.timeit.entities.User;
 
 public class TestTimeDAO
 {
-	public static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
-	private final TimeDAO				timedao	= new TimeDAO(emf);
+	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+	private final TimeDAO timedao = new TimeDAO(emf);
 
-	private static User					user;
-	private static Task					task;
-	private static UserDAO				userdao;
-	static TaskDAO						taskdao;
+	private static User user;
+	private static Task task;
+	private static UserDAO userdao;
+	static TaskDAO taskdao;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -49,8 +50,7 @@ public class TestTimeDAO
 	{
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t",
-				Task.class);
+		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t", Task.class);
 		List<Task> tasks = getQuery.getResultList();
 		for (Task task : tasks)
 		{
@@ -73,8 +73,7 @@ public class TestTimeDAO
 	{
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		TypedQuery<Time> getTimeQuery = em.createQuery("SELECT t FROM Time t",
-				Time.class);
+		TypedQuery<Time> getTimeQuery = em.createQuery("SELECT t FROM Time t", Time.class);
 		List<Time> times = getTimeQuery.getResultList();
 		for (Time time : times)
 		{
@@ -92,8 +91,24 @@ public class TestTimeDAO
 		Time t2 = new Time("123", 500, 1000, false, 1000, task);
 		timedao.update(t2);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
-		Time result = (Time)times.toArray()[0];
+		Time result = (Time) times.toArray()[0];
 		Assert.assertTrue(t2.equals(result));
+	}
+
+	@Test
+	public final void testAdd_Existing() throws SQLException
+	{
+		Time time = new Time("123", 0, 1000, false, 0, task);
+		timedao.add(time);
+		try
+		{
+			timedao.add(time);
+			Assert.fail("Should throw exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(RollbackException.class, e.getClass());
+		}
 	}
 
 	@Test
@@ -124,7 +139,7 @@ public class TestTimeDAO
 		Time[] timeArray = new Time[] { t2 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
-		Time result = (Time)times.toArray()[0];
+		Time result = (Time) times.toArray()[0];
 		Assert.assertEquals("R2", result.getStart(), t2.getStart());
 	}
 
@@ -137,7 +152,7 @@ public class TestTimeDAO
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
-		Time result = (Time)times.toArray()[0];
+		Time result = (Time) times.toArray()[0];
 		Assert.assertEquals("R3", result.getStart(), time.getStart());
 	}
 
