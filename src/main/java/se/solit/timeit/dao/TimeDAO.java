@@ -73,7 +73,7 @@ public class TimeDAO
 	{
 		for (final Time item : itemArray)
 		{
-			final Time existingItem = getByID(item.getUUID());
+			final Time existingItem = getByID(item.getID());
 			if (existingItem != null)
 			{
 				if (!existingItem.equals(item) && (item.getChanged() >= (existingItem.getChanged())))

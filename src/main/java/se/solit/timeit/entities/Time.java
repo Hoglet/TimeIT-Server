@@ -72,7 +72,7 @@ public class Time
 		this.deleted = deleted2;
 	}
 
-	public final String getUUID()
+	public final String getID()
 	{
 		return id;
 	}
@@ -110,7 +110,7 @@ public class Time
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + (int) (start ^ (start >>> 32));
 		result = prime * result + (int) (stop ^ (stop >>> 32));
-		result = prime * result + ((task == null) ? 0 : task.hashCode());
+		result = prime * result + task.getID().hashCode();
 		return result;
 	}
 
@@ -139,12 +139,7 @@ public class Time
 			return false;
 		if (stop != other.stop)
 			return false;
-		if (task == null)
-		{
-			if (other.task != null)
-				return false;
-		}
-		else if (!task.equals(other.task))
+		if (!task.getID().equals(other.task.getID()))
 			return false;
 		return true;
 	}

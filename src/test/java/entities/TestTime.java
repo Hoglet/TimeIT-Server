@@ -47,7 +47,7 @@ public class TestTime
 	@Test
 	public final void testGetUUID()
 	{
-		assertEquals(time.getUUID(), "1234");
+		assertEquals(time.getID(), "1234");
 	}
 
 	@Test
@@ -95,11 +95,6 @@ public class TestTime
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Time("1234", 0, 1, false, 0, null);
-		y = new Time("1234", 0, 1, false, 0, null);
-		assertTrue(x.equals(y) && y.equals(x));
-		assertTrue(x.hashCode() == y.hashCode());
-
 		x = new Time("1234", 0, 1, false, 0, task1);
 		y = new Time("1234", 0, 1, false, 0, task1);
 		assertTrue(x.equals(y) && y.equals(x));
@@ -131,11 +126,6 @@ public class TestTime
 		assertFalse(x.hashCode() == y.hashCode());
 
 		y = new Time("1234", 0, 1, false, 0, task2);
-		assertFalse(x.equals(y));
-		assertFalse(y.equals(x));
-		assertFalse(x.hashCode() == y.hashCode());
-
-		y = new Time("1234", 0, 1, false, 0, null);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());

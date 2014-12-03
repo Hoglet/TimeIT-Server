@@ -1,9 +1,9 @@
 {
+  "id" : "uuid",
   "start" : 10,
   "stop" : 100,
   "deleted" : false,
   "changed" : 100,
-  "uuid" : "uuid",
   "task" : {
     "id" : "123"
   }

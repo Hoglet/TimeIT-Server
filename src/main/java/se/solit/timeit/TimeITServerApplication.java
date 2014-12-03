@@ -18,6 +18,7 @@ import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
 import se.solit.timeit.resources.TasksSyncResource;
+import se.solit.timeit.resources.TimesSyncResource;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -57,9 +58,9 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 
 		environment.jersey().register(new IndexResource());
 		environment.jersey().register(new TasksSyncResource(emf));
+		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
-		environment.jersey().register(
-				new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
+		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
 	}
 
 	// SONAR:OFF
