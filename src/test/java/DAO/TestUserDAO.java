@@ -1,4 +1,4 @@
-package test;
+package DAO;
 
 import java.util.Collection;
 

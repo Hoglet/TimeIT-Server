@@ -1,4 +1,4 @@
-package test;
+package resources;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
 
@@ -43,8 +43,7 @@ public class TestTasksSyncResource
 
 	@ClassRule
 	public static final ResourceTestRule	resources	= ResourceTestRule.builder()
-																.addResource(new TasksSyncResource(emf))
-																.build();
+																.addResource(new TasksSyncResource(emf)).build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -71,15 +70,14 @@ public class TestTasksSyncResource
 	{
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t",
-				Task.class);
+		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t", Task.class);
 		List<Task> tasks = getQuery.getResultList();
 		for (Task task : tasks)
 		{
 			em.remove(task);
 		}
 		em.getTransaction().commit();
-		//		em.close();
+		// em.close();
 	}
 
 	@Test
@@ -100,8 +98,7 @@ public class TestTasksSyncResource
 		Task newTask = new Task("1", "newTask", "", false, 0, false, user);
 		tasksToSend.add(newTask);
 		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
-				.type("application/json")
-				.put(returnType, tasksToSend);
+				.type("application/json").put(returnType, tasksToSend);
 		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
 	}
 }

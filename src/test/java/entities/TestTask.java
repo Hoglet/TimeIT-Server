@@ -1,4 +1,4 @@
-package test;
+package entities;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
