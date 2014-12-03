@@ -12,27 +12,20 @@ import se.solit.timeit.entities.Task;
 
 public class TaskDAO
 {
-	private final EntityManagerFactory	emf;
+	private final EntityManagerFactory emf;
 
 	public TaskDAO(final EntityManagerFactory entityManagerFactory)
 	{
 		emf = entityManagerFactory;
 	}
 
-	public final void update(final Task paramTask) throws SQLException
+	public final void update(final Task task) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();
 		try
 		{
 			em.getTransaction().begin();
-			Task task = em.find(Task.class, paramTask.getID());
-			task.setName(paramTask.getName());
-			task.setParent(paramTask.getParent());
-			task.setCompleted(paramTask.getCompleted());
-			task.setLastChange(paramTask.getLastChange());
-			task.setCompleted(paramTask.getCompleted());
-			task.setOwner(paramTask.getOwner());
-			task.setDeleted(paramTask.getDeleted());
+			em.merge(task);
 			em.getTransaction().commit();
 		}
 		finally
