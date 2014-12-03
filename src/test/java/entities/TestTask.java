@@ -37,7 +37,7 @@ public class TestTask
 		Task task = new Task("123", "Task1", "", false, 1000, false, user);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(task);
-		Assert.assertEquals(jsonString, fixture("fixtures/task.json"));
+		Assert.assertEquals(fixture("fixtures/task.json"), jsonString);
 	}
 
 	@Test
