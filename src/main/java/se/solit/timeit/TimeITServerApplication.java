@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
-import se.solit.timeit.resources.TaskSyncResource;
+import se.solit.timeit.resources.TasksSyncResource;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -56,7 +56,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.servlets().setSessionHandler(new SessionHandler());
 
 		environment.jersey().register(new IndexResource());
-		environment.jersey().register(new TaskSyncResource(emf));
+		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
 		environment.jersey().register(
 				new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));

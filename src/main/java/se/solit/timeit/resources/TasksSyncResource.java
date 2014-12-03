@@ -18,11 +18,11 @@ import se.solit.timeit.entities.Task;
 @Path("/sync/tasks")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class TaskSyncResource
+public class TasksSyncResource
 {
 	private final TaskDAO	taskDAO;
 
-	public TaskSyncResource(final EntityManagerFactory emf)
+	public TasksSyncResource(final EntityManagerFactory emf)
 	{
 		taskDAO = new TaskDAO(emf);
 	}

@@ -23,11 +23,11 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.resources.TaskSyncResource;
+import se.solit.timeit.resources.TasksSyncResource;
 
 import com.sun.jersey.api.client.GenericType;
 
-public class TestTaskSyncResource
+public class TestTasksSyncResource
 {
 
 	private static final String				TESTMAN_ID	= "testman";
@@ -43,7 +43,7 @@ public class TestTaskSyncResource
 
 	@ClassRule
 	public static final ResourceTestRule	resources	= ResourceTestRule.builder()
-																.addResource(new TaskSyncResource(emf))
+																.addResource(new TasksSyncResource(emf))
 																.build();
 
 	@BeforeClass
