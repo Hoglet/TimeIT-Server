@@ -26,13 +26,13 @@ import se.solit.timeit.entities.User;
 
 public class TestTimeDAO
 {
-	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
-	private final TimeDAO timedao = new TimeDAO(emf);
+	public static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
+	private final TimeDAO				timedao	= new TimeDAO(emf);
 
-	private static User user;
-	private static Task task;
-	private static UserDAO userdao;
-	static TaskDAO taskdao;
+	private static User					user;
+	private static Task					task;
+	private static UserDAO				userdao;
+	static TaskDAO						taskdao;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -40,7 +40,7 @@ public class TestTimeDAO
 		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task("123", "Task1", "", false, 1000, false, user);
+		task = new Task("123", "Task1", null, false, 1000, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 	}

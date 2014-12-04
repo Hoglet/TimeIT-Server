@@ -50,7 +50,7 @@ public class TestTasksSyncResource
 	{
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", "", false, 0, false, user);
+		task = new Task("123", "Task1", null, false, 0, false, user);
 	}
 
 	@AfterClass
@@ -95,7 +95,7 @@ public class TestTasksSyncResource
 	public void testTasksSync()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task("1", "newTask", "", false, 0, false, user);
+		Task newTask = new Task("1", "newTask", null, false, 0, false, user);
 		tasksToSend.add(newTask);
 		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
 				.type("application/json").put(returnType, tasksToSend);

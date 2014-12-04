@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class TestTime
 {
 	private static final User	owner	= new User("123", "", "", "", null);
-	private static final Task	task1	= new Task("1", "task1", "parent", false, 0, false, owner);
-	private static final Task	task2	= new Task("2", "task2", "parent", false, 0, false, owner);
+	private static final Task	task1	= new Task("1", "task1", null, false, 0, false, owner);
+	private static final Task	task2	= new Task("2", "task2", null, false, 0, false, owner);
 	private Time				time;
 
 	@Before
@@ -37,7 +37,7 @@ public class TestTime
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
-		Task task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, 1000, false, user);
 		Time time = new Time("uuid", 10, 100, false, 100, task);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);

@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import se.solit.timeit.serializers.TaskSerializer;
 import se.solit.timeit.serializers.UserSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,14 +21,14 @@ public class Task
 	@Column(nullable = false)
 	private String	id;
 	private String	name;
-	private String	parent;
+	@JsonSerialize(using = TaskSerializer.class)
+	private Task	parent;
 	private boolean	completed;
 	private long	lastChange;
 	private boolean	deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner", nullable = false)
-	//@JsonSerialize(using = UserToIDSerializer.class)
 	@JsonSerialize(using = UserSerializer.class)
 	private User	owner;
 
@@ -35,14 +36,14 @@ public class Task
 	{
 	}
 
-	public Task(final String paramID, final String paramName, final String paramParent, final boolean paramCompleted,
+	public Task(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
 			final long paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
 	}
 
 	private void
-			init(final String paramID, final String paramName, final String paramParent, final boolean paramCompleted,
+			init(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
 					final long paramLastChange, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
@@ -78,7 +79,7 @@ public class Task
 		return name;
 	}
 
-	public final String getParent()
+	public final Task getParent()
 	{
 		return parent;
 	}
@@ -115,7 +116,7 @@ public class Task
 		{
 			return false;
 		}
-		Task other = (Task)obj;
+		Task other = (Task) obj;
 		if (completed != other.completed)
 		{
 			return false;
@@ -169,7 +170,7 @@ public class Task
 		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + id.hashCode();
-		result = prime * result + (int)(lastChange ^ (lastChange >>> 32));
+		result = prime * result + (int) (lastChange ^ (lastChange >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + owner.getUsername().hashCode();
 		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
@@ -184,7 +185,7 @@ public class Task
 		name = name2;
 	}
 
-	public final void setParent(final String parent2)
+	public final void setParent(final Task parent2)
 	{
 		parent = parent2;
 	}

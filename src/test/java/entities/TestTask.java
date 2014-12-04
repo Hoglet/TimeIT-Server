@@ -34,7 +34,7 @@ public class TestTask
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
-		Task task = new Task("123", "Task1", "", false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, 1000, false, user);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(task);
 		Assert.assertEquals(fixture("fixtures/task.json"), jsonString);
@@ -45,7 +45,7 @@ public class TestTask
 	{
 		try
 		{
-			Task task = new Task(null, "", "", false, 0, false, user);
+			Task task = new Task(null, "", null, false, 0, false, user);
 			Assert.assertTrue("Should not allow null user", false);
 			task.setCompleted(true);
 		}
@@ -58,7 +58,7 @@ public class TestTask
 	@Test
 	public final void testSetName()
 	{
-		Task task = new Task("123", "", "", false, 0, false, user);
+		Task task = new Task("123", "", null, false, 0, false, user);
 		task.setName(JUST_A_STRING);
 		assertEquals(task.getName(), JUST_A_STRING);
 	}
@@ -66,15 +66,16 @@ public class TestTask
 	@Test
 	public final void testSetParent()
 	{
-		Task task = new Task("123", "", "", false, 0, false, user);
-		task.setParent(JUST_A_STRING);
-		assertEquals(task.getParent(), JUST_A_STRING);
+		Task task = new Task("123", "", null, false, 0, false, user);
+		Task parent = new Task("124", "", null, false, 0, false, user);
+		task.setParent(parent);
+		assertEquals(task.getParent(), parent);
 	}
 
 	@Test
 	public final void testSetCompleted()
 	{
-		Task task = new Task("123", "", "", false, 0, false, user);
+		Task task = new Task("123", "", null, false, 0, false, user);
 		task.setCompleted(true);
 		assertTrue(task.getCompleted());
 	}
@@ -82,7 +83,7 @@ public class TestTask
 	@Test
 	public final void testSetOwner()
 	{
-		Task task = new Task("123", "", "", false, 0, false, user);
+		Task task = new Task("123", "", null, false, 0, false, user);
 		task.setOwner(other);
 		assertTrue(task.getOwner().equals(other));
 	}
@@ -90,58 +91,60 @@ public class TestTask
 	@Test
 	public final void testEqualsObject()
 	{
-		Task x = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 0, false, user);
-		Task y = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 0, false, user);
+		Task x = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, user);
+		Task y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, user);
+		Task parent = new Task("parent", "parent", null, false, 0, false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, null, JUST_A_STRING, false, 0, false, user);
+		y = new Task(JUST_A_STRING, null, null, false, 0, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, parent, false, 0, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, true, 0, false, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, null, true, 0, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 2, false, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 2, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, JUST_A_STRING, false, 0, true, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, true, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task("", JUST_A_STRING, JUST_A_STRING, false, 0, false, user);
+		y = new Task("", JUST_A_STRING, null, false, 0, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, "", JUST_A_STRING, false, 0, false, user);
+		y = new Task(JUST_A_STRING, "", null, false, 0, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, "", false, 0, false, user);
+		x = new Task(JUST_A_STRING, JUST_A_STRING, parent, false, 0, false, user);
+		y = new Task(JUST_A_STRING, JUST_A_STRING, parent, false, 0, false, user);
+		assertTrue(x.equals(y));
+		assertTrue(y.equals(x));
+		assertTrue(x.hashCode() == y.hashCode());
+
+		y = new Task(JUST_A_STRING, JUST_A_STRING, null, false, 0, false, other);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(JUST_A_STRING, JUST_A_STRING, "", false, 0, false, other);
-		assertFalse(x.equals(y));
-		assertFalse(y.equals(x));
-		assertFalse(x.hashCode() == y.hashCode());
-
-		x = new Task(JUST_A_STRING, null, JUST_A_STRING, false, 0, false, user);
-		y = new Task(JUST_A_STRING, null, JUST_A_STRING, false, 0, false, user);
+		x = new Task(JUST_A_STRING, null, null, false, 0, false, user);
+		y = new Task(JUST_A_STRING, null, null, false, 0, false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
@@ -155,5 +158,4 @@ public class TestTask
 		assertFalse(x.equals(""));
 
 	}
-
 }

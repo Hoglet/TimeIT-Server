@@ -55,7 +55,7 @@ public class TestTimesSyncResource
 	{
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", "", false, 0, false, user);
+		task = new Task("123", "Task1", null, false, 0, false, user);
 		taskdao.add(task);
 		time = new Time("1", 10, 100, false, 100, task);
 	}
