@@ -61,12 +61,12 @@ public class TimeDAO
 	public final Collection<Time> getTimes(final String username) throws SQLException
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();
-		List<Time> items = _getTimes(username, em);
+		List<Time> items = iGetTimes(username, em);
 		em.close();
 		return items;
 	}
 
-	static List<Time> _getTimes(final String username, EntityManager em)
+	static List<Time> iGetTimes(final String username, EntityManager em)
 	{
 		TypedQuery<Time> getTimesQuery = em.createQuery("SELECT t FROM Time t WHERE t.task.owner.username = :username",
 				Time.class);

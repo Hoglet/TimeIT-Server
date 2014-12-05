@@ -25,8 +25,12 @@ public class TaskDAO
 		EntityManager em = emf.createEntityManager();
 		try
 		{
+			final Task existingTask = getByID(task.getID());
 			em.getTransaction().begin();
-			em.merge(task);
+			if (isChangedAfterExisting(task, existingTask))
+			{
+				em.merge(task);
+			}
 			em.getTransaction().commit();
 		}
 		finally
@@ -63,12 +67,12 @@ public class TaskDAO
 	public final Collection<Task> getTasks(final String username) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();
-		List<Task> tasks = _getTasks(username, em);
+		List<Task> tasks = iGetTasks(username, em);
 		em.close();
 		return tasks;
 	}
 
-	static List<Task> _getTasks(final String username, EntityManager em)
+	static List<Task> iGetTasks(final String username, EntityManager em)
 	{
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.owner.username = :username",
 				Task.class);
@@ -79,33 +83,37 @@ public class TaskDAO
 
 	public final void updateOrAdd(final Task[] taskArray) throws SQLException
 	{
-		Collection<Task> unAddedTasks = new ArrayList<Task>();
-		for (final Task task : taskArray)
+		if (taskArray.length > 0)
 		{
-			final Task existingTask = getByID(task.getID());
-			if (existingTask != null)
+			Collection<Task> unAddedTasks = new ArrayList<Task>();
+			for (final Task task : taskArray)
 			{
-				if (!existingTask.equals(task) && (task.getLastChange() >= (existingTask.getLastChange())))
-				{
-					update(task);
-				}
-			}
-			else
-			{
-				if (task.getParent() != null && getByID(task.getParent().getID()) == null)
+				final Task existingTask = getByID(task.getID());
+				if (hasUnknownParent(task))
 				{
 					unAddedTasks.add(task);
+				}
+				else if (existingTask != null)
+				{
+					update(task);
 				}
 				else
 				{
 					add(task);
 				}
 			}
-		}
-		if (unAddedTasks.size() > 0)
-		{
 			updateOrAdd(unAddedTasks.toArray(new Task[unAddedTasks.size()]));
 		}
+	}
+
+	private boolean hasUnknownParent(final Task task)
+	{
+		return task.getParent() != null && getByID(task.getParent().getID()) == null;
+	}
+
+	private boolean isChangedAfterExisting(final Task task, final Task existingTask)
+	{
+		return !existingTask.equals(task) && (task.getLastChange() >= (existingTask.getLastChange()));
 	}
 
 	public Task getTask(String id)

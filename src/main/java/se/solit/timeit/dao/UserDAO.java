@@ -79,7 +79,7 @@ public class UserDAO
 
 	private void removeAllTimes(String username, EntityManager em)
 	{
-		List<Time> times = TimeDAO._getTimes(username, em);
+		List<Time> times = TimeDAO.iGetTimes(username, em);
 		for (Time time : times)
 		{
 			em.remove(time);
@@ -89,7 +89,7 @@ public class UserDAO
 
 	private void removeAllTasks(String username, EntityManager em)
 	{
-		List<Task> tasks = TaskDAO._getTasks(username, em);
+		List<Task> tasks = TaskDAO.iGetTasks(username, em);
 		for (Task task : tasks)
 		{
 			em.remove(task);
