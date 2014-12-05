@@ -101,4 +101,32 @@ public class TestTasksSyncResource
 				.type("application/json").put(returnType, tasksToSend);
 		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
 	}
+
+	@Test
+	public void testTasksSync_advanced1()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task parent = new Task("1", "parent", null, false, 0, false, user);
+		Task child = new Task("2", "child", parent, false, 0, false, user);
+		tasksToSend.add(child);
+		tasksToSend.add(parent);
+
+		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+				.type("application/json").put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
+	}
+
+	@Test
+	public void testTasksSync_advanced2()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task parent = new Task("1", "parent", null, false, 0, false, user);
+		Task child = new Task("2", "child", parent, false, 0, false, user);
+		tasksToSend.add(parent);
+		tasksToSend.add(child);
+
+		List<Task> resultingTasks = resources.client().resource("/sync/tasks/testman").accept("application/json")
+				.type("application/json").put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
+	}
 }

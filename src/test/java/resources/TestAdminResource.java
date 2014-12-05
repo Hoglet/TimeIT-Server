@@ -5,6 +5,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,8 +25,12 @@ import org.junit.Test;
 
 import se.solit.timeit.MyAuthenticator;
 import se.solit.timeit.dao.RoleDAO;
+import se.solit.timeit.dao.TaskDAO;
+import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
+import se.solit.timeit.entities.Task;
+import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 
@@ -37,21 +42,27 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestAdminResource
 {
-	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
 
-	private static BasicAuthProvider<User> myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
-			"Authenticator");
+	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
+																	"Authenticator");
 
-	private static UserDAO userDAO;
+	private static UserDAO					userDAO;
 
-	private static User admin;
-	private User minion;
+	private static User						admin;
+	private User							minion;
 
 	@ClassRule
-	public static final ResourceTestRule resources = ResourceTestRule.builder().addResource(new AdminResource(emf))
-			.addProvider(new ViewMessageBodyWriter(new MetricRegistry()))
-			.addProvider(new ContextInjectableProvider<HttpHeaders>(HttpHeaders.class, null))
-			.addResource(myAuthenticator).build();
+	public static final ResourceTestRule	resources		= ResourceTestRule
+																	.builder()
+																	.addResource(new AdminResource(emf))
+																	.addProvider(
+																			new ViewMessageBodyWriter(
+																					new MetricRegistry()))
+																	.addProvider(
+																			new ContextInjectableProvider<HttpHeaders>(
+																					HttpHeaders.class, null))
+																	.addResource(myAuthenticator).build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -230,13 +241,24 @@ public class TestAdminResource
 	}
 
 	@Test
-	public final void testUserDelete()
+	public final void testUserDelete() throws SQLException
 	{
 		Client client = resources.client();
 		WebResource resource = client.resource("/admin/user/");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String username = "minion";
+		User expected = userDAO.getUser(username);
+		Assert.assertEquals(minion, expected);
+
+		Task task = new Task("123", "parent", null, false, 100, true, minion);
+		TaskDAO taskdao = new TaskDAO(emf);
+		taskdao.add(task);
+
+		Time time = new Time("1", 0, 100, false, 100, task);
+		TimeDAO timedao = new TimeDAO(emf);
+		timedao.add(time);
+
 		Form form = new Form();
 		List<String> users = new ArrayList<String>();
 		users.add(username);

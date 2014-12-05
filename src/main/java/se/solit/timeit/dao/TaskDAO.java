@@ -1,6 +1,7 @@
 package se.solit.timeit.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import se.solit.timeit.entities.Task;
 
 public class TaskDAO
 {
-	private final EntityManagerFactory emf;
+	private final EntityManagerFactory	emf;
 
 	public TaskDAO(final EntityManagerFactory entityManagerFactory)
 	{
@@ -62,16 +63,23 @@ public class TaskDAO
 	public final Collection<Task> getTasks(final String username) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();
+		List<Task> tasks = _getTasks(username, em);
+		em.close();
+		return tasks;
+	}
+
+	static List<Task> _getTasks(final String username, EntityManager em)
+	{
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.owner.username = :username",
 				Task.class);
 		getQuery.setParameter("username", username);
 		List<Task> tasks = getQuery.getResultList();
-		em.close();
 		return tasks;
 	}
 
 	public final void updateOrAdd(final Task[] taskArray) throws SQLException
 	{
+		Collection<Task> unAddedTasks = new ArrayList<Task>();
 		for (final Task task : taskArray)
 		{
 			final Task existingTask = getByID(task.getID());
@@ -84,8 +92,19 @@ public class TaskDAO
 			}
 			else
 			{
-				add(task);
+				if (task.getParent() != null && getByID(task.getParent().getID()) == null)
+				{
+					unAddedTasks.add(task);
+				}
+				else
+				{
+					add(task);
+				}
 			}
+		}
+		if (unAddedTasks.size() > 0)
+		{
+			updateOrAdd(unAddedTasks.toArray(new Task[unAddedTasks.size()]));
 		}
 	}
 

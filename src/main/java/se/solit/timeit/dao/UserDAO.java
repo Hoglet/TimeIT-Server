@@ -1,10 +1,13 @@
 package se.solit.timeit.dao;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import se.solit.timeit.entities.Task;
+import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
 public class UserDAO
@@ -63,6 +66,8 @@ public class UserDAO
 		try
 		{
 			em.getTransaction().begin();
+			removeAllTimes(user.getUsername(), em);
+			removeAllTasks(user.getUsername(), em);
 			em.remove(em.getReference(User.class, user.getUsername()));
 			em.getTransaction().commit();
 		}
@@ -70,6 +75,26 @@ public class UserDAO
 		{
 			em.close();
 		}
+	}
+
+	private void removeAllTimes(String username, EntityManager em)
+	{
+		List<Time> times = TimeDAO._getTimes(username, em);
+		for (Time time : times)
+		{
+			em.remove(time);
+		}
+		em.flush();
+	}
+
+	private void removeAllTasks(String username, EntityManager em)
+	{
+		List<Task> tasks = TaskDAO._getTasks(username, em);
+		for (Task task : tasks)
+		{
+			em.remove(task);
+		}
+		em.flush();
 	}
 
 }

@@ -79,7 +79,7 @@ public class User
 		{
 			return false;
 		}
-		User other = (User)obj;
+		User other = (User) obj;
 		if (email == null)
 		{
 			if (other.email != null)

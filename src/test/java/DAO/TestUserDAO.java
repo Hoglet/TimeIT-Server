@@ -1,5 +1,6 @@
 package DAO;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +12,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.solit.timeit.dao.TaskDAO;
+import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.UserDAO;
+import se.solit.timeit.entities.Task;
+import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
 public class TestUserDAO
@@ -60,6 +65,20 @@ public class TestUserDAO
 		userdao.update(u2);
 		User u3 = userdao.getUser(user.getUsername());
 		Assert.assertEquals(u3, u2);
+	}
+
+	@Test
+	public final void testDelete() throws SQLException
+	{
+		User user = new User("Test Tester", "tester", "password", "email", null);
+		userdao.add(user);
+		TaskDAO taskdao = new TaskDAO(emf);
+		Task task = new Task("123", "parent", null, false, 100, false, user);
+		taskdao.add(task);
+		Time time = new Time("12", 0, 100, false, 100, task);
+		TimeDAO timedao = new TimeDAO(emf);
+		timedao.add(time);
+		userdao.delete(user);
 	}
 
 }

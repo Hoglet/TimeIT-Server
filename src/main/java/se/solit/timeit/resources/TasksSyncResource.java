@@ -29,17 +29,14 @@ public class TasksSyncResource
 
 	@GET
 	@Path("/{user}")
-	public final Collection<Task> tasksGet(@PathParam("user") final String user)
-			throws SQLException
+	public final Collection<Task> tasksGet(@PathParam("user") final String user) throws SQLException
 	{
-
 		return taskDAO.getTasks(user);
 	}
 
 	@PUT
 	@Path("/{user}")
-	public final Collection<Task> tasksSync(
-			@PathParam("user") final String user, final Task[] paramTasks)
+	public final Collection<Task> tasksSync(@PathParam("user") final String user, final Task[] paramTasks)
 			throws SQLException
 	{
 		taskDAO.updateOrAdd(paramTasks);
