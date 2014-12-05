@@ -71,8 +71,7 @@ public class TimeDAO
 		TypedQuery<Time> getTimesQuery = em.createQuery("SELECT t FROM Time t WHERE t.task.owner.username = :username",
 				Time.class);
 		getTimesQuery.setParameter("username", username);
-		List<Time> items = getTimesQuery.getResultList();
-		return items;
+		return getTimesQuery.getResultList();
 	}
 
 	public final void updateOrAdd(final Time[] itemArray) throws SQLException

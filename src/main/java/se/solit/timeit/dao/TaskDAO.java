@@ -77,8 +77,7 @@ public class TaskDAO
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.owner.username = :username",
 				Task.class);
 		getQuery.setParameter("username", username);
-		List<Task> tasks = getQuery.getResultList();
-		return tasks;
+		return getQuery.getResultList();
 	}
 
 	public final void updateOrAdd(final Task[] taskArray) throws SQLException
