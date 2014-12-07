@@ -1,5 +1,7 @@
 package se.solit.timeit.resources;
 
+import io.dropwizard.auth.Auth;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -14,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
+import se.solit.timeit.entities.User;
 
 @Path("/sync/tasks")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,25 +24,31 @@ import se.solit.timeit.entities.Task;
 public class TasksSyncResource
 {
 	private final TaskDAO	taskDAO;
+	private SyncHelper		syncHelper;
 
 	public TasksSyncResource(final EntityManagerFactory emf)
 	{
 		taskDAO = new TaskDAO(emf);
+		syncHelper = new SyncHelper(emf);
 	}
 
 	@GET
-	@Path("/{user}")
-	public final Collection<Task> tasksGet(@PathParam("user") final String user) throws SQLException
+	@Path("/{username}")
+	public final Collection<Task> tasksGet(@Auth User authorizedUser, @PathParam("username") final String username)
+			throws SQLException
 	{
-		return taskDAO.getTasks(user);
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		return taskDAO.getTasks(username);
 	}
 
 	@PUT
 	@Path("/{user}")
-	public final Collection<Task> tasksSync(@PathParam("user") final String user, final Task[] paramTasks)
-			throws SQLException
+	public final Collection<Task> tasksSync(@Auth User authorizedUser, @PathParam("user") final String username,
+			final Task[] paramTasks) throws SQLException
 	{
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		syncHelper.verifyTaskOwnership(authorizedUser, paramTasks);
 		taskDAO.updateOrAdd(paramTasks);
-		return taskDAO.getTasks(user);
+		return taskDAO.getTasks(username);
 	}
 }

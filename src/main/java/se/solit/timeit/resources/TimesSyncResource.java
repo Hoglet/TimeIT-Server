@@ -1,5 +1,7 @@
 package se.solit.timeit.resources;
 
+import io.dropwizard.auth.Auth;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -14,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Time;
+import se.solit.timeit.entities.User;
 
 @Path("/sync/times")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,25 +25,31 @@ public class TimesSyncResource
 {
 	private final TimeDAO	timeDAO;
 
+	private SyncHelper		syncHelper;
+
 	public TimesSyncResource(final EntityManagerFactory emf)
 	{
 		timeDAO = new TimeDAO(emf);
+		syncHelper = new SyncHelper(emf);
 	}
 
 	@GET
 	@Path("/{user}")
-	public final Collection<Time> tasksGet(@PathParam("user") final String user) throws SQLException
+	public final Collection<Time> timesGet(@Auth User authorizedUser, @PathParam("user") final String username)
+			throws SQLException
 	{
-
-		return timeDAO.getTimes(user);
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		return timeDAO.getTimes(username);
 	}
 
 	@PUT
 	@Path("/{user}")
-	public final Collection<Time> tasksSync(@PathParam("user") final String user, final Time[] paramTimes)
-			throws SQLException
+	public final Collection<Time> timessSync(@Auth User authorizedUser, @PathParam("user") final String username,
+			final Time[] paramTimes) throws SQLException
 	{
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		syncHelper.verifyTimesOwnership(authorizedUser, paramTimes);
 		timeDAO.updateOrAdd(paramTimes);
-		return timeDAO.getTimes(user);
+		return timeDAO.getTimes(username);
 	}
 }
