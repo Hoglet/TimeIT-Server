@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="" type="se.solit.dwtemplate.resources.AdminView"
+<#-- @ftlvariable name="" type="se.solit.timeit.resources.AdminView"
 -->
 <!DOCTYPE HTML>
 <head>

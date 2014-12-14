@@ -56,7 +56,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
 
-		environment.jersey().register(new IndexResource());
+		environment.jersey().register(new IndexResource(emf));
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));

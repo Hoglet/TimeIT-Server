@@ -120,4 +120,28 @@ public class TaskDAO
 		return getByID(id);
 	}
 
+	public List<Task> getTasks(String username, Task parent, boolean includeDeleted)
+	{
+		EntityManager em = emf.createEntityManager();
+		TypedQuery<Task> getQuery;
+		if (parent == null)
+		{
+			getQuery = em
+					.createQuery(
+							"SELECT t FROM Task t WHERE t.owner.username = :username AND t.deleted = :deleted AND t.parent IS NULL",
+							Task.class);
+		}
+		else
+		{
+			getQuery = em
+					.createQuery(
+							"SELECT t FROM Task t WHERE t.owner.username = :username  AND t.deleted = :deleted AND t.parent = :parent",
+							Task.class);
+			getQuery.setParameter("parent", parent);
+		}
+		getQuery.setParameter("username", username);
+		getQuery.setParameter("deleted", includeDeleted);
+		return new ArrayList<Task>(getQuery.getResultList());
+	}
+
 }

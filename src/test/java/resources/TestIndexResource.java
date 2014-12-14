@@ -15,7 +15,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import se.solit.timeit.MyAuthenticator;
+import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
+import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.IndexResource;
 
@@ -34,22 +36,24 @@ public class TestIndexResource
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
-																	.addResource(new IndexResource())
+																	.addResource(new IndexResource(emf))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))
 																	.addProvider(
 																			new ContextInjectableProvider<HttpHeaders>(
 																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator)
-																	.build();
+																	.addResource(myAuthenticator).build();
 
 	@BeforeClass
 	public static void beforeClass()
 	{
 		UserDAO userDAO = new UserDAO(emf);
+		TaskDAO taskDAO = new TaskDAO(emf);
 		User user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
+		Task task = new Task("12", "admin stuff", null, false, 0, false, user);
+		taskDAO.add(task);
 	}
 
 	@AfterClass
@@ -65,10 +69,9 @@ public class TestIndexResource
 	public final void testLandingPage()
 	{
 		Client client = resources.client();
-		//		client.addFilter(new HTTPBasicAuthFilter("user", "secret"));
 		WebResource resource = client.resource("/");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("Hello, world!"));
+		Assert.assertTrue(actual.contains("admin stuff"));
 	}
 }

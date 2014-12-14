@@ -138,12 +138,23 @@ public class TestTaskDAO
 	}
 
 	@Test
-	public final void testUpdateOrAddOnEmpty() throws SQLException
+	public final void testUpdateOrAdd() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
-		Task[] tasks = new Task[] { task };
+		Task parent = new Task("123", "Parent", null, false, 1000, false, user);
+		Task child = new Task("1234", "Child", parent, false, 1000, false, user);
+		Task[] tasks = new Task[] { child, parent };
 		taskdao.updateOrAdd(tasks);
-		assertEquals(taskdao.getTasks(user.getUsername()).size(), 1);
+		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
+	}
+
+	@Test
+	public final void testUpdateOrAdd_reversedOrder() throws SQLException
+	{
+		Task parent = new Task("123", "Parent", null, false, 1000, false, user);
+		Task child = new Task("1234", "Child", parent, false, 1000, false, user);
+		Task[] tasks = new Task[] { child, parent };
+		taskdao.updateOrAdd(tasks);
+		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
 	}
 
 	@Test
@@ -196,4 +207,31 @@ public class TestTaskDAO
 		resultingTask = taskdao.getTask(task.getID());
 		assertTrue(task.equals(resultingTask));
 	}
+
+	@Test
+	public final void testGetTask_parent()
+	{
+		Task parent = new Task("123", "parent", null, false, 1000, false, user);
+		Task child = new Task("1", "child", parent, false, 1000, false, user);
+		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(0, resultingTasks.size());
+		taskdao.add(parent);
+		taskdao.add(child);
+		resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(1, resultingTasks.size());
+	}
+
+	@Test
+	public final void testGetTask_child()
+	{
+		Task parent = new Task("123", "parent", null, false, 1000, false, user);
+		Task child = new Task("1", "child", parent, false, 1000, false, user);
+		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(0, resultingTasks.size());
+		taskdao.add(parent);
+		taskdao.add(child);
+		resultingTasks = taskdao.getTasks(user.getUsername(), parent, false);
+		assertEquals(1, resultingTasks.size());
+	}
+
 }

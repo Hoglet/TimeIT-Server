@@ -44,7 +44,7 @@ public class TimesSyncResource
 
 	@PUT
 	@Path("/{user}")
-	public final Collection<Time> timessSync(@Auth User authorizedUser, @PathParam("user") final String username,
+	public final Collection<Time> timesSync(@Auth User authorizedUser, @PathParam("user") final String username,
 			final Time[] paramTimes) throws SQLException
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
