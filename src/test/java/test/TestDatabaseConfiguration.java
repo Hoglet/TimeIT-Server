@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.solit.timeit.DatabaseConfiguration;
+import se.solit.timeit.application.DatabaseConfiguration;
 
 public class TestDatabaseConfiguration
 {

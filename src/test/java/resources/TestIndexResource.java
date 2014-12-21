@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import se.solit.timeit.MyAuthenticator;
+import se.solit.timeit.application.MyAuthenticator;
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;

@@ -7,8 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.solit.timeit.Database;
-import se.solit.timeit.DatabaseConfiguration;
+import se.solit.timeit.application.Database;
+import se.solit.timeit.application.DatabaseConfiguration;
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;

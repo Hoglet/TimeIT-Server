@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.solit.timeit.DatabaseHealthCheck;
+import se.solit.timeit.application.DatabaseHealthCheck;
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.entities.Role;
 

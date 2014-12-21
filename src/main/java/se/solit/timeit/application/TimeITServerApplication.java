@@ -1,4 +1,4 @@
-package se.solit.timeit;
+package se.solit.timeit.application;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;

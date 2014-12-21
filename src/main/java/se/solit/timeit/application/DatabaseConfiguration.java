@@ -1,4 +1,4 @@
-package se.solit.timeit;
+package se.solit.timeit.application;
 
 import javax.validation.constraints.NotNull;
 

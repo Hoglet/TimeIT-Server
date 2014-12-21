@@ -5,8 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.solit.timeit.DatabaseConfiguration;
-import se.solit.timeit.TimeITConfiguration;
+import se.solit.timeit.application.DatabaseConfiguration;
+import se.solit.timeit.application.TimeITConfiguration;
 
 public class TestTimeITConfiguration
 {

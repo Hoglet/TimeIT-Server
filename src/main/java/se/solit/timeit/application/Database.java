@@ -1,4 +1,4 @@
-package se.solit.timeit;
+package se.solit.timeit.application;
 
 import java.util.ArrayList;
 import java.util.Collection;
