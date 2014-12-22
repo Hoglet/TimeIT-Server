@@ -1,9 +1,9 @@
 <#-- @ftlvariable name=""
 type="se.solit.dwtemplate.resources.UserAddView" -->
 <!DOCTYPE HTML>
+<html>
 <head><#include "head.ftl">
 </head>
-<html>
 <body>
 	<#include "top.ftl">
 	<h1>Add user</h1>

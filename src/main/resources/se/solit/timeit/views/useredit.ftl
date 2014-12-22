@@ -1,8 +1,8 @@
 <#-- @ftlvariable name="" type="se.solit.dwtemplate.resources.UserEditView" -->
 <!DOCTYPE HTML>
+<html>
 <head><#include "head.ftl">
 </head>
-<html>
 <body>
 	<#include "top.ftl">
 

@@ -1,15 +1,17 @@
 <#-- @ftlvariable name="" type="se.solit.timeit.views.IndexView" -->
 <!DOCTYPE HTML>
+<html>
 <head>
-
 <#include "head.ftl">
 </head>
-<html>
-    <body>
+<body>
     <#include "top.ftl">
     <div id="timeit-webui">
     <div id="tasks">
     	<h2>Tasks</h2>
+    	<form method="get" action='/task/add' name="Controller">
+			<input type="submit" value="Add" />
+		</form>
     	<div id="tasks-inner">
         <#function test items>  
         	<#assign result>      	  

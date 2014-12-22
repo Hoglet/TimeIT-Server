@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
+import se.solit.timeit.resources.TaskResource;
 import se.solit.timeit.resources.TasksSyncResource;
 import se.solit.timeit.resources.TimesSyncResource;
 
@@ -57,6 +58,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.servlets().setSessionHandler(new SessionHandler());
 
 		environment.jersey().register(new IndexResource(emf));
+		environment.jersey().register(new TaskResource(emf));
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
