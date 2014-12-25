@@ -112,7 +112,7 @@ public class TaskDAO
 
 	private boolean isChangedAfterExisting(final Task task, final Task existingTask)
 	{
-		return !existingTask.equals(task) && (task.getLastChange() >= (existingTask.getLastChange()));
+		return !existingTask.equals(task) && (task.getLastChange().after(existingTask.getLastChange()));
 	}
 
 	public Task getTask(String id)

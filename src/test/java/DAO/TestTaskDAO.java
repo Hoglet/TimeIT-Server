@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -72,7 +73,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdate() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		taskdao.add(task);
 		Task task2 = taskdao.getTask(task.getID());
 		task2.setName("Tjohopp");
@@ -97,7 +98,7 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTasks() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
 		assertEquals(resultingTasks.size(), 0);
 		taskdao.add(task);
@@ -109,7 +110,7 @@ public class TestTaskDAO
 	@Test
 	public final void testAddTwice() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		try
 		{
 			taskdao.add(task);
@@ -127,7 +128,7 @@ public class TestTaskDAO
 	{
 		try
 		{
-			Task badTask = new Task("123", "Task1", null, false, 0, false, null);
+			Task badTask = new Task("123", "Task1", null, false, new Date(), false, null);
 			taskdao.add(badTask);
 			assertTrue("Should not allow null user", false);
 		}
@@ -140,8 +141,8 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd() throws SQLException
 	{
-		Task parent = new Task("123", "Parent", null, false, 1000, false, user);
-		Task child = new Task("1234", "Child", parent, false, 1000, false, user);
+		Task parent = new Task("123", "Parent", null, false, new Date(), false, user);
+		Task child = new Task("1234", "Child", parent, false, new Date(), false, user);
 		Task[] tasks = new Task[] { child, parent };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
@@ -150,8 +151,8 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_reversedOrder() throws SQLException
 	{
-		Task parent = new Task("123", "Parent", null, false, 1000, false, user);
-		Task child = new Task("1234", "Child", parent, false, 1000, false, user);
+		Task parent = new Task("123", "Parent", null, false, new Date(), false, user);
+		Task child = new Task("1234", "Child", parent, false, new Date(), false, user);
 		Task[] tasks = new Task[] { child, parent };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
@@ -160,7 +161,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_change() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 		task.setName("TWo");
@@ -175,11 +176,13 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_noChangeIfOlder() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Date now = new Date();
+		Date then = new Date(now.getTime() - 100);
+		Task task = new Task("123", "Task1", null, false, now, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 
-		task = new Task("123", "Task2", null, false, 90, false, user);
+		task = new Task("123", "Task2", null, false, then, false, user);
 		tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
@@ -191,7 +194,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_noDifferense() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		taskdao.updateOrAdd(tasks);
@@ -200,7 +203,7 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTask()
 	{
-		Task task = new Task("123", "Task1", null, false, 1000, false, user);
+		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
 		Task resultingTask = taskdao.getTask(task.getID());
 		assertEquals(resultingTask, null);
 		taskdao.add(task);
@@ -211,8 +214,8 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTask_parent()
 	{
-		Task parent = new Task("123", "parent", null, false, 1000, false, user);
-		Task child = new Task("1", "child", parent, false, 1000, false, user);
+		Task parent = new Task("123", "parent", null, false, new Date(), false, user);
+		Task child = new Task("1", "child", parent, false, new Date(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());
 		taskdao.add(parent);
@@ -224,8 +227,8 @@ public class TestTaskDAO
 	@Test
 	public final void testGetTask_child()
 	{
-		Task parent = new Task("123", "parent", null, false, 1000, false, user);
-		Task child = new Task("1", "child", parent, false, 1000, false, user);
+		Task parent = new Task("123", "parent", null, false, new Date(), false, user);
+		Task child = new Task("1", "child", parent, false, new Date(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());
 		taskdao.add(parent);
@@ -233,5 +236,4 @@ public class TestTaskDAO
 		resultingTasks = taskdao.getTasks(user.getUsername(), parent, false);
 		assertEquals(1, resultingTasks.size());
 	}
-
 }

@@ -2,6 +2,7 @@ package DAO;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -73,7 +74,7 @@ public class TestUserDAO
 		User user = new User("Test Tester", "tester", "password", "email", null);
 		userdao.add(user);
 		TaskDAO taskdao = new TaskDAO(emf);
-		Task task = new Task("123", "parent", null, false, 100, false, user);
+		Task task = new Task("123", "parent", null, false, new Date(), false, user);
 		taskdao.add(task);
 		Time time = new Time("12", 0, 100, false, 100, task);
 		TimeDAO timedao = new TimeDAO(emf);

@@ -5,6 +5,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -70,7 +71,7 @@ public class TestTimesSyncResource
 	{
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", null, false, 0, false, user);
+		task = new Task("123", "Task1", null, false, new Date(), false, user);
 		taskdao.add(task);
 		time = new Time("1", 10, 100, false, 100, task);
 	}
@@ -172,7 +173,7 @@ public class TestTimesSyncResource
 		List<Time> timesToSend = new ArrayList<Time>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
 		userdao.add(otherUser);
-		Task otherTask = new Task("42", "d", null, false, 0, false, otherUser);
+		Task otherTask = new Task("42", "d", null, false, new Date(), false, otherUser);
 		taskdao.add(otherTask);
 		Time newTime = new Time("2", 11, 101, false, 101, otherTask);
 		timesToSend.add(newTime);

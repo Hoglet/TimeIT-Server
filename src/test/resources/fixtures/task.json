@@ -2,9 +2,9 @@
   "id" : "123",
   "name" : "Task1",
   "completed" : false,
-  "lastChange" : 1000,
   "deleted" : false,
   "parent" : null,
+  "lastChange" : "1000",
   "owner" : {
     "username" : "testman"
   }

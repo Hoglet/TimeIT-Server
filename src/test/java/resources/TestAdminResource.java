@@ -8,6 +8,7 @@ import io.dropwizard.views.ViewMessageBodyWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -251,11 +252,11 @@ public class TestAdminResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task("123", "parent", null, false, 100, true, minion);
+		Task task = new Task("123", "parent", null, false, new Date(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
-		Time time = new Time("1", 0, 100, false, 100, task);
+		Time time = new Time("1", 0, 100, false, 0, task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 

@@ -1,16 +1,23 @@
 package se.solit.timeit.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import se.solit.timeit.serializers.DateAsTimestampDeserializer;
+import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskSerializer;
 import se.solit.timeit.serializers.UserSerializer;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
@@ -24,7 +31,11 @@ public class Task
 	@JsonSerialize(using = TaskSerializer.class)
 	private Task	parent;
 	private boolean	completed;
-	private long	lastChange;
+
+	@Temporal(TemporalType.DATE)
+	@JsonSerialize(using = DateAsTimestampSerializer.class)
+	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
+	private Date	lastChange;
 	private boolean	deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -37,14 +48,14 @@ public class Task
 	}
 
 	public Task(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final long paramLastChanged, final boolean paramDeleted, final User paramOwner)
+			final Date paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
 	}
 
 	private void
 			init(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-					final long paramLastChange, final boolean paramDeleted, final User paramOwner)
+					final Date paramLastChange, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
 		{
@@ -57,9 +68,10 @@ public class Task
 		completed = paramCompleted;
 		deleted = paramDeleted;
 		setOwner(paramOwner);
+		lastChange = paramLastChange;
 	}
 
-	public final void setLastChange(final long lastChange2)
+	public final void setLastChange(final Date lastChange2)
 	{
 		this.lastChange = lastChange2;
 	}
@@ -84,7 +96,7 @@ public class Task
 		return parent;
 	}
 
-	public final long getLastChange()
+	public final Date getLastChange()
 	{
 		return lastChange;
 	}
@@ -129,7 +141,8 @@ public class Task
 		{
 			return false;
 		}
-		if (lastChange != other.lastChange)
+		long diff = Math.abs(lastChange.getTime() - other.lastChange.getTime());
+		if (diff > 1000)
 		{
 			return false;
 		}
@@ -170,7 +183,7 @@ public class Task
 		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + id.hashCode();
-		result = prime * result + (int) (lastChange ^ (lastChange >>> 32));
+		result = prime * result + lastChange.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + owner.getUsername().hashCode();
 		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
@@ -182,16 +195,19 @@ public class Task
 
 	public final void setName(final String name2)
 	{
+		lastChange = new Date();
 		name = name2;
 	}
 
 	public final void setParent(final Task parent2)
 	{
+		lastChange = new Date();
 		parent = parent2;
 	}
 
 	public final void setCompleted(final boolean completed2)
 	{
+		lastChange = new Date();
 		completed = completed2;
 	}
 

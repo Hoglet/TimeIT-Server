@@ -4,6 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -61,7 +62,7 @@ public class TestTaskResource
 		taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		task = new Task("12", "admin stuff", null, false, 0, false, user);
+		task = new Task("12", "admin stuff", null, false, new Date(), false, user);
 		taskDAO.add(task);
 	}
 
@@ -108,7 +109,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task expected = new Task(id, name, null, false, 0, false, user);
+		Task expected = new Task(id, name, null, false, new Date(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", null);
@@ -163,7 +164,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task expected = new Task(id, name, task, false, 0, false, user);
+		Task expected = new Task(id, name, task, false, new Date(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", task.getID());
