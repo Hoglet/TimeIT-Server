@@ -7,14 +7,19 @@
 <body>
 	<#include "top.ftl">
 
-	<h1>Add task</h1>
-	<form method="POST" action='/task/add' name="Controller">
+	<#if edit()>
+		<h1>Edit task</h1>
+		<form method="POST" action='/task/edit' name="Controller">
+	<#else>
+		<h1>Add task</h1>
+		<form method="POST" action='/task/add' name="Controller">
+	</#if>
 		<input type="hidden" name="taskid" value="${task.getID()}"/>
 		<table>
 			<tr>
 			<td>id:</td><td id="taskid">${task.getID()}</td>
 			</tr>
-			<tr>				
+			<tr>
 				<td>Name:</td>
 				<td><input type="text" name="name" value="${task.name}" /></td>
 			</tr>
@@ -29,10 +34,10 @@
 			      	<#else>
 			      		<option value="" selected>-</option>
 			      	</#if>
-				
+
 		      	<#list parents as entry>
 		      		<#if task.parent??>
-		      			<#if task.parent.equals(entry.key)>
+		      			<#if task.parent.ID == entry.key>
 		           			<option value="${entry.key}" selected>${entry.value}</option>
 		      			<#else>
 		      				<option value="${entry.key}">${entry.value}</option>
@@ -47,10 +52,8 @@
 		</table>
 
 		<p>
-			<input type="submit" name="submitType" value="save" />&nbsp; <input
-				type="submit" name="submitType" value="cancel" />&nbsp;
+			<input type="submit" name="submitType" value="save" /></form>
 		</p>
-	</form>
 	<#include "bottom.ftl">
 </body>
 </html>

@@ -39,7 +39,7 @@ public class TaskResource
 	public View getAdd(@Auth User user)
 	{
 		Task task = new Task(UUID.randomUUID().toString(), "", null, false, new Date(), false, user);
-		return new TaskView(emf, task, user, Action.add);
+		return new TaskView(emf, task, user, Action.ADD);
 	}
 
 	@POST
@@ -68,7 +68,7 @@ public class TaskResource
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
-		return new TaskView(emf, task, user, Action.edit);
+		return new TaskView(emf, task, user, Action.EDIT);
 	}
 
 	@POST

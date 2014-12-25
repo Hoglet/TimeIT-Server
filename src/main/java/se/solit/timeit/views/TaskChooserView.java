@@ -17,20 +17,15 @@ import se.solit.timeit.entities.User;
 
 import com.google.common.base.Charsets;
 
-public class TaskView extends View
+public class TaskChooserView extends View
 {
-
-	private final Task		task;
 	private final User		user;
 	private final TaskDAO	taskdao;
-	private final Action	action;
 
-	public TaskView(EntityManagerFactory emf, Task task, User user, Action action)
+	public TaskChooserView(EntityManagerFactory emf, User user)
 	{
-		super("task.ftl", Charsets.UTF_8);
-		this.task = task;
+		super("taskChooser.ftl", Charsets.UTF_8);
 		this.user = user;
-		this.action = action;
 		taskdao = new TaskDAO(emf);
 	}
 
@@ -39,12 +34,7 @@ public class TaskView extends View
 		return user;
 	}
 
-	public Task getTask()
-	{
-		return task;
-	}
-
-	public List<Entry<String, String>> getParents() throws SQLException
+	public List<Entry<String, String>> getTasks() throws SQLException
 	{
 		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>();
 		Collection<Task> tasks = taskdao.getTasks(user.getUsername());
@@ -54,11 +44,6 @@ public class TaskView extends View
 			list.add(new SimpleEntry<String, String>(t.getID(), parentString));
 		}
 		return list;
-	}
-
-	public boolean edit()
-	{
-		return action == Action.EDIT;
 	}
 
 	private String getParentString(Task task2)

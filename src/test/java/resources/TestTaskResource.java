@@ -32,6 +32,8 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestTaskResource
 {
+	private static final String				taskID			= "12";
+
 	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
 
 	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
@@ -62,7 +64,7 @@ public class TestTaskResource
 		taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		task = new Task("12", "admin stuff", null, false, new Date(), false, user);
+		task = new Task(taskID, "admin stuff", null, false, new Date(), false, user);
 		taskDAO.add(task);
 	}
 
@@ -81,6 +83,19 @@ public class TestTaskResource
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("admin stuff"));
 		Assert.assertTrue(actual.contains("<h1>Add task</h1>"));
+		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/add'"));
+	}
+
+	@Test
+	public final void testEditPage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit?taskid=" + taskID);
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		String actual = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(actual.contains("admin stuff"));
+		Assert.assertTrue(actual.contains("<h1>Edit task</h1>"));
+		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/edit'"));
 	}
 
 	@Test
@@ -137,7 +152,7 @@ public class TestTaskResource
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
 
-		String id = UUID.randomUUID().toString();
+		String id = taskID;
 		String name = "Banarne";
 		Form form = new Form();
 		form.add("taskid", id);
@@ -185,4 +200,103 @@ public class TestTaskResource
 		Assert.assertEquals(expected.getParent(), actual.getParent());
 	}
 
+	@Test
+	public final void testPostEditPage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		String id = taskID;
+		String name = "Banarne";
+		Task expected = new Task(id, name, null, false, new Date(), false, user);
+		Form form = new Form();
+		form.add("taskid", id);
+		form.add("parent", null);
+		form.add("name", name);
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+
+		Task actual = taskDAO.getByID(id);
+		Assert.assertEquals(expected.getID(), actual.getID());
+		Assert.assertEquals(expected.getName(), actual.getName());
+		Assert.assertEquals(expected.getParent(), actual.getParent());
+	}
+
+	@Test
+	public final void testPostEditPage2()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		String parentID = UUID.randomUUID().toString();
+		Task parent = new Task(parentID, "Parent", null, false, new Date(), false, user);
+		taskDAO.add(parent);
+		String id = taskID;
+		String name = "Banarne";
+		Task expected = new Task(id, name, parent, false, new Date(), false, user);
+		Form form = new Form();
+		form.add("taskid", id);
+		form.add("parent", parent.getID());
+		form.add("name", name);
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+
+		Task actual = taskDAO.getByID(id);
+		Assert.assertEquals(expected.getID(), actual.getID());
+		Assert.assertEquals(expected.getName(), actual.getName());
+		Assert.assertEquals(expected.getParent().toString(), actual.getParent().toString());
+	}
+
+	@Test
+	public final void testPostEditPageAuth()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
+
+		String id = UUID.randomUUID().toString();
+		String name = "Banarne";
+		Form form = new Form();
+		form.add("taskid", id);
+		form.add("parent", null);
+		form.add("name", name);
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testChooserPage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		resource.queryParam("action", "edit");
+
+		String result = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(result.contains("<form method=\"GET\" action='/task/edit'"));
+	}
 }

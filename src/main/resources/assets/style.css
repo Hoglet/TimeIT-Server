@@ -154,7 +154,7 @@ div#tasks-inner
 	border-radius: 0.5em;
 	min-height: 15em;
 }
-div#tasks-inner 
+div#tasks-inner
 {
 	background: white;
 }
@@ -165,9 +165,9 @@ ol.tree
 	padding: 0 0 0 30px;
 	width: 300px;
 }
-li 
-{ 
-	position: relative; 
+li
+{
+	position: relative;
 	margin-left: -15px;
 	list-style: none;
 }
@@ -190,9 +190,9 @@ li input + ol
 	height: 1em;
 }
 
-li input + ol > li 
+li input + ol > li
 {
-	display: none; margin-left: -14px !important; padding-left: 1px; 
+	display: none; margin-left: -14px !important; padding-left: 1px;
 }
 
 li label
@@ -210,5 +210,16 @@ li input:checked + ol
 	padding: 1em 0 0 80px;
 	height: auto;
 }
+
 li input:checked + ol > li { display: block; margin: 0 0 0.125em;  /* 2px */}
 li input:checked + ol > li:last-child { margin: 0 0 0.063em; /* 1px */ }
+
+div.toolbar
+{
+	display: table-row;
+}
+div.toolbar span
+{
+	display: table-cell;
+}
+

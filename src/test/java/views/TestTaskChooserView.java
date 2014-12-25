@@ -15,10 +15,9 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.Action;
-import se.solit.timeit.views.TaskView;
+import se.solit.timeit.views.TaskChooserView;
 
-public class TestTaskView
+public class TestTaskChooserView
 {
 	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
 	private static User					user2;
@@ -47,22 +46,15 @@ public class TestTaskView
 	@Test
 	public final void testGetCurrentUser()
 	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
-		Assert.assertEquals(user2, taskView.getCurrentUser());
+		TaskChooserView view = new TaskChooserView(emf, user2);
+		Assert.assertEquals(user2, view.getCurrentUser());
 	}
 
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
-		Assert.assertEquals("[TaskID-parent=Parent, TaskID-child=Parent/child]", taskView.getParents().toString());
-	}
-
-	@Test
-	public final void testGetTask()
-	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
-		Assert.assertEquals(task, taskView.getTask());
+		TaskChooserView view = new TaskChooserView(emf, user2);
+		Assert.assertEquals("[TaskID-parent=Parent, TaskID-child=Parent/child]", view.getTasks().toString());
 	}
 
 }
