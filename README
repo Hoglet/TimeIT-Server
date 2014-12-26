@@ -1,0 +1,14 @@
+TimeIT Server is a time tracking tool and as such has two purposes.
+
+1. To be a central hub for multiple TimeIT clients 
+(https://github.com/Hoglet/TimeIT) so that all clients have the
+same data.
+
+2. To be able to use through a web browser as a simple time logging
+tool.
+
+The databases are decentralized which means that all nodes, including the
+server, works stand alone without connection to each other.
+
+The web interface is naturally more limited than the clients. There is no
+automatic time tracking and no idle detection. 
