@@ -12,12 +12,17 @@
     	<div class="toolbar">
     	<span>
     	<form method="get" action='/task/add' name="Controller">
-			<input type="submit" value="Add" />
+			<button type="submit" value="add" >Add</button>
 		</form>
 		</span>
 		<span>
     	<form method="get" action='/task' name="Controller">
-			<input type="submit" name="action" value="edit" />
+			<button type="submit" name="action" value="edit" >Edit</button>
+		</form>
+		</span>
+		<span>
+    	<form method="get" action='/task' name="Controller">
+			<button type="submit" name="action" value="delete" >Delete</button>
 		</form>
 		</span>
 		</div>

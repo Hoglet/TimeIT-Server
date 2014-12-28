@@ -6,9 +6,13 @@
 </head>
 <body>
 	<#include "top.ftl">
-
-	<h1>Choose task to edit</h1>
-	<form method="GET" action='/task/edit' name="Controller">
+	<#if isEditMode()>
+		<h1>Choose task to edit</h1>
+		<form method="GET" action='/task/edit' name="Controller">
+	<#else>
+		<h1>Choose task to delete</h1>
+		<form method="POST" action='/task/delete' name="Controller">
+	</#if>
 		<p>
 			<select name="taskid">
 			<#list tasks as entry>

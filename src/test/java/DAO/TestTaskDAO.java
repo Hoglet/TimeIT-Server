@@ -236,4 +236,40 @@ public class TestTaskDAO
 		resultingTasks = taskdao.getTasks(user.getUsername(), parent, false);
 		assertEquals(1, resultingTasks.size());
 	}
+
+	@Test
+	public final void testDelete()
+	{
+		String parentID = "123";
+		String childID = "1";
+
+		Task parent = new Task(parentID, "parent", null, false, new Date(), false, user);
+		Task child = new Task(childID, "child", parent, false, new Date(), false, user);
+		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(0, resultingTasks.size());
+		taskdao.add(parent);
+		taskdao.add(child);
+		taskdao.delete(child);
+		resultingTasks = taskdao.getTasks(user.getUsername(), parent, false);
+		assertEquals(0, resultingTasks.size());
+	}
+
+	@Test
+	public final void testDeleteParent()
+	{
+		String parentID = "123";
+		String childID = "1";
+
+		Task parent = new Task(parentID, "parent", null, false, new Date(), false, user);
+		Task child = new Task(childID, "child", parent, false, new Date(), false, user);
+		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(0, resultingTasks.size());
+		taskdao.add(parent);
+		taskdao.add(child);
+		taskdao.delete(parent);
+		resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
+		assertEquals(1, resultingTasks.size());
+		assertEquals(childID, resultingTasks.get(0).getID());
+	}
+
 }

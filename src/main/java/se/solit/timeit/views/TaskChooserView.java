@@ -21,12 +21,19 @@ public class TaskChooserView extends View
 {
 	private final User		user;
 	private final TaskDAO	taskdao;
+	private final Action	type;
 
-	public TaskChooserView(EntityManagerFactory emf, User user)
+	public TaskChooserView(EntityManagerFactory emf, User user, Action type2)
 	{
 		super("taskChooser.ftl", Charsets.UTF_8);
 		this.user = user;
 		taskdao = new TaskDAO(emf);
+		this.type = type2;
+	}
+
+	public boolean isEditMode()
+	{
+		return type.equals(Action.EDIT);
 	}
 
 	public User getCurrentUser()

@@ -15,6 +15,7 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
+import se.solit.timeit.views.Action;
 import se.solit.timeit.views.TaskChooserView;
 
 public class TestTaskChooserView
@@ -46,14 +47,14 @@ public class TestTaskChooserView
 	@Test
 	public final void testGetCurrentUser()
 	{
-		TaskChooserView view = new TaskChooserView(emf, user2);
+		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);
 		Assert.assertEquals(user2, view.getCurrentUser());
 	}
 
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TaskChooserView view = new TaskChooserView(emf, user2);
+		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);
 		Assert.assertEquals("[TaskID-parent=Parent, TaskID-child=Parent/child]", view.getTasks().toString());
 	}
 

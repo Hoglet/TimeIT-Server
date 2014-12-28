@@ -7,8 +7,9 @@
 <body>
 	<#include "top.ftl">
 
-	<h1>Task added successfully</h1>
-	<form method="get" action='/' name="Controller">
+	<h1>${headline}</h1>
+	${text}
+	<form method="get" action='${url}' name="Controller">
 			<input type="submit" name="submitType" value="OK" />
 	</form>
 	<#include "bottom.ftl">

@@ -289,14 +289,69 @@ public class TestTaskResource
 	}
 
 	@Test
-	public final void testChooserPage()
+	public final void testChooserPage_edit()
 	{
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/");
+		WebResource resource = client.resource("/task?action=edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		resource.queryParam("action", "edit");
 
 		String result = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(result.contains("<form method=\"GET\" action='/task/edit'"));
 	}
+
+	@Test
+	public final void testChooserPage_delete()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task?action=delete");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		resource.queryParam("action", "delete");
+
+		String result = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(result.contains("<form method=\"POST\" action='/task/delete'"));
+	}
+
+	@Test
+	public final void testDelete()
+	{
+		String id = UUID.randomUUID().toString();
+		Task task2delete = new Task(id, "name", null, false, new Date(), false, user);
+		taskDAO.add(task2delete);
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/delete");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		Form form = new Form();
+		form.add("taskid", id);
+
+		String result = resource.accept("text/html").post(String.class, form);
+		Assert.assertTrue(result.contains("Task is deleted"));
+		Assert.assertEquals(true, taskDAO.getByID(id).getDeleted());
+	}
+
+	@Test
+	public final void testDelete_auth()
+	{
+		String id = UUID.randomUUID().toString();
+		Task task2delete = new Task(id, "name", null, false, new Date(), false, user);
+		taskDAO.add(task2delete);
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/delete");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
+
+		Form form = new Form();
+		form.add("taskid", id);
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
 }
