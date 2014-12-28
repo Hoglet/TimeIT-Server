@@ -4,7 +4,7 @@
   "completed" : false,
   "deleted" : false,
   "parent" : null,
-  "lastChange" : "1000",
+  "lastChange" : 1000,
   "owner" : {
     "username" : "testman"
   }

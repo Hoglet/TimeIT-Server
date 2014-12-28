@@ -294,8 +294,7 @@ public class TestTaskResource
 		Client client = resources.client();
 		WebResource resource = client.resource("/task?action=edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-		resource.queryParam("action", "edit");
-
+		resource = resource.queryParam("action", "edit");
 		String result = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(result.contains("<form method=\"GET\" action='/task/edit'"));
 	}
@@ -306,8 +305,7 @@ public class TestTaskResource
 		Client client = resources.client();
 		WebResource resource = client.resource("/task?action=delete");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-		resource.queryParam("action", "delete");
-
+		resource = resource.queryParam("action", "delete");
 		String result = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(result.contains("<form method=\"POST\" action='/task/delete'"));
 	}

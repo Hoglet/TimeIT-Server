@@ -1,10 +1,10 @@
 {
   "id" : "uuid",
-  "start" : 10,
-  "stop" : 100,
   "deleted" : false,
-  "changed" : 100,
   "task" : {
     "id" : "123"
-  }
+  },
+  "start" : 10,
+  "stop" : 100,
+  "changed" : 100
 }

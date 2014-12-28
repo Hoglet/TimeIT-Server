@@ -76,7 +76,7 @@ public class TestUserDAO
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = new Task("123", "parent", null, false, new Date(), false, user);
 		taskdao.add(task);
-		Time time = new Time("12", 0, 100, false, 100, task);
+		Time time = new Time("12", new Date(0), new Date(100 * 1000), false, new Date(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 		userdao.delete(user);

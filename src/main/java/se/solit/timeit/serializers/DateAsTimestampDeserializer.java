@@ -14,6 +14,6 @@ public class DateAsTimestampDeserializer extends JsonDeserializer<Date>
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
 	{
-		return new Date(Long.parseLong(jp.getText()) * MILLISECONDS_PER_SECOND);
+		return new Date(jp.getLongValue() * MILLISECONDS_PER_SECOND);
 	}
 }

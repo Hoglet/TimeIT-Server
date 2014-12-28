@@ -30,7 +30,7 @@ public class TestTime
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time("1234", 0, 1, false, 0, task1);
+		time = new Time("1234", new Date(0), new Date(1 * 1000), false, new Date(), task1);
 	}
 
 	@Test
@@ -38,8 +38,8 @@ public class TestTime
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
-		Task task = new Task("123", "Task1", null, false, new Date(), false, user);
-		Time time = new Time("uuid", 10, 100, false, 100, task);
+		Task task = new Task("123", "Task1", null, false, new Date(100 * 1000), false, user);
+		Time time = new Time("uuid", new Date(10 * 1000), new Date(100 * 1000), false, new Date(100 * 1000), task);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);
 		Assert.assertEquals(fixture("fixtures/time.json"), jsonString);
@@ -54,8 +54,9 @@ public class TestTime
 	@Test
 	public final void testSetChanged()
 	{
-		time.setChanged(3);
-		assertEquals(time.getChanged(), 3);
+		Date now = new Date();
+		time.setChanged(now);
+		assertEquals(time.getChanged(), now);
 	}
 
 	@Test
@@ -69,15 +70,17 @@ public class TestTime
 	@Test
 	public final void testSetStart()
 	{
-		time.setStart(123);
-		assertEquals(time.getStart(), 123);
+		Date now = new Date();
+		time.setStart(now);
+		assertEquals(time.getStart(), now);
 	}
 
 	@Test
 	public final void testSetStop()
 	{
-		time.setStop(124);
-		assertEquals(time.getStop(), 124);
+		Date now = new Date();
+		time.setStop(now);
+		assertEquals(time.getStop(), now);
 	}
 
 	@Test
@@ -91,42 +94,45 @@ public class TestTime
 	@Test
 	public final void testEqualsObject()
 	{
-		Time x = new Time(null, 0, 1, false, 0, task1);
-		Time y = new Time(null, 0, 1, false, 0, task1);
+		Date start = new Date(0);
+		Date stop = new Date(1 * 1000);
+		Date now = new Date();
+		Time x = new Time(null, start, stop, false, now, task1);
+		Time y = new Time(null, start, stop, false, now, task1);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Time("1234", 0, 1, false, 0, task1);
-		y = new Time("1234", 0, 1, false, 0, task1);
+		x = new Time("1234", start, stop, false, now, task1);
+		y = new Time("1234", start, stop, false, now, task1);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Time(null, 0, 1, false, 0, task1);
+		y = new Time(null, start, stop, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", 1, 1, false, 0, task1);
+		y = new Time("1234", stop, stop, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", 0, 2, false, 0, task1);
+		y = new Time("1234", start, now, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", 0, 1, true, 0, task1);
+		y = new Time("1234", start, stop, true, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", 0, 1, false, 1, task1);
+		y = new Time("1234", start, stop, false, new Date(42), task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", 0, 1, false, 0, task2);
+		y = new Time("1234", start, stop, false, now, task2);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());

@@ -53,6 +53,7 @@ public class TestTimesSyncResource
 
 	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
+	private static Date						now;
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
@@ -69,11 +70,12 @@ public class TestTimesSyncResource
 	@BeforeClass
 	public static void beforeClass()
 	{
+		now = new Date();
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
 		task = new Task("123", "Task1", null, false, new Date(), false, user);
 		taskdao.add(task);
-		time = new Time("1", 10, 100, false, 100, task);
+		time = new Time("1", new Date(10 * 1000), new Date(100 * 1000), false, now, task);
 	}
 
 	@AfterClass
@@ -136,7 +138,7 @@ public class TestTimesSyncResource
 	public void testTimesSync()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", 11, 101, false, 101, task);
+		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
@@ -151,7 +153,7 @@ public class TestTimesSyncResource
 	public void testTimesSync_attackOtherUser()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", 11, 101, false, 101, task);
+		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
@@ -173,9 +175,9 @@ public class TestTimesSyncResource
 		List<Time> timesToSend = new ArrayList<Time>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
 		userdao.add(otherUser);
-		Task otherTask = new Task("42", "d", null, false, new Date(), false, otherUser);
+		Task otherTask = new Task("42", "d", null, false, now, false, otherUser);
 		taskdao.add(otherTask);
-		Time newTime = new Time("2", 11, 101, false, 101, otherTask);
+		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, otherTask);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");

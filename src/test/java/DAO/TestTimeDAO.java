@@ -34,14 +34,16 @@ public class TestTimeDAO
 	private static Task					task;
 	private static UserDAO				userdao;
 	static TaskDAO						taskdao;
+	private static Date					now;
 
 	@BeforeClass
 	public static void beforeClass()
 	{
+		now = new Date();
 		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task("123", "Task1", null, false, new Date(), false, user);
+		task = new Task("123", "Task1", null, false, now, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 	}
@@ -87,19 +89,19 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdate() throws SQLException
 	{
-		Time time = new Time("123", 0, 1000, false, 0, task);
+		Time time = new Time("123", new Date(0), now, false, new Date(0), task);
 		timedao.add(time);
-		Time t2 = new Time("123", 500, 1000, false, 1000, task);
+		Time t2 = new Time("123", now, now, false, now, task);
 		timedao.update(t2);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Time result = (Time) times.toArray()[0];
-		Assert.assertTrue(t2.equals(result));
+		Assert.assertEquals(t2, result);
 	}
 
 	@Test
 	public final void testAdd_Existing() throws SQLException
 	{
-		Time time = new Time("123", 0, 1000, false, 0, task);
+		Time time = new Time("123", new Date(0), new Date(1000 * 1000), false, now, task);
 		timedao.add(time);
 		try
 		{
@@ -117,14 +119,14 @@ public class TestTimeDAO
 	{
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Assert.assertEquals(times.size(), 0);
-		Time time = new Time("123", 0, 1000, false, 0, task);
+		Time time = new Time("123", new Date(0), new Date(1000 * 1000), false, now, task);
 		timedao.add(time);
 	}
 
 	@Test
 	public final void testUpdateOrAdd_addOnEmpty() throws SQLException
 	{
-		Time time = new Time("123", 0, 1000, false, 0, task);
+		Time time = new Time("123", new Date(0), new Date(1000), false, now, task);
 		Time[] timeArray = new Time[] { time };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
@@ -134,22 +136,22 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_update() throws SQLException
 	{
-		Time time = new Time("123", 0, 1000, false, 0, task);
+		Time time = new Time("123", new Date(0), now, false, new Date(0), task);
 		timedao.add(time);
-		Time t2 = new Time("123", 500, 1000, false, 1000, task);
+		Time t2 = new Time("123", now, now, false, now, task);
 		Time[] timeArray = new Time[] { t2 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Time result = (Time) times.toArray()[0];
-		Assert.assertEquals("R2", result.getStart(), t2.getStart());
+		Assert.assertEquals(t2.getStart().getTime(), result.getStart().getTime());
 	}
 
 	@Test
 	public final void testUpdateOrAdd_noUpdatWhenOlder() throws SQLException
 	{
-		Time time = new Time("123", 0, 1000, false, 1000, task);
+		Time time = new Time("123", new Date(0), new Date(1000 * 1000), false, now, task);
 		timedao.add(time);
-		Time t3 = new Time("123", 700, 1000, false, 900, task);
+		Time t3 = new Time("123", new Date(700 * 1000), new Date(1000 * 1000), false, new Date(0), task);
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
@@ -160,7 +162,7 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_dummy() throws SQLException
 	{
-		Time t3 = new Time("123", 700, 1000, false, 900, task);
+		Time t3 = new Time("123", new Date(700 * 1000), new Date(1000 * 1000), false, now, task);
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
 		timedao.updateOrAdd(timeArray);

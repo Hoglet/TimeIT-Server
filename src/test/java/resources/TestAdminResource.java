@@ -256,7 +256,7 @@ public class TestAdminResource
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
-		Time time = new Time("1", 0, 100, false, 0, task);
+		Time time = new Time("1", new Date(0), new Date(100 * 1000), false, new Date(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 
