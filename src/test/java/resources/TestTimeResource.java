@@ -5,15 +5,13 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -51,7 +49,7 @@ public class TestTimeResource
 
 	private static Time						time;
 	private static Task						task;
-	private static Date						now				= new Date();
+	private static DateTime					now				= DateTime.now();
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
@@ -75,7 +73,7 @@ public class TestTimeResource
 		userDAO.add(user);
 		task = new Task(taskID, "Task", null, false, now, false, user);
 		taskDAO.add(task);
-		time = new Time(timeID, new Date(0), new Date(1000), false, new Date(), task);
+		time = new Time(timeID, new DateTime(0), new DateTime(1000), false, now, task);
 		timeDAO.add(time);
 	}
 
@@ -113,7 +111,6 @@ public class TestTimeResource
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public final void testAddPostPage() throws SQLException
 	{
@@ -122,24 +119,17 @@ public class TestTimeResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String id = UUID.randomUUID().toString();
-		Date start = new Date();
-		Date stop = new Date(start.getTime() + 1000);
-		start.setSeconds(0);
-		stop.setSeconds(0);
-		Time expected = new Time(id, start, stop, false, stop, task);
+		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
+		DateTime stop = new DateTime(start.plus(60000));
 
-		String DATE_FORMAT = "yyyy-MM-dd";
-		SimpleDateFormat dateFormater = new SimpleDateFormat(DATE_FORMAT);
-		String TIME_FORMAT = "HH:mm";
-		SimpleDateFormat timeFormater = new SimpleDateFormat(TIME_FORMAT);
-		timeFormater.setTimeZone(TimeZone.getDefault());
+		Time expected = new Time(id, start, stop, false, stop, task);
 
 		Form form = new Form();
 		form.add("timeid", id);
-		form.add("date", dateFormater.format(start));
+		form.add("date", start.toString("yyy-MM-dd"));
 
-		form.add("start", timeFormater.format(start));
-		form.add("stop", timeFormater.format(stop));
+		form.add("start", start.toString("HH:mm"));
+		form.add("stop", stop.toString("HH:mm"));
 		form.add("taskid", task.getID());
 
 		try

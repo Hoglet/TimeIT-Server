@@ -5,7 +5,6 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,6 +13,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -53,7 +53,7 @@ public class TestTimesSyncResource
 
 	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
-	private static Date						now;
+	private static DateTime					now;
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
@@ -70,12 +70,12 @@ public class TestTimesSyncResource
 	@BeforeClass
 	public static void beforeClass()
 	{
-		now = new Date();
+		now = DateTime.now();
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", null, false, new Date(), false, user);
+		task = new Task("123", "Task1", null, false, now, false, user);
 		taskdao.add(task);
-		time = new Time("1", new Date(10 * 1000), new Date(100 * 1000), false, now, task);
+		time = new Time("1", new DateTime(10 * 1000), new DateTime(100 * 1000), false, now, task);
 	}
 
 	@AfterClass
@@ -138,7 +138,7 @@ public class TestTimesSyncResource
 	public void testTimesSync()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, task);
+		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
@@ -153,7 +153,7 @@ public class TestTimesSyncResource
 	public void testTimesSync_attackOtherUser()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, task);
+		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
@@ -177,7 +177,7 @@ public class TestTimesSyncResource
 		userdao.add(otherUser);
 		Task otherTask = new Task("42", "d", null, false, now, false, otherUser);
 		taskdao.add(otherTask);
-		Time newTime = new Time("2", new Date(11 * 1000), new Date(101 * 1000), false, now, otherTask);
+		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, otherTask);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");

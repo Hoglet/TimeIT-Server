@@ -1,16 +1,14 @@
 package se.solit.timeit.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampDeserializer;
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
@@ -26,36 +24,35 @@ public class Task
 {
 	@Id
 	@Column(nullable = false)
-	private String	id;
-	private String	name;
+	private String		id;
+	private String		name;
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task	parent;
-	private boolean	completed;
+	private Task		parent;
+	private boolean		completed;
 
-	@Temporal(TemporalType.DATE)
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private Date	lastChange;
-	private boolean	deleted;
+	private DateTime	lastChange;
+	private boolean		deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner", nullable = false)
 	@JsonSerialize(using = UserSerializer.class)
-	private User	owner;
+	private User		owner;
 
 	protected Task()
 	{
 	}
 
 	public Task(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final Date paramLastChanged, final boolean paramDeleted, final User paramOwner)
+			final DateTime paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
 	}
 
-	private void
-			init(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-					final Date paramLastChange, final boolean paramDeleted, final User paramOwner)
+	private void init(final String paramID, final String paramName, final Task paramParent,
+			final boolean paramCompleted, final DateTime paramLastChange, final boolean paramDeleted,
+			final User paramOwner)
 	{
 		if (paramID == null)
 		{
@@ -71,7 +68,7 @@ public class Task
 		lastChange = paramLastChange;
 	}
 
-	public final void setLastChange(final Date lastChange2)
+	public final void setLastChange(final DateTime lastChange2)
 	{
 		this.lastChange = lastChange2;
 	}
@@ -96,7 +93,7 @@ public class Task
 		return parent;
 	}
 
-	public final Date getLastChange()
+	public final DateTime getLastChange()
 	{
 		return lastChange;
 	}
@@ -141,7 +138,7 @@ public class Task
 		{
 			return false;
 		}
-		long diff = Math.abs(lastChange.getTime() - other.lastChange.getTime());
+		long diff = Math.abs(lastChange.getMillis() - other.lastChange.getMillis());
 		if (diff > 1000)
 		{
 			return false;
@@ -195,19 +192,19 @@ public class Task
 
 	public final void setName(final String name2)
 	{
-		lastChange = new Date();
+		lastChange = DateTime.now();
 		name = name2;
 	}
 
 	public final void setParent(final Task parent2)
 	{
-		lastChange = new Date();
+		lastChange = DateTime.now();
 		parent = parent2;
 	}
 
 	public final void setCompleted(final boolean completed2)
 	{
-		lastChange = new Date();
+		lastChange = DateTime.now();
 		completed = completed2;
 	}
 

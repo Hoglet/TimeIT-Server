@@ -5,7 +5,6 @@ import io.dropwizard.views.View;
 
 import java.net.MalformedURLException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -15,6 +14,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
@@ -39,7 +40,7 @@ public class TaskResource
 	@Path("/add")
 	public View getAdd(@Auth User user)
 	{
-		Task task = new Task(UUID.randomUUID().toString(), "", null, false, new Date(), false, user);
+		Task task = new Task(UUID.randomUUID().toString(), "", null, false, DateTime.now(), false, user);
 		return new TaskView(emf, task, user, Action.ADD);
 	}
 
@@ -55,7 +56,7 @@ public class TaskResource
 		{
 			parent = taskdao.getByID(parentID);
 		}
-		Date now = new Date();
+		DateTime now = DateTime.now();
 		Task task = new Task(id, name, parent, false, now, false, user);
 		taskdao.add(task);
 		String headline = "Task added successfully";
@@ -86,7 +87,7 @@ public class TaskResource
 		{
 			parent = taskdao.getByID(parentID);
 		}
-		Date now = new Date();
+		DateTime now = DateTime.now();
 		Task task = new Task(id, name, parent, false, now, false, user);
 		taskdao.update(task);
 		String headline = "Task updated";

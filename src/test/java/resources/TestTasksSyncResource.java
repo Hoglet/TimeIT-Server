@@ -4,7 +4,6 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,6 +12,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -63,7 +63,7 @@ public class TestTasksSyncResource
 	{
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", null, false, new Date(), false, user);
+		task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
 	}
 
 	@AfterClass
@@ -109,7 +109,7 @@ public class TestTasksSyncResource
 	public void testTasksSync()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task("1", "newTask", null, false, new Date(), false, user);
+		Task newTask = new Task("1", "newTask", null, false, DateTime.now(), false, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -124,7 +124,7 @@ public class TestTasksSyncResource
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
-		Task newTask = new Task("1", "newTask", null, false, new Date(), false, otherUser);
+		Task newTask = new Task("1", "newTask", null, false, DateTime.now(), false, otherUser);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -143,7 +143,7 @@ public class TestTasksSyncResource
 	public void testTasksSync_accessingOtherUser()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task("1", "newTask", null, false, new Date(), false, user);
+		Task newTask = new Task("1", "newTask", null, false, DateTime.now(), false, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/otherman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -162,8 +162,8 @@ public class TestTasksSyncResource
 	public void testTasksSync_advanced1()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task("1", "parent", null, false, new Date(), false, user);
-		Task child = new Task("2", "child", parent, false, new Date(), false, user);
+		Task parent = new Task("1", "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task("2", "child", parent, false, DateTime.now(), false, user);
 		tasksToSend.add(child);
 		tasksToSend.add(parent);
 
@@ -179,8 +179,8 @@ public class TestTasksSyncResource
 	public void testTasksSync_advanced2()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task("1", "parent", null, false, new Date(), false, user);
-		Task child = new Task("2", "child", parent, false, new Date(), false, user);
+		Task parent = new Task("1", "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task("2", "child", parent, false, DateTime.now(), false, user);
 		tasksToSend.add(parent);
 		tasksToSend.add(child);
 

@@ -4,13 +4,13 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -64,7 +64,7 @@ public class TestTaskResource
 		taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		task = new Task(taskID, "admin stuff", null, false, new Date(), false, user);
+		task = new Task(taskID, "admin stuff", null, false, DateTime.now(), false, user);
 		taskDAO.add(task);
 	}
 
@@ -124,7 +124,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task expected = new Task(id, name, null, false, new Date(), false, user);
+		Task expected = new Task(id, name, null, false, DateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", null);
@@ -179,7 +179,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task expected = new Task(id, name, task, false, new Date(), false, user);
+		Task expected = new Task(id, name, task, false, DateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", task.getID());
@@ -209,7 +209,7 @@ public class TestTaskResource
 
 		String id = taskID;
 		String name = "Banarne";
-		Task expected = new Task(id, name, null, false, new Date(), false, user);
+		Task expected = new Task(id, name, null, false, DateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", null);
@@ -238,11 +238,11 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String parentID = UUID.randomUUID().toString();
-		Task parent = new Task(parentID, "Parent", null, false, new Date(), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, DateTime.now(), false, user);
 		taskDAO.add(parent);
 		String id = taskID;
 		String name = "Banarne";
-		Task expected = new Task(id, name, parent, false, new Date(), false, user);
+		Task expected = new Task(id, name, parent, false, DateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", parent.getID());
@@ -314,7 +314,7 @@ public class TestTaskResource
 	public final void testDelete()
 	{
 		String id = UUID.randomUUID().toString();
-		Task task2delete = new Task(id, "name", null, false, new Date(), false, user);
+		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete");
@@ -332,7 +332,7 @@ public class TestTaskResource
 	public final void testDelete_auth()
 	{
 		String id = UUID.randomUUID().toString();
-		Task task2delete = new Task(id, "name", null, false, new Date(), false, user);
+		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete");

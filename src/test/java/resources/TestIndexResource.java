@@ -4,12 +4,11 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
-import java.util.Date;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,7 +53,7 @@ public class TestIndexResource
 		TaskDAO taskDAO = new TaskDAO(emf);
 		User user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		Task task = new Task("12", "admin stuff", null, false, new Date(), false, user);
+		Task task = new Task("12", "admin stuff", null, false, DateTime.now(), false, user);
 		taskDAO.add(task);
 	}
 

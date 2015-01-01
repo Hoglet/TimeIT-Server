@@ -1,11 +1,11 @@
 package views;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,8 +29,8 @@ public class TestTaskChooserView
 		user2 = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user2);
-		Task parent = new Task("TaskID-parent", "Parent", null, false, new Date(), false, user2);
-		Task child = new Task("TaskID-child", "child", parent, false, new Date(), false, user2);
+		Task parent = new Task("TaskID-parent", "Parent", null, false, DateTime.now(), false, user2);
+		Task child = new Task("TaskID-child", "child", parent, false, DateTime.now(), false, user2);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);

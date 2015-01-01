@@ -81,7 +81,7 @@ public class TimeDAO
 			final Time existingItem = getByID(item.getID());
 			if (existingItem != null)
 			{
-				if (!existingItem.equals(item) && (item.getChanged().after(existingItem.getChanged())))
+				if (!existingItem.equals(item) && (item.getChanged().isAfter(existingItem.getChanged())))
 				{
 					update(item);
 				}

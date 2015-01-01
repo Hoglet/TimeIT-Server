@@ -1,14 +1,12 @@
 package se.solit.timeit.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampDeserializer;
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
@@ -23,76 +21,73 @@ public class Time
 
 	@Id
 	@Column(nullable = false)
-	private String	id;
+	private String		id;
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task	task;
+	private Task		task;
 
-	@Temporal(TemporalType.DATE)
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private Date	start;
+	private DateTime	start;
 
-	@Temporal(TemporalType.DATE)
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private Date	stop;
+	private DateTime	stop;
 
-	private boolean	deleted;
+	private boolean		deleted;
 
-	@Temporal(TemporalType.DATE)
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private Date	changed;
+	private DateTime	changed;
 
 	protected Time()
 	{
 	}
 
-	public Time(final String paramUuid, final Date paramStart, final Date paramStop, final boolean paramDeleted,
-			final Date paramChanged, final Task paramTask)
+	public Time(final String paramUuid, final DateTime paramStart, final DateTime paramStop,
+			final boolean paramDeleted, final DateTime paramChanged, final Task paramTask)
 	{
 		id = paramUuid;
-		start = (Date) paramStart.clone();
-		stop = (Date) paramStop.clone();
+		start = paramStart;
+		stop = paramStop;
 		deleted = paramDeleted;
 		task = paramTask;
-		changed = (Date) paramChanged.clone();
+		changed = paramChanged;
 	}
 
-	public final Date getChanged()
+	public final DateTime getChanged()
 	{
-		return (Date) changed.clone();
+		return changed;
 	}
 
-	public final void setChanged(final Date changed2)
+	public final void setChanged(final DateTime changed2)
 	{
-		this.changed = new Date(changed2.getTime());
+		this.changed = changed2;
 	}
 
 	public final void setTask(final Task task2)
 	{
-		changed = new Date();
+		changed = DateTime.now();
 		this.task = task2;
 	}
 
-	public final void setStart(final Date start2)
+	public final void setStart(final DateTime start2)
 	{
-		changed = new Date();
-		this.start = new Date(start2.getTime());
+		changed = DateTime.now();
+		this.start = start2;
 	}
 
-	public final void setStop(final Date stop2)
+	public final void setStop(final DateTime stop2)
 	{
-		changed = new Date();
-		this.stop = new Date(stop2.getTime());
+		changed = DateTime.now();
+		this.stop = stop2;
 	}
 
 	public final void setDeleted(final boolean deleted2)
 	{
-		changed = new Date();
+		changed = DateTime.now();
 		this.deleted = deleted2;
 	}
 
@@ -101,14 +96,14 @@ public class Time
 		return id;
 	}
 
-	public final Date getStart()
+	public final DateTime getStart()
 	{
-		return (Date) start.clone();
+		return start;
 	}
 
-	public final Date getStop()
+	public final DateTime getStop()
 	{
-		return (Date) stop.clone();
+		return stop;
 	}
 
 	public final boolean getDeleted()
@@ -154,7 +149,7 @@ public class Time
 			return false;
 		}
 		Time other = (Time) obj;
-		long diff = Math.abs(changed.getTime() - other.getChanged().getTime());
+		long diff = Math.abs(changed.getMillis() - other.getChanged().getMillis());
 		if (diff > 1000)
 		{
 			return false;

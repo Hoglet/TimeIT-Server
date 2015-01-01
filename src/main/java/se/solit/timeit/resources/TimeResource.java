@@ -4,7 +4,6 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.views.View;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -46,8 +45,8 @@ public class TimeResource
 	@Path("/add")
 	public View getAdd(@Auth User user)
 	{
-		Date now = new Date();
-		Time time = new Time(UUID.randomUUID().toString(), new Date(), new Date(), false, now, null);
+		DateTime now = DateTime.now();
+		Time time = new Time(UUID.randomUUID().toString(), now, now, false, now, null);
 		return new TimeView(emf, time, user, Action.ADD);
 	}
 
@@ -58,7 +57,7 @@ public class TimeResource
 			@FormParam("stop") String paramStop, @FormParam("taskid") String taskID, @FormParam("date") String date)
 			throws SQLException
 	{
-		Date now = new Date();
+		DateTime now = DateTime.now();
 
 		LocalDate d = LocalDate.parse(date);
 		LocalTime s1 = LocalTime.parse(paramStart);
@@ -67,7 +66,7 @@ public class TimeResource
 		DateTime start = d.toDateTime(s1);
 		DateTime stop = d.toDateTime(s2);
 		Task task = taskDAO.getByID(taskID);
-		Time time = new Time(id, start.toDate(), stop.toDate(), false, now, task);
+		Time time = new Time(id, start, stop, false, now, task);
 		timedao.add(time);
 		String headline = "Time added successfully";
 		String url = "/";

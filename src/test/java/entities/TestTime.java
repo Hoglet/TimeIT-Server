@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import io.dropwizard.jackson.Jackson;
 
 import java.io.IOException;
-import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +22,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class TestTime
 {
-	private static final User	owner	= new User("123", "", "", "", null);
-	private static final Task	task1	= new Task("1", "task1", null, false, new Date(), false, owner);
-	private static final Task	task2	= new Task("2", "task2", null, false, new Date(), false, owner);
-	private Time				time;
+	private static final DateTime	now		= DateTime.now();
+	private static final User		owner	= new User("123", "", "", "", null);
+	private static final Task		task1	= new Task("1", "task1", null, false, now, false, owner);
+	private static final Task		task2	= new Task("2", "task2", null, false, now, false, owner);
+	private Time					time;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time("1234", new Date(0), new Date(1 * 1000), false, new Date(), task1);
+		time = new Time("1234", new DateTime(0), new DateTime(1 * 1000), false, now, task1);
 	}
 
 	@Test
@@ -38,8 +39,9 @@ public class TestTime
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
-		Task task = new Task("123", "Task1", null, false, new Date(100 * 1000), false, user);
-		Time time = new Time("uuid", new Date(10 * 1000), new Date(100 * 1000), false, new Date(100 * 1000), task);
+		Task task = new Task("123", "Task1", null, false, new DateTime(100 * 1000), false, user);
+		Time time = new Time("uuid", new DateTime(10 * 1000), new DateTime(100 * 1000), false,
+				new DateTime(100 * 1000), task);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);
 		Assert.assertEquals(fixture("fixtures/time.json"), jsonString);
@@ -54,7 +56,7 @@ public class TestTime
 	@Test
 	public final void testSetChanged()
 	{
-		Date now = new Date();
+		DateTime now = DateTime.now();
 		time.setChanged(now);
 		assertEquals(time.getChanged(), now);
 	}
@@ -70,7 +72,7 @@ public class TestTime
 	@Test
 	public final void testSetStart()
 	{
-		Date now = new Date();
+		DateTime now = DateTime.now();
 		time.setStart(now);
 		assertEquals(time.getStart(), now);
 	}
@@ -78,7 +80,7 @@ public class TestTime
 	@Test
 	public final void testSetStop()
 	{
-		Date now = new Date();
+		DateTime now = DateTime.now();
 		time.setStop(now);
 		assertEquals(time.getStop(), now);
 	}
@@ -94,9 +96,9 @@ public class TestTime
 	@Test
 	public final void testEqualsObject()
 	{
-		Date start = new Date(0);
-		Date stop = new Date(1 * 1000);
-		Date now = new Date();
+		DateTime start = new DateTime(0);
+		DateTime stop = new DateTime(1 * 1000);
+		DateTime now = DateTime.now();
 		Time x = new Time(null, start, stop, false, now, task1);
 		Time y = new Time(null, start, stop, false, now, task1);
 		assertTrue(x.equals(y) && y.equals(x));
@@ -127,7 +129,7 @@ public class TestTime
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", start, stop, false, new Date(42), task1);
+		y = new Time("1234", start, stop, false, new DateTime(42), task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());

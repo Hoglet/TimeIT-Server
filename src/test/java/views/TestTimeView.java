@@ -1,12 +1,12 @@
 package views;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -36,13 +36,14 @@ public class TestTimeView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		Task parent = new Task(parentID, "parent", null, false, new Date(), false, user);
-		Task child = new Task(childID, "child", parent, false, new Date(), false, user);
+		DateTime now = DateTime.now();
+		Task parent = new Task(parentID, "parent", null, false, now, false, user);
+		Task child = new Task(childID, "child", parent, false, now, false, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(parent);
 		taskDAO.add(child);
 
-		time = new Time(timeID, new Date(0), new Date(1000), false, new Date(), parent);
+		time = new Time(timeID, new DateTime(0), new DateTime(1000), false, now, parent);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 	}
