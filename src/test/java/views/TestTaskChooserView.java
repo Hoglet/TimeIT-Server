@@ -1,6 +1,7 @@
 package views;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -20,8 +21,10 @@ import se.solit.timeit.views.TaskChooserView;
 
 public class TestTaskChooserView
 {
-	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
 	private static User					user2;
+	private static UUID					parentID	= UUID.fromString("24765cb7-d346-4ec4-8fc8-c381b6b38a6e");
+	private static UUID					childID		= UUID.fromString("b0d3462a-d214-4969-98f0-1f90e8650cc7");
 
 	@BeforeClass
 	public static void beforeClass()
@@ -29,8 +32,8 @@ public class TestTaskChooserView
 		user2 = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user2);
-		Task parent = new Task("TaskID-parent", "Parent", null, false, DateTime.now(), false, user2);
-		Task child = new Task("TaskID-child", "child", parent, false, DateTime.now(), false, user2);
+		Task parent = new Task(parentID, "Parent", null, false, DateTime.now(), false, user2);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user2);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);
@@ -53,7 +56,8 @@ public class TestTaskChooserView
 	public final void testGetParents() throws SQLException
 	{
 		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);
-		Assert.assertEquals("[TaskID-parent=Parent, TaskID-child=Parent/child]", view.getTasks().toString());
+		String expected = "[24765cb7-d346-4ec4-8fc8-c381b6b38a6e=Parent, b0d3462a-d214-4969-98f0-1f90e8650cc7=Parent/child]";
+		Assert.assertEquals(expected, view.getTasks().toString());
 	}
 
 }

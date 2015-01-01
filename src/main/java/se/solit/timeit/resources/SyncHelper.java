@@ -1,5 +1,7 @@
 package se.solit.timeit.resources;
 
+import java.util.UUID;
+
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -11,7 +13,7 @@ import se.solit.timeit.entities.User;
 
 class SyncHelper
 {
-	private TaskDAO	taskdao;
+	private final TaskDAO	taskdao;
 
 	public SyncHelper(EntityManagerFactory emf)
 	{
@@ -44,7 +46,7 @@ class SyncHelper
 		String allowedUser = authorizedUser.getUsername();
 		for (Time time : paramTimes)
 		{
-			String taskID = time.getTask().getID();
+			UUID taskID = time.getTask().getID();
 			Task task = taskdao.getByID(taskID);
 			if (!task.getOwner().getUsername().equals(allowedUser))
 			{

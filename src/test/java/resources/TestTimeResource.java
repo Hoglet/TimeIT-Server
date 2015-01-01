@@ -35,8 +35,8 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestTimeResource
 {
-	private static final String				timeID			= "12";
-	private static final String				taskID			= "1";
+	private static final UUID				timeID			= UUID.randomUUID();
+	private static final UUID				taskID			= UUID.randomUUID();
 
 	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
 
@@ -118,7 +118,7 @@ public class TestTimeResource
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
-		String id = UUID.randomUUID().toString();
+		UUID id = UUID.randomUUID();
 		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
 		DateTime stop = new DateTime(start.plus(60000));
 
@@ -155,10 +155,9 @@ public class TestTimeResource
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
 
-		String id = timeID;
 		String name = "Banarne";
 		Form form = new Form();
-		form.add("timeid", id);
+		form.add("timeid", timeID);
 		form.add("parent", null);
 		form.add("name", name);
 

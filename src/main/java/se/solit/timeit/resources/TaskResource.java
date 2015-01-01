@@ -40,7 +40,7 @@ public class TaskResource
 	@Path("/add")
 	public View getAdd(@Auth User user)
 	{
-		Task task = new Task(UUID.randomUUID().toString(), "", null, false, DateTime.now(), false, user);
+		Task task = new Task(UUID.randomUUID(), "", null, false, DateTime.now(), false, user);
 		return new TaskView(emf, task, user, Action.ADD);
 	}
 
@@ -54,10 +54,10 @@ public class TaskResource
 		Task parent = null;
 		if (!parentID.isEmpty())
 		{
-			parent = taskdao.getByID(parentID);
+			parent = taskdao.getByID(UUID.fromString(parentID));
 		}
 		DateTime now = DateTime.now();
-		Task task = new Task(id, name, parent, false, now, false, user);
+		Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
 		taskdao.add(task);
 		String headline = "Task added successfully";
 		String url = "/";
@@ -88,7 +88,7 @@ public class TaskResource
 			parent = taskdao.getByID(parentID);
 		}
 		DateTime now = DateTime.now();
-		Task task = new Task(id, name, parent, false, now, false, user);
+		Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
 		taskdao.update(task);
 		String headline = "Task updated";
 		String text = "";

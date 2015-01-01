@@ -3,6 +3,7 @@ package DAO;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,7 +28,7 @@ import se.solit.timeit.entities.User;
 
 public class TestTimeDAO
 {
-	private static final String			timeID	= "123";
+	private static final UUID			timeID	= UUID.randomUUID();
 	public static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
 	private final TimeDAO				timedao	= new TimeDAO(emf);
 
@@ -43,7 +44,7 @@ public class TestTimeDAO
 		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task(timeID, "Task1", null, false, now, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 	}

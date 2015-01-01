@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -55,11 +56,11 @@ public class TaskDAO
 		}
 	}
 
-	public final Task getByID(final String uuid)
+	public final Task getByID(final UUID id)
 	{
 		Task task = null;
 		EntityManager em = emf.createEntityManager();
-		task = em.find(Task.class, uuid);
+		task = em.find(Task.class, id);
 		em.close();
 		return task;
 	}
@@ -115,11 +116,6 @@ public class TaskDAO
 		return !existingTask.equals(task) && (task.getLastChange().isAfter(existingTask.getLastChange()));
 	}
 
-	public Task getTask(String id)
-	{
-		return getByID(id);
-	}
-
 	public List<Task> getTasks(String username, Task parent, boolean includeDeleted)
 	{
 		EntityManager em = emf.createEntityManager();
@@ -171,6 +167,11 @@ public class TaskDAO
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.parent = :parent", Task.class);
 		getQuery.setParameter("parent", task2);
 		return getQuery.getResultList();
+	}
+
+	public Task getByID(String id)
+	{
+		return getByID(UUID.fromString(id));
 	}
 
 }

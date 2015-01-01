@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,6 +32,8 @@ import se.solit.timeit.entities.User;
 
 public class TestTaskDAO
 {
+	private static final UUID			childID	= UUID.randomUUID();
+	private static final UUID			taskID	= UUID.randomUUID();
 	private static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
 	private static UserDAO				userdao	= new UserDAO(emf);
 	private static TaskDAO				taskdao	= new TaskDAO(emf);
@@ -53,6 +56,12 @@ public class TestTaskDAO
 	@After
 	public void tearDown() throws Exception
 	{
+		deleteAllTasks();
+		deleteAllTasks();
+	}
+
+	private void deleteAllTasks()
+	{
 		em.getTransaction().begin();
 		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t", Task.class);
 		List<Task> tasks = getQuery.getResultList();
@@ -66,20 +75,19 @@ public class TestTaskDAO
 	@AfterClass
 	public static void afterClass()
 	{
-		userdao.delete(user);
 		emf.close();
 	}
 
 	@Test
 	public final void testUpdate() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
 		taskdao.add(task);
-		Task task2 = taskdao.getTask(task.getID());
+		Task task2 = taskdao.getByID(task.getID());
 		task2.setName("Tjohopp");
 		assertFalse(task2.equals(task));
 		taskdao.update(task2);
-		Task task3 = taskdao.getTask(task.getID());
+		Task task3 = taskdao.getByID(task.getID());
 		assertEquals(task3.getName(), "Tjohopp");
 
 		try
@@ -96,9 +104,9 @@ public class TestTaskDAO
 	}
 
 	@Test
-	public final void testGetTasks() throws SQLException
+	public final void testgetByIDs() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
 		assertEquals(resultingTasks.size(), 0);
 		taskdao.add(task);
@@ -110,7 +118,7 @@ public class TestTaskDAO
 	@Test
 	public final void testAddTwice() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
 		try
 		{
 			taskdao.add(task);
@@ -128,7 +136,7 @@ public class TestTaskDAO
 	{
 		try
 		{
-			Task badTask = new Task("123", "Task1", null, false, DateTime.now(), false, null);
+			Task badTask = new Task(taskID, "Task1", null, false, DateTime.now(), false, null);
 			taskdao.add(badTask);
 			assertTrue("Should not allow null user", false);
 		}
@@ -141,8 +149,8 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd() throws SQLException
 	{
-		Task parent = new Task("123", "Parent", null, false, DateTime.now(), false, user);
-		Task child = new Task("1234", "Child", parent, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "Parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "Child", parent, false, DateTime.now(), false, user);
 		Task[] tasks = new Task[] { child, parent };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
@@ -151,8 +159,8 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_reversedOrder() throws SQLException
 	{
-		Task parent = new Task("123", "Parent", null, false, DateTime.now(), false, user);
-		Task child = new Task("1234", "Child", parent, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "Parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "Child", parent, false, DateTime.now(), false, user);
 		Task[] tasks = new Task[] { child, parent };
 		taskdao.updateOrAdd(tasks);
 		assertEquals(2, taskdao.getTasks(user.getUsername()).size());
@@ -161,7 +169,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_change() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 		task.setName("TWo");
@@ -178,11 +186,11 @@ public class TestTaskDAO
 	{
 		DateTime now = DateTime.now();
 		DateTime then = new DateTime(now.getMillis() - 100);
-		Task task = new Task("123", "Task1", null, false, now, false, user);
+		Task task = new Task(taskID, "Task1", null, false, now, false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 
-		task = new Task("123", "Task2", null, false, then, false, user);
+		task = new Task(taskID, "Task2", null, false, then, false, user);
 		tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
@@ -194,28 +202,28 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_noDifferense() throws SQLException
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		taskdao.updateOrAdd(tasks);
 	}
 
 	@Test
-	public final void testGetTask()
+	public final void testgetByID()
 	{
-		Task task = new Task("123", "Task1", null, false, DateTime.now(), false, user);
-		Task resultingTask = taskdao.getTask(task.getID());
+		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);
+		Task resultingTask = taskdao.getByID(task.getID());
 		assertEquals(resultingTask, null);
 		taskdao.add(task);
-		resultingTask = taskdao.getTask(task.getID());
+		resultingTask = taskdao.getByID(task.getID());
 		assertTrue(task.equals(resultingTask));
 	}
 
 	@Test
-	public final void testGetTask_parent()
+	public final void testgetByID_parent()
 	{
-		Task parent = new Task("123", "parent", null, false, DateTime.now(), false, user);
-		Task child = new Task("1", "child", parent, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());
 		taskdao.add(parent);
@@ -225,10 +233,10 @@ public class TestTaskDAO
 	}
 
 	@Test
-	public final void testGetTask_child()
+	public final void testgetByID_child()
 	{
-		Task parent = new Task("123", "parent", null, false, DateTime.now(), false, user);
-		Task child = new Task("1", "child", parent, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());
 		taskdao.add(parent);
@@ -240,10 +248,7 @@ public class TestTaskDAO
 	@Test
 	public final void testDelete()
 	{
-		String parentID = "123";
-		String childID = "1";
-
-		Task parent = new Task(parentID, "parent", null, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "parent", null, false, DateTime.now(), false, user);
 		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());
@@ -257,10 +262,7 @@ public class TestTaskDAO
 	@Test
 	public final void testDeleteParent()
 	{
-		String parentID = "123";
-		String childID = "1";
-
-		Task parent = new Task(parentID, "parent", null, false, DateTime.now(), false, user);
+		Task parent = new Task(taskID, "parent", null, false, DateTime.now(), false, user);
 		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
 		List<Task> resultingTasks = taskdao.getTasks(user.getUsername(), null, false);
 		assertEquals(0, resultingTasks.size());

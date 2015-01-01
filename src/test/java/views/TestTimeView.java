@@ -26,9 +26,9 @@ public class TestTimeView
 	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
 	private static User					user;
 	private static Time					time;
-	private static String				timeID		= UUID.randomUUID().toString();
-	private static String				parentID	= "e00b8d6f-3f89-4748-98ca-25ef6225d06a";
-	private static String				childID		= "4afe7048-fefe-4c5f-b32f-d4a771175b70";
+	private static UUID					timeID		= UUID.randomUUID();
+	private static UUID					parentID	= UUID.fromString("e00b8d6f-3f89-4748-98ca-25ef6225d06a");
+	private static UUID					childID		= UUID.fromString("4afe7048-fefe-4c5f-b32f-d4a771175b70");
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException

@@ -14,10 +14,10 @@
 		<h1>Add task</h1>
 		<form method="POST" action='/task/add' name="Controller">
 	</#if>
-		<input type="hidden" name="taskid" value="${task.getID()}"/>
+		<input type="hidden" name="taskid" value="${task.getID().toString()}"/>
 		<table>
 			<tr>
-			<td>id:</td><td id="taskid">${task.getID()}</td>
+			<td>id:</td><td id="taskid">${task.getID().toString()}</td>
 			</tr>
 			<tr>
 				<td>Name:</td>

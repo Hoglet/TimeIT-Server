@@ -46,7 +46,7 @@ public class TimeResource
 	public View getAdd(@Auth User user)
 	{
 		DateTime now = DateTime.now();
-		Time time = new Time(UUID.randomUUID().toString(), now, now, false, now, null);
+		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
 		return new TimeView(emf, time, user, Action.ADD);
 	}
 
@@ -66,7 +66,7 @@ public class TimeResource
 		DateTime start = d.toDateTime(s1);
 		DateTime stop = d.toDateTime(s2);
 		Task task = taskDAO.getByID(taskID);
-		Time time = new Time(id, start, stop, false, now, task);
+		Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
 		timedao.add(time);
 		String headline = "Time added successfully";
 		String url = "/";

@@ -3,6 +3,7 @@ package se.solit.timeit.dao;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -49,11 +50,11 @@ public class TimeDAO
 		}
 	}
 
-	public Time getByID(final String uuid) throws SQLException
+	public Time getByID(final UUID id) throws SQLException
 	{
 		Time item = null;
 		EntityManager em = entityManagerFactory.createEntityManager();
-		item = em.find(Time.class, uuid);
+		item = em.find(Time.class, id);
 		em.close();
 		return item;
 	}

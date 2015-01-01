@@ -1,5 +1,7 @@
 package se.solit.timeit.entities;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,7 +26,7 @@ public class Task
 {
 	@Id
 	@Column(nullable = false)
-	private String		id;
+	private UUID		id;
 	private String		name;
 	@JsonSerialize(using = TaskSerializer.class)
 	private Task		parent;
@@ -44,15 +46,14 @@ public class Task
 	{
 	}
 
-	public Task(final String paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
+	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
 			final DateTime paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
 	}
 
-	private void init(final String paramID, final String paramName, final Task paramParent,
-			final boolean paramCompleted, final DateTime paramLastChange, final boolean paramDeleted,
-			final User paramOwner)
+	private void init(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
+			final DateTime paramLastChange, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
 		{
@@ -78,7 +79,7 @@ public class Task
 		this.deleted = deleted2;
 	}
 
-	public final String getID()
+	public final UUID getID()
 	{
 		return id;
 	}

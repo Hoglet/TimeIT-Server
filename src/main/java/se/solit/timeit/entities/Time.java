@@ -1,5 +1,7 @@
 package se.solit.timeit.entities;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,7 +23,7 @@ public class Time
 
 	@Id
 	@Column(nullable = false)
-	private String		id;
+	private UUID		id;
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
@@ -46,8 +48,8 @@ public class Time
 	{
 	}
 
-	public Time(final String paramUuid, final DateTime paramStart, final DateTime paramStop,
-			final boolean paramDeleted, final DateTime paramChanged, final Task paramTask)
+	public Time(final UUID paramUuid, final DateTime paramStart, final DateTime paramStop, final boolean paramDeleted,
+			final DateTime paramChanged, final Task paramTask)
 	{
 		id = paramUuid;
 		start = paramStart;
@@ -91,7 +93,7 @@ public class Time
 		this.deleted = deleted2;
 	}
 
-	public final String getID()
+	public final UUID getID()
 	{
 		return id;
 	}

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
@@ -252,11 +253,12 @@ public class TestAdminResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task("123", "parent", null, false, DateTime.now(), true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, DateTime.now(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
-		Time time = new Time("1", new DateTime(0), new DateTime(100 * 1000), false, DateTime.now(), task);
+		UUID timeID = UUID.randomUUID();
+		Time time = new Time(timeID, new DateTime(0), new DateTime(100 * 1000), false, DateTime.now(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 

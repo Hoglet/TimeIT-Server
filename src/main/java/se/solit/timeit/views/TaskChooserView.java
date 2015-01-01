@@ -48,7 +48,7 @@ public class TaskChooserView extends View
 		for (Task t : tasks)
 		{
 			String parentString = getParentString(t);
-			list.add(new SimpleEntry<String, String>(t.getID(), parentString));
+			list.add(new SimpleEntry<String, String>(t.getID().toString(), parentString));
 		}
 		return list;
 	}

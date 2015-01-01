@@ -6,6 +6,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,6 +55,7 @@ public class TestTimesSyncResource
 	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
 	private static DateTime					now;
+	private static UUID						timeID			= UUID.randomUUID();
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
@@ -73,9 +75,9 @@ public class TestTimesSyncResource
 		now = DateTime.now();
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task("123", "Task1", null, false, now, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
 		taskdao.add(task);
-		time = new Time("1", new DateTime(10 * 1000), new DateTime(100 * 1000), false, now, task);
+		time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false, now, task);
 	}
 
 	@AfterClass
@@ -138,7 +140,7 @@ public class TestTimesSyncResource
 	public void testTimesSync()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
@@ -153,7 +155,7 @@ public class TestTimesSyncResource
 	public void testTimesSync_attackOtherUser()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
@@ -175,9 +177,9 @@ public class TestTimesSyncResource
 		List<Time> timesToSend = new ArrayList<Time>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
 		userdao.add(otherUser);
-		Task otherTask = new Task("42", "d", null, false, now, false, otherUser);
+		Task otherTask = new Task(UUID.randomUUID(), "d", null, false, now, false, otherUser);
 		taskdao.add(otherTask);
-		Time newTime = new Time("2", new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, otherTask);
+		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, otherTask);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");

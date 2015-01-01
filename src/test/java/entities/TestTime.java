@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import io.dropwizard.jackson.Jackson;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -22,16 +23,17 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class TestTime
 {
+	private static final UUID		timeID	= UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
 	private static final DateTime	now		= DateTime.now();
 	private static final User		owner	= new User("123", "", "", "", null);
-	private static final Task		task1	= new Task("1", "task1", null, false, now, false, owner);
-	private static final Task		task2	= new Task("2", "task2", null, false, now, false, owner);
+	private static final Task		task1	= new Task(UUID.randomUUID(), "task1", null, false, now, false, owner);
+	private static final Task		task2	= new Task(UUID.randomUUID(), "task2", null, false, now, false, owner);
 	private Time					time;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time("1234", new DateTime(0), new DateTime(1 * 1000), false, now, task1);
+		time = new Time(timeID, new DateTime(0), new DateTime(1 * 1000), false, now, task1);
 	}
 
 	@Test
@@ -39,8 +41,10 @@ public class TestTime
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
-		Task task = new Task("123", "Task1", null, false, new DateTime(100 * 1000), false, user);
-		Time time = new Time("uuid", new DateTime(10 * 1000), new DateTime(100 * 1000), false,
+		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
+		Task task = new Task(id, "Task1", null, false, new DateTime(100 * 1000), false, user);
+
+		Time time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false,
 				new DateTime(100 * 1000), task);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);
@@ -50,7 +54,7 @@ public class TestTime
 	@Test
 	public final void testGetUUID()
 	{
-		assertEquals(time.getID(), "1234");
+		assertEquals(time.getID(), timeID);
 	}
 
 	@Test
@@ -104,8 +108,8 @@ public class TestTime
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Time("1234", start, stop, false, now, task1);
-		y = new Time("1234", start, stop, false, now, task1);
+		x = new Time(timeID, start, stop, false, now, task1);
+		y = new Time(timeID, start, stop, false, now, task1);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
@@ -114,27 +118,27 @@ public class TestTime
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", stop, stop, false, now, task1);
+		y = new Time(timeID, stop, stop, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", start, now, false, now, task1);
+		y = new Time(timeID, start, now, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", start, stop, true, now, task1);
+		y = new Time(timeID, start, stop, true, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", start, stop, false, new DateTime(42), task1);
+		y = new Time(timeID, start, stop, false, new DateTime(42), task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time("1234", start, stop, false, now, task2);
+		y = new Time(timeID, start, stop, false, now, task2);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
