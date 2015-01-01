@@ -50,6 +50,16 @@
 		</#if>
 		</div>
 	</div>
+    <div id="times">
+    	<h2>Times</h2>
+    	<div class="toolbar">
+    	<span>
+    	<form method="get" action='/time/add' name="Controller">
+			<button type="submit" value="add" >Add</button>
+		</form>
+		</span>
+		</div>
+	</div>
 	</div>
     </body>
 </html>

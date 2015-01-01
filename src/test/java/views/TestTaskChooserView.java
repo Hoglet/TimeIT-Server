@@ -22,7 +22,6 @@ public class TestTaskChooserView
 {
 	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
 	private static User					user2;
-	private static Task					task;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -30,7 +29,6 @@ public class TestTaskChooserView
 		user2 = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user2);
-		task = new Task("TaskID", "Name", null, false, new Date(), false, user2);
 		Task parent = new Task("TaskID-parent", "Parent", null, false, new Date(), false, user2);
 		Task child = new Task("TaskID-child", "child", parent, false, new Date(), false, user2);
 		TaskDAO taskdao = new TaskDAO(emf);

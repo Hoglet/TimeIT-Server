@@ -49,7 +49,7 @@ public class TimeDAO
 		}
 	}
 
-	private Time getByID(final String uuid) throws SQLException
+	public Time getByID(final String uuid) throws SQLException
 	{
 		Time item = null;
 		EntityManager em = entityManagerFactory.createEntityManager();

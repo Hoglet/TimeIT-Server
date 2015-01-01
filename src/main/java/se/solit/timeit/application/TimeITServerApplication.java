@@ -19,6 +19,7 @@ import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
 import se.solit.timeit.resources.TaskResource;
 import se.solit.timeit.resources.TasksSyncResource;
+import se.solit.timeit.resources.TimeResource;
 import se.solit.timeit.resources.TimesSyncResource;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -59,6 +60,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 
 		environment.jersey().register(new IndexResource(emf));
 		environment.jersey().register(new TaskResource(emf));
+		environment.jersey().register(new TimeResource(emf));
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new AdminResource(emf));
