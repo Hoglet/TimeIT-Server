@@ -10,4 +10,4 @@ database:
   password:
 
   # the JDBC URL
-  url: jdbc:h2:~/.template_database
+  url: jdbc:h2:~/.timeit_database
