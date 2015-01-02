@@ -46,13 +46,6 @@ public class TestTaskChooserView
 	}
 
 	@Test
-	public final void testGetCurrentUser()
-	{
-		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);
-		Assert.assertEquals(user2, view.getCurrentUser());
-	}
-
-	@Test
 	public final void testGetParents() throws SQLException
 	{
 		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);

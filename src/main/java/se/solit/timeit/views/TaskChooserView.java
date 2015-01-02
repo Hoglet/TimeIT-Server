@@ -1,7 +1,5 @@
 package se.solit.timeit.views;
 
-import io.dropwizard.views.View;
-
 import java.sql.SQLException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -15,18 +13,14 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
-import com.google.common.base.Charsets;
-
-public class TaskChooserView extends View
+public class TaskChooserView extends BaseView
 {
-	private final User		user;
 	private final TaskDAO	taskdao;
 	private final Action	type;
 
 	public TaskChooserView(EntityManagerFactory emf, User user, Action type2)
 	{
-		super("taskChooser.ftl", Charsets.UTF_8);
-		this.user = user;
+		super("taskChooser.ftl", user);
 		taskdao = new TaskDAO(emf);
 		this.type = type2;
 	}
@@ -34,11 +28,6 @@ public class TaskChooserView extends View
 	public boolean isEditMode()
 	{
 		return type.equals(Action.EDIT);
-	}
-
-	public User getCurrentUser()
-	{
-		return user;
 	}
 
 	public List<Entry<String, String>> getTasks() throws SQLException

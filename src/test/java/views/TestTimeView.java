@@ -55,13 +55,6 @@ public class TestTimeView
 	}
 
 	@Test
-	public final void testGetCurrentUser()
-	{
-		TimeView view = new TimeView(emf, time, user, Action.ADD);
-		Assert.assertEquals(user, view.getCurrentUser());
-	}
-
-	@Test
 	public final void testGetTime()
 	{
 		TimeView view = new TimeView(emf, time, user, Action.ADD);

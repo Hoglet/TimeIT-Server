@@ -66,12 +66,6 @@ public class TestUserEditView
 	}
 
 	@Test
-	public final void testGetCurrentUser()
-	{
-		Assert.assertEquals(userEditView.getCurrentUser().getName(), "Test Tester");
-	}
-
-	@Test
 	public final void testGetRoles()
 	{
 		Collection<Role> roles = userEditView.getRoles();

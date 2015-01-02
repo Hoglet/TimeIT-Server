@@ -55,11 +55,4 @@ public class TestUserAddView
 		Assert.assertEquals(2, userAddView.getRoles().size());
 	}
 
-	@Test
-	public final void testGetCurrentUser()
-	{
-		User user2 = new User("minion", "Do Er", "password", "email", null);
-		UserAddView userAddView = new UserAddView(emf, user2);
-		Assert.assertEquals(user2, userAddView.getCurrentUser());
-	}
 }

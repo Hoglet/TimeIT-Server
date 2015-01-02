@@ -49,13 +49,6 @@ public class TestTaskView
 	}
 
 	@Test
-	public final void testGetCurrentUser()
-	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
-		Assert.assertEquals(user2, taskView.getCurrentUser());
-	}
-
-	@Test
 	public final void testGetParents() throws SQLException
 	{
 		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);

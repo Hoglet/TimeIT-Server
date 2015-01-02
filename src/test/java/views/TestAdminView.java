@@ -41,10 +41,4 @@ public class TestAdminView
 		Assert.assertEquals(adminView.getUsers().size(), 2);
 	}
 
-	@Test
-	public final void testGetCurrentUser()
-	{
-		Assert.assertEquals(adminView.getCurrentUser(), user2);
-	}
-
 }

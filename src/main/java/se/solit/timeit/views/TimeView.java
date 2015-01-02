@@ -1,7 +1,5 @@
 package se.solit.timeit.views;
 
-import io.dropwizard.views.View;
-
 import java.sql.SQLException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -16,28 +14,19 @@ import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
-import com.google.common.base.Charsets;
-
-public class TimeView extends View
+public class TimeView extends BaseView
 {
 
 	private final Time		time;
-	private final User		user;
 	private final Action	action;
 	private final TaskDAO	taskDAO;
 
 	public TimeView(EntityManagerFactory emf, Time time, User user, Action action)
 	{
-		super("time.ftl", Charsets.UTF_8);
+		super("time.ftl", user);
 		this.time = time;
-		this.user = user;
 		this.action = action;
 		taskDAO = new TaskDAO(emf);
-	}
-
-	public User getCurrentUser()
-	{
-		return user;
 	}
 
 	public Time getTime()
