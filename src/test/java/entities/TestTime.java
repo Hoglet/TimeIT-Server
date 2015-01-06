@@ -76,17 +76,17 @@ public class TestTime
 	@Test
 	public final void testSetStart()
 	{
-		DateTime now = DateTime.now();
+		DateTime now = DateTime.now().withMillis(0);
 		time.setStart(now);
-		assertEquals(time.getStart(), now);
+		assertEquals(now, time.getStart());
 	}
 
 	@Test
 	public final void testSetStop()
 	{
-		DateTime now = DateTime.now();
+		DateTime now = DateTime.now().withMillis(0);
 		time.setStop(now);
-		assertEquals(time.getStop(), now);
+		assertEquals(now, time.getStop());
 	}
 
 	@Test

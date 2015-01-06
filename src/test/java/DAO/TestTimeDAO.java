@@ -3,6 +3,7 @@ package DAO;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,6 +36,7 @@ public class TestTimeDAO
 
 	private static User					user;
 	private static Task					task;
+	private static Task					task2;
 	private static UserDAO				userdao;
 	static TaskDAO						taskdao;
 	private static DateTime				now		= DateTime.now();
@@ -45,24 +48,15 @@ public class TestTimeDAO
 		userdao = new UserDAO(emf);
 		userdao.add(user);
 		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
+		task2 = new Task(UUID.randomUUID(), "Task2", null, false, now, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
+		taskdao.add(task2);
 	}
 
 	@AfterClass
 	public static void afterClass()
 	{
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t", Task.class);
-		List<Task> tasks = getQuery.getResultList();
-		for (Task task : tasks)
-		{
-			em.remove(task);
-		}
-		em.remove(em.getReference(User.class, user.getUsername()));
-		em.getTransaction().commit();
-		em.close();
 		emf.close();
 	}
 
@@ -76,14 +70,18 @@ public class TestTimeDAO
 	public void tearDown() throws Exception
 	{
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
 		TypedQuery<Time> getTimeQuery = em.createQuery("SELECT t FROM Time t", Time.class);
-		List<Time> times = getTimeQuery.getResultList();
-		for (Time time : times)
+		List<Time> times;
+		do
 		{
-			em.remove(time);
-		}
-		em.getTransaction().commit();
+			em.getTransaction().begin();
+			times = getTimeQuery.getResultList();
+			for (Time time : times)
+			{
+				em.remove(time);
+			}
+			em.getTransaction().commit();
+		} while (times.size() > 0);
 		em.close();
 	}
 
@@ -119,7 +117,7 @@ public class TestTimeDAO
 	public final void testGetTimes() throws SQLException
 	{
 		Collection<Time> times = timedao.getTimes(user.getUsername());
-		Assert.assertEquals(times.size(), 0);
+		Assert.assertEquals(0, times.size());
 		Time time = new Time(timeID, new DateTime(0), new DateTime(1000 * 1000), false, now, task);
 		timedao.add(time);
 	}
@@ -168,4 +166,136 @@ public class TestTimeDAO
 		timedao.updateOrAdd(timeArray);
 		timedao.updateOrAdd(timeArray);
 	}
+
+	@Test
+	public final void testGetTimesSummary_simple() throws SQLException
+	{
+		DateTime start = now.withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plus(60000), false, now, task);
+		timedao.add(time);
+		DateTime startOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		Assert.assertEquals(1, result.size());
+		Entry<Task, Duration> entry = result.get(0);
+
+		Assert.assertEquals(task, entry.getKey());
+		Duration expectedDuration = new Duration(60000);
+		Assert.assertEquals(expectedDuration, entry.getValue());
+	}
+
+	@Test
+	public final void testGetTimesSummary_timeStartsBeforeMidnight() throws SQLException
+	{
+		DateTime start = now.minusDays(1).withTime(23, 0, 0, 0);
+		DateTime stop = now.withTime(0, 10, 0, 0);
+		Time time = new Time(timeID, start, stop, false, now, task);
+		timedao.add(time);
+		DateTime startOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		Assert.assertEquals(1, result.size());
+		Entry<Task, Duration> entry = result.get(0);
+
+		Assert.assertEquals(task, entry.getKey());
+		Duration expectedDuration = new Duration(stop.getMillis() - startOfDay.getMillis());
+		Assert.assertEquals(expectedDuration, entry.getValue());
+
+	}
+
+	@Test
+	public final void testGetTimesSummary_timeEndsAfteMidnight() throws SQLException
+	{
+		DateTime start = now.withTime(23, 50, 0, 0);
+		DateTime stop = now.plusDays(1).withTime(0, 10, 0, 0);
+		Time time = new Time(timeID, start, stop, false, now, task);
+		timedao.add(time);
+		DateTime startOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		Assert.assertEquals(1, result.size());
+		Entry<Task, Duration> entry = result.get(0);
+
+		Assert.assertEquals(task, entry.getKey());
+		Duration expectedDuration = new Duration(endOfDay.getMillis() - start.getMillis());
+		Assert.assertEquals(expectedDuration, entry.getValue());
+	}
+
+	@Test
+	public final void testGetTimesSummary_timeBeforeLimits() throws SQLException
+	{
+		DateTime start = now.minusDays(1).withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plus(60000), false, now, task);
+		timedao.add(time);
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(0, result.size());
+	}
+
+	@Test
+	public final void testGetTimesSummary_timeAfterLimits() throws SQLException
+	{
+		DateTime start = now.plusDays(1).withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plus(60000), false, now, task);
+		timedao.add(time);
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(0, result.size());
+	}
+
+	@Test
+	public final void testGetTimesSummary_twoTimes() throws SQLException
+	{
+		DateTime start = now.withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plus(60000), false, now, task);
+		timedao.add(time);
+		DateTime start2 = now.withHourOfDay(12);
+		UUID timeID2 = UUID.randomUUID();
+		Time time2 = new Time(timeID2, start2, start2.plus(60000), false, now, task);
+		timedao.add(time2);
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(1, result.size());
+	}
+
+	@Test
+	public final void testGetTimesSummary_twoTimes_onePassingMargin() throws SQLException
+	{
+		DateTime start = now.plusDays(1).withTimeAtStartOfDay().minusSeconds(2);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
+		timedao.add(time);
+		DateTime start2 = now.withHourOfDay(12);
+		UUID timeID2 = UUID.randomUUID();
+		Time time2 = new Time(timeID2, start2, start2.plus(60000), false, now, task);
+		timedao.add(time2);
+
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(1, result.size());
+		Entry<Task, Duration> entry = result.get(0);
+		Duration expected = new Duration(60000 + 1000);
+		Assert.assertEquals(expected, entry.getValue());
+	}
+
+	@Test
+	public final void testGetTimesSummary_dummy() throws SQLException
+	{
+		DateTime start = now.withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
+		Time time2 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
+		Time time3 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
+		timedao.add(time2);
+		timedao.add(time);
+		timedao.add(time3);
+
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(2, result.size());
+	}
+
 }

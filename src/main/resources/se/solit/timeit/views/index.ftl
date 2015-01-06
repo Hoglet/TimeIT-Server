@@ -6,8 +6,8 @@
 </head>
 <body>
     <#include "top.ftl">
-    <div id="timeit-webui">
-    <div id="tasks">
+    <div id="timeit-webui" class="webui">
+    <div id="tasks" class="container">
     	<h2>Tasks</h2>
     	<div class="toolbar">
     	<span>
@@ -26,7 +26,7 @@
 		</form>
 		</span>
 		</div>
-    	<div id="tasks-inner">
+    	<div id="tasks-inner" class="data">
         <#function test items>
         	<#assign result>
         	<ol class="tree">
@@ -50,7 +50,7 @@
 		</#if>
 		</div>
 	</div>
-    <div id="times">
+    <div id="times" class="container">
     	<h2>Times</h2>
     	<div class="toolbar">
     	<span>
@@ -58,6 +58,52 @@
 			<button type="submit" value="add" >Add</button>
 		</form>
 		</span>
+		</div>
+		<div class="data">
+		<h3>Today</h3>
+       	<table>
+        	<#list todaysTimes as entry>
+
+        		<tr>
+        		<td>
+        		${entry.key}
+        		</td>
+        		<td>
+        		${entry.value}
+        		</td>
+        		</tr>
+			</#list>
+		</table>
+
+		<h3>This month</h3>
+       	<table>
+        	<#list monthsTimes as entry>
+
+        		<tr>
+        		<td>
+        		${entry.key}
+        		</td>
+        		<td>
+        		${entry.value}
+        		</td>
+        		</tr>
+			</#list>
+		</table>
+		<h3>This year</h3>
+		       	<table>
+        	<#list yearsTimes as entry>
+
+        		<tr>
+        		<td>
+        		${entry.key}
+        		</td>
+        		<td>
+        		${entry.value}
+        		</td>
+        		</tr>
+			</#list>
+		</table>
+
 		</div>
 	</div>
 	</div>

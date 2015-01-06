@@ -10,7 +10,7 @@
 	<h1>${headline}</h1>
 	${text}
 	<form method="get" action='${url}' name="Controller">
-			<input type="submit" name="submitType" value="OK" />
+			<input type="submit" name="submitType" value="OK" autofocus/>
 	</form>
 	<#include "bottom.ftl">
 </body>

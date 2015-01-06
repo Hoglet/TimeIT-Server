@@ -21,28 +21,30 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class Time
 {
 
+	private static final int	MILLISECONDS_PER_SECOND	= 1000;
+
 	@Id
 	@Column(nullable = false)
-	private UUID		id;
+	private UUID				id;
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task		task;
+	private Task				task;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private DateTime	start;
+	private long				start;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private DateTime	stop;
+	private long				stop;
 
-	private boolean		deleted;
+	private boolean				deleted;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
-	private DateTime	changed;
+	private DateTime			changed;
 
 	protected Time()
 	{
@@ -52,8 +54,8 @@ public class Time
 			final DateTime paramChanged, final Task paramTask)
 	{
 		id = paramUuid;
-		start = paramStart;
-		stop = paramStop;
+		start = paramStart.getMillis() / MILLISECONDS_PER_SECOND;
+		stop = paramStop.getMillis() / MILLISECONDS_PER_SECOND;
 		deleted = paramDeleted;
 		task = paramTask;
 		changed = paramChanged;
@@ -78,13 +80,13 @@ public class Time
 	public final void setStart(final DateTime start2)
 	{
 		changed = DateTime.now();
-		this.start = start2;
+		this.start = start2.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final void setStop(final DateTime stop2)
 	{
 		changed = DateTime.now();
-		this.stop = stop2;
+		this.stop = stop2.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final void setDeleted(final boolean deleted2)
@@ -100,12 +102,12 @@ public class Time
 
 	public final DateTime getStart()
 	{
-		return start;
+		return new DateTime(start * MILLISECONDS_PER_SECOND);
 	}
 
 	public final DateTime getStop()
 	{
-		return stop;
+		return new DateTime(stop * MILLISECONDS_PER_SECOND);
 	}
 
 	public final boolean getDeleted()
@@ -129,8 +131,8 @@ public class Time
 		result = prime * result + changed.hashCode();
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + start.hashCode();
-		result = prime * result + stop.hashCode();
+		result = prime * result + Long.valueOf(start).hashCode();
+		result = prime * result + Long.valueOf(stop).hashCode();
 		result = prime * result + task.getID().hashCode();
 		return result;
 	}
@@ -171,11 +173,11 @@ public class Time
 		{
 			return false;
 		}
-		if (!start.equals(other.start))
+		if (start != other.start)
 		{
 			return false;
 		}
-		if (!stop.equals(other.stop))
+		if (stop != other.stop)
 		{
 			return false;
 		}

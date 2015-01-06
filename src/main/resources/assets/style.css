@@ -135,35 +135,47 @@ html,body {
 
 img { border: none; }
 
-div#timeit-webui
+div.webui
 {
 	background: lightgray;
 	padding: 0.5em;
 	border-radius: 0.5em;
 }
 
-div#tasks h2
+div.webui h2,
+div.webui h3
 {
 	margin: 0 ;
 	padding-top: 0.3em;
 	padding-bottom: 0.1em;
 }
-div#tasks-inner
+div.data
 {
 	border: solid 1px black;
 	border-radius: 0.5em;
 	min-height: 15em;
-}
-div#tasks-inner
-{
 	background: white;
+	padding: 0.5em;
+}
+div.container
+{
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+
+div#tasks,
+div#times
+{
+	min-width: 14em;
 }
 /**********/
 /* CSS Tree menu styles */
 ol.tree
 {
 	padding: 0 0 0 30px;
-	width: 300px;
+	width: 10em;
 }
 li
 {
