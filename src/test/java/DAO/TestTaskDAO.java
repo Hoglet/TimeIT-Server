@@ -274,4 +274,19 @@ public class TestTaskDAO
 		assertEquals(childID, resultingTasks.get(0).getID());
 	}
 
+	@Test
+	public final void tesrGetTasks() throws SQLException
+	{
+		Task parent = new Task(taskID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
+		List<Task> resultingTasks = taskdao.getTasks(user.getUsername());
+		assertEquals(0, resultingTasks.size());
+		taskdao.add(parent);
+		taskdao.add(child);
+		taskdao.delete(parent);
+		resultingTasks = taskdao.getTasks(user.getUsername());
+		assertEquals(1, resultingTasks.size());
+		assertEquals(childID, resultingTasks.get(0).getID());
+	}
+
 }

@@ -65,19 +65,21 @@ public class TaskDAO
 		return task;
 	}
 
-	public final Collection<Task> getTasks(final String username) throws SQLException
+	public final List<Task> getTasks(final String username) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();
-		List<Task> tasks = iGetTasks(username, em);
+		List<Task> tasks = iGetTasks(username, em, false);
 		em.close();
 		return tasks;
 	}
 
-	static List<Task> iGetTasks(final String username, EntityManager em)
+	static List<Task> iGetTasks(final String username, EntityManager em, boolean deleted)
 	{
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.owner.username = :username",
+		TypedQuery<Task> getQuery = em.createQuery(
+				"SELECT t FROM Task t WHERE t.owner.username = :username AND t.deleted = :deleted",
 				Task.class);
 		getQuery.setParameter("username", username);
+		getQuery.setParameter("deleted", deleted);
 		return getQuery.getResultList();
 	}
 

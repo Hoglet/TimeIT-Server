@@ -89,11 +89,17 @@ public class UserDAO
 
 	private void removeAllTasks(String username, EntityManager em)
 	{
-		List<Task> tasks = TaskDAO.iGetTasks(username, em);
+		List<Task> tasks = TaskDAO.iGetTasks(username, em, false);
 		for (Task task : tasks)
 		{
 			em.remove(task);
 		}
+		tasks = TaskDAO.iGetTasks(username, em, true);
+		for (Task task : tasks)
+		{
+			em.remove(task);
+		}
+
 		em.flush();
 	}
 
