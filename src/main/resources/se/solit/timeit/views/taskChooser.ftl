@@ -6,6 +6,7 @@
 </head>
 <body>
 	<#include "top.ftl">
+	<div id="taskChooser" class="mainFrame">
 	<#if isEditMode()>
 		<h1>Choose task to edit</h1>
 		<form method="GET" action='/task/edit' name="Controller">
@@ -24,6 +25,7 @@
 			<input type="submit" value="OK" />
 		</p>
 	</form>
+	</div>
 	<#include "bottom.ftl">
 </body>
 </html>

@@ -6,6 +6,7 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 </head>
 <body>
 	<#include "top.ftl">
+	<div id="userAdd" class="mainFrame">
 	<h1>Add user</h1>
 
 	<form method="POST" action='/admin/user/add' name="Controller">
@@ -41,6 +42,7 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 				type="submit" name="submitType" value="cancel" />&nbsp;
 		</p>
 	</form>
+	</div>
 	<#include "bottom.ftl">
 </body>
 </html>

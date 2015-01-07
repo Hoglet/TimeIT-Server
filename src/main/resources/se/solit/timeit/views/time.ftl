@@ -6,7 +6,7 @@
 </head>
 <body>
 	<#include "top.ftl">
-
+	<div id="time" class="mainFrame">
 		<h1>Add time</h1>
 		<form method="POST" action='/time/add' name="Controller">
 		<#assign date=time.start.toString('yyyy-MM-dd')>
@@ -46,6 +46,7 @@
 		<p>
 			<input type="submit" name="submitType" value="save" /></form>
 		</p>
+		</div>
 	<#include "bottom.ftl">
 </body>
 </html>

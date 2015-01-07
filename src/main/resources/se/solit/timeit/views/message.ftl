@@ -4,14 +4,16 @@
 <head>
 <#include "head.ftl">
 </head>
-<body>
+<body class="showDialog">
+	<div id="shadyOverlay"></div>
 	<#include "top.ftl">
-
-	<h1>${headline}</h1>
+	<div id="message" class="dialog">
+	<h2>${headline}</h2>
 	${text}
 	<form method="get" action='${url}' name="Controller">
 			<input type="submit" name="submitType" value="OK" autofocus/>
 	</form>
+	</div>
 	<#include "bottom.ftl">
 </body>
 </html>

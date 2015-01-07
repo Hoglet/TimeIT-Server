@@ -7,8 +7,8 @@
 <html>
 <body>
 	<div id="shadyOverlay"></div>
-	
 	<#include "top.ftl">
+	<div id="userAdmin" class="mainFrame">
 	<h1>Administration</h1>
 	<h2>Users</h2>
 	<form name="showall" action="/admin/user" method="POST">
@@ -35,6 +35,7 @@
 				</tr>
 			</tbody>
 		</table>
+		</div>
 		<script>
 			function selectionChanged() {
 				if (document.getElementById("userSelector").selectedIndex == "-1") {

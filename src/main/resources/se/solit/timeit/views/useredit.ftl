@@ -5,7 +5,7 @@
 </head>
 <body>
 	<#include "top.ftl">
-
+	<div id="userEdit" class="mainFrame">
 	<h1>Edit settings for user ${user.username}</h1>
 	<form method="POST" action='/admin/user/edit' name="Controller">
 		<input type="hidden" name="userName" value="${user.username}"/>
@@ -43,6 +43,7 @@
 				type="submit" name="submitType" value="cancel" />&nbsp;
 		</p>
 	</form>
+	</div>
 	<#include "bottom.ftl">
 </body>
 </html>

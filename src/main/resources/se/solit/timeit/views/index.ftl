@@ -6,7 +6,7 @@
 </head>
 <body>
     <#include "top.ftl">
-    <div id="timeit-webui" class="webui">
+    <div id="timeit-webui" class="mainFrame">
     <div id="tasks" class="container">
     	<h2>Tasks</h2>
     	<div class="toolbar">
@@ -61,6 +61,7 @@
 		</div>
 		<div class="data">
 		<h3>Today</h3>
+       	<div class="summary">
        	<table>
         	<#list todaysTimes as entry>
 
@@ -74,8 +75,9 @@
         		</tr>
 			</#list>
 		</table>
-
+		</div>
 		<h3>This month</h3>
+		<div class="summary">
        	<table>
         	<#list monthsTimes as entry>
 
@@ -89,8 +91,10 @@
         		</tr>
 			</#list>
 		</table>
+		</div>
 		<h3>This year</h3>
-		       	<table>
+		   <div class="summary">
+		   <table>
         	<#list yearsTimes as entry>
 
         		<tr>
@@ -103,7 +107,6 @@
         		</tr>
 			</#list>
 		</table>
-
 		</div>
 	</div>
 	</div>

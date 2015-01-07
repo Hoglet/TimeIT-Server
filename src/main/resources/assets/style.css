@@ -1,43 +1,55 @@
 @CHARSET "UTF-8";
 
-#menu {
-	display: inline-block;
-	padding-top: 5em;
-	padding-left: 0.5em;
-	padding-right: 1.5em;
-	background: green;
-	padding-bottom: 5em;
-	min-height: 60%;
-	border-bottom-right-radius: 15px;
+#toolbar {
+	padding: 0;
+	background: black;
 	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
-	z-index: 10
+	padding: 0.2em;
+	width: 100%;
+	z-index: 10;
+	display: table;
+	font-size: 120%;
+	box-sizing: border-box;
+}
+#toolbar div#menu,
+#toolbar div#userinfo
+{
+	display: table-cell;
+}
+#toolbar div#userinfo
+{
+	color: white;
+	padding:0.2em;
+	text-align:right;
 }
 
-#menu a {
-	display: block;
+
+
+#toolbar a {
 	padding: 2px;
 	padding-left: 1em;
-	padding-right: 1.5em;
-	margin: 3px; //
-	background: lightgray;
+	padding-right: 1em;
+	margin: 3px;
+/*	background: lightgray;
 	border: groove;
 	border-radius: 0.5em;
+*/
 	color: white;
 	text-decoration: none;
 }
 
 #menu a:hover {
-	background: yellow;
-	color: black;
+	background: green;
+	color: white;
 }
 
 #menu a:active {
-	border: inset;
+	color: green;
 }
 
 #content {
 	vertical-align: top;
-	margin-top: 2em;
+	margin-top: 1em;
 	padding : 1em;
 	padding-left: 2em;
 	display: inline-block;
@@ -71,9 +83,13 @@
 	background-color: white;
 	border: medium ridge;
 	border-radius: 9px; padding : 1em; position : fixed;
-	display: none;
 	position: fixed;
 	padding: 1em;
+}
+#browser-warning,
+#dialog
+{
+	display: none;
 }
 #browser-warning
 {
@@ -111,7 +127,7 @@ body.showDialog #dialog {
 	opacity: 1;
 	z-index: 99;
 	visibility: visible;
-	margin-left: -10em;
+	margin-left: 0;
 	margin-top: 2em;
 	box-shadow: 5px 5px 5px rgba(0,0,0,0.6);
 }
@@ -135,15 +151,15 @@ html,body {
 
 img { border: none; }
 
-div.webui
+div.mainFrame
 {
 	background: lightgray;
 	padding: 0.5em;
 	border-radius: 0.5em;
 }
 
-div.webui h2,
-div.webui h3
+div.mainFrame h2,
+div.mainFrame h3
 {
 	margin: 0 ;
 	padding-top: 0.3em;
@@ -169,6 +185,22 @@ div#tasks,
 div#times
 {
 	min-width: 14em;
+}
+.table
+{
+	display: table;
+}
+.row
+{
+	display: table-row;
+}
+.cell
+{
+	display: table-cell;
+}
+.summary
+{
+	min-height: 1em;
 }
 /**********/
 /* CSS Tree menu styles */
@@ -234,4 +266,18 @@ div.toolbar span
 {
 	display: table-cell;
 }
+@media all and (min-resolution:130dpi) and (max-width:1000px),
+@media all and (min-resolution:200dpi) and (max-width:2000px)
+{
+button
+{
+	font-size: 120%;
+}
+
+body
+{
+	font-size: 250%;
+}
+}
+
 

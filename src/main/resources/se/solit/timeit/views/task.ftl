@@ -6,7 +6,7 @@
 </head>
 <body>
 	<#include "top.ftl">
-
+	<div id="task" class="mainFrame">
 	<#if edit()>
 		<h1>Edit task</h1>
 		<form method="POST" action='/task/edit' name="Controller">
@@ -54,6 +54,7 @@
 		<p>
 			<input type="submit" name="submitType" value="save" /></form>
 		</p>
+		</div>
 	<#include "bottom.ftl">
 </body>
 </html>
