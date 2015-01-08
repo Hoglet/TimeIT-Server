@@ -11,7 +11,7 @@
 	<div id="userAdmin" class="mainFrame">
 	<h1>Administration</h1>
 	<h2>Users</h2>
-	<form name="showall" action="/admin/user" method="POST">
+	<form name="showall" action="/user" method="POST">
 		<table>
 			<tbody>
 				<tr>

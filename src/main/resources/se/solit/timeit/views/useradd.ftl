@@ -9,23 +9,23 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 	<div id="userAdd" class="mainFrame">
 	<h1>Add user</h1>
 
-	<form method="POST" action='/admin/user/add' name="Controller">
+	<form method="POST" action='/user/add' name="Controller" autocomplete="off">
 		<table>
 			<tr>
 				<td>Real name</td>
-				<td><input type="text" name="name" /></td>
+				<td><input type="text" name="name" autocomplete="off"/></td>
 			</tr>
 			<tr>
 				<td>User</td>
-				<td><input type="text" name="userName" /></td>
+				<td><input type="text" name="userName" autocomplete="off"/></td>
 			</tr>
 			<tr>
 				<td>Password</td>
-				<td><input type="password" name="password" /></td>
+				<td><input type="password" name="password" autocomplete="off"/></td>
 			</tr>
 			<tr>
 				<td>E-mail</td>
-				<td><input type="text" name="email" /></td>
+				<td><input type="text" name="email" autocomplete="off"/></td>
 			</tr>
 			<tr>
 				<td>Roles</td>

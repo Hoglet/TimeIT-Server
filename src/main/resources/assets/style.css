@@ -38,12 +38,12 @@
 	text-decoration: none;
 }
 
-#menu a:hover {
+#toolbar a:hover {
 	background: green;
 	color: white;
 }
 
-#menu a:active {
+#toolbar a:active {
 	color: green;
 }
 
