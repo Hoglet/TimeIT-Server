@@ -35,11 +35,11 @@
 			</tr>
 			<tr>
 				<td>Start:</td>
-				<td><input type="text" name="start" value="${start}" size="12" pattern="[0-2][1-9]\:[0-5][0-9]"  required="required"/> (HH:mm) </td>
+				<td><input type="text" name="start" value="${start}" size="12" pattern="[0-2][0-9]\:[0-5][0-9]"  required="required"/> (HH:mm) </td>
 			</tr>
 			<tr>
 				<td>Stop:</td>
-				<td><input type="text" name="stop" value="${stop}"  size="12" pattern="[0-2][1-9]\:[0-5][0-9]" required="required"/> (HH:mm) </td>
+				<td><input type="text" name="stop" value="${stop}"  size="12" pattern="[0-2][0-9]\:[0-5][0-9]" required="required"/> (HH:mm) </td>
 			</tr>
 		</table>
 
