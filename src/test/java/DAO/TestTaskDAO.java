@@ -209,6 +209,16 @@ public class TestTaskDAO
 	}
 
 	@Test
+	public final void testUpdateOrAdd_badData() throws SQLException
+	{
+		Task parent = new Task(taskID, "Parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "Child", parent, false, DateTime.now(), false, user);
+		Task[] tasks = new Task[] { child };
+		taskdao.updateOrAdd(tasks);
+		assertEquals(0, taskdao.getTasks(user.getUsername()).size());
+	}
+
+	@Test
 	public final void testgetByID()
 	{
 		Task task = new Task(taskID, "Task1", null, false, DateTime.now(), false, user);

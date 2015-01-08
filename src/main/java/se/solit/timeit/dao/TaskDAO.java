@@ -85,8 +85,10 @@ public class TaskDAO
 
 	public final void updateOrAdd(final Task[] taskArray) throws SQLException
 	{
+
 		if (taskArray.length > 0)
 		{
+
 			Collection<Task> unAddedTasks = new ArrayList<Task>();
 			for (final Task task : taskArray)
 			{
@@ -104,7 +106,10 @@ public class TaskDAO
 					add(task);
 				}
 			}
-			updateOrAdd(unAddedTasks.toArray(new Task[unAddedTasks.size()]));
+			if (taskArray.length != unAddedTasks.size())
+			{
+				updateOrAdd(unAddedTasks.toArray(new Task[unAddedTasks.size()]));
+			}
 		}
 	}
 
