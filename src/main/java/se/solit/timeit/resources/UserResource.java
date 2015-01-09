@@ -25,7 +25,8 @@ import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.AdminView;
+import se.solit.timeit.views.DeleteUserView;
+import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.UserAddView;
 import se.solit.timeit.views.UserEditView;
 
@@ -44,7 +45,7 @@ public class UserResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	@Path("/edit/{username}")
+	@Path("/{username}")
 	public Response userEdit(@Auth User authorizedUser, @PathParam("username") final String username)
 			throws URISyntaxException
 	{
@@ -59,8 +60,8 @@ public class UserResource
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces("text/html;charset=UTF-8")
-	@Path("/edit")
-	public void userEdit(@Auth User authorizedUser, @FormParam("userName") String username,
+	@Path("/{username}")
+	public void userEdit(@Auth User authorizedUser, @PathParam("username") String username,
 			@FormParam("name") String name, @FormParam("password") String password, @FormParam("email") String email,
 			@FormParam("roles") List<String> roleIDs) throws URISyntaxException
 	{
@@ -77,6 +78,19 @@ public class UserResource
 		{
 			throw redirect("/");
 		}
+	}
+
+	@GET
+	@Produces("text/html;charset=UTF-8")
+	@Path("/add")
+	public Response userAdd(@Auth User authorizedUser) throws URISyntaxException
+	{
+		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		if (authorizedUser.hasRole(Role.ADMIN))
+		{
+			response = Response.ok(new UserAddView(emf, authorizedUser)).build();
+		}
+		return response;
 	}
 
 	private User assignUserValues(User authorizedUser, String username, String name, String password, String email,
@@ -118,6 +132,10 @@ public class UserResource
 			User user = new User(username, name, password, email, roles);
 			userManager.add(user);
 		}
+		else
+		{
+			throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+		}
 		throw redirect(ADMIN_PATH);
 	}
 
@@ -126,38 +144,34 @@ public class UserResource
 		URI uri = new URI(destination);
 		Response response = Response.seeOther(uri).build();
 		return new WebApplicationException(response);
-
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@GET
 	@Produces("text/html;charset=UTF-8")
-	@Path("/")
-	public Response user(@Auth User authorizedUser, @FormParam("userSelector") List<String> users,
-			@FormParam("submitType") String type) throws URISyntaxException
+	@Path("/delete/{username}")
+	public Response deleteConfirm(@Auth User authorizedUser, @PathParam("username") final String username)
 	{
 		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			if ("edit".equals(type))
-			{
-				response = Response.ok(new UserEditView(users.get(0), emf, authorizedUser)).build();
-			}
-			else if ("add".equals(type))
-			{
-				response = Response.ok(new UserAddView(emf, authorizedUser)).build();
-			}
-			else if ("OK".equals(type))
-			{
-				User user = userManager.getUser(users.get(0));
-				userManager.delete(user);
-				response = Response.ok(new AdminView(emf, authorizedUser)).build();
-			}
-			else
-			{
-				response = Response.ok(new AdminView(emf, authorizedUser)).build();
-			}
+			response = Response.ok(new DeleteUserView(emf, authorizedUser, username)).build();
 		}
 		return response;
 	}
+
+	@POST
+	@Produces("text/html;charset=UTF-8")
+	@Path("/delete/{username}")
+	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username)
+	{
+		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		if (authorizedUser.hasRole(Role.ADMIN))
+		{
+			User user = userManager.getUser(username);
+			userManager.delete(user);
+			response = Response.ok(new MessageView(authorizedUser, "User is deleted", "", ADMIN_PATH)).build();
+		}
+		return response;
+	}
+
 }

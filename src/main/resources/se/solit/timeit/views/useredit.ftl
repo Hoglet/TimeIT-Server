@@ -7,7 +7,7 @@
 	<#include "top.ftl">
 	<div id="userEdit" class="mainFrame">
 	<h1>Edit settings for user ${user.username}</h1>
-	<form method="POST" action='/user/edit' name="Controller" autocomplete="off" >
+	<form method="POST" action='/user/${user.username}' name="Controller" autocomplete="off" >
 		<input type="hidden" name="userName" value="${user.username}"/>
 		<table>
 			<tr>
@@ -41,8 +41,7 @@
 		</table>
 
 		<p>
-			<input type="submit" name="submitType" value="save" />&nbsp; <input
-				type="submit" name="submitType" value="cancel" />&nbsp;
+			<input type="submit" name="submitType" value="save" />&nbsp; <a href="/admin/"><button type="button">Cancel</button></a>
 		</p>
 	</form>
 	</div>

@@ -13,7 +13,7 @@
 </#if>
 </div>
 <div id="userinfo">
-	<a href="/user/edit/${currentUser.username?html}">
+	<a href="/user/${currentUser.username?html}">
 	<#if currentUser.name?? && currentUser.name?length gt 0>
 		${currentUser.name?html}
 	<#else>
