@@ -1,6 +1,6 @@
 TimeIT Server is a time tracking tool and as such has two purposes.
 
-1. To be a central hub for multiple TimeIT clients 
+1. To be a central hub for multiple TimeIT clients
 (https://github.com/Hoglet/TimeIT) so that all clients have the
 same data.
 
@@ -11,4 +11,17 @@ The databases are decentralized which means that all nodes, including the
 server, works stand alone without connection to each other.
 
 The web interface is naturally more limited than the clients. There is no
-automatic time tracking and no idle detection. 
+automatic time tracking and no idle detection.
+
+Building and running:
+1) Download the source into a folder of choice
+2) Open a terminal in source folder
+3a) Run following command in unix systems:
+   ./gradlew run
+3b) Run following command in windows:
+   gradlew run
+
+4) Start a browser and point it to http://localhost:8080/
+   Initial username and password: admin
+
+

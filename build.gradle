@@ -8,14 +8,14 @@ apply plugin: 'project-report'
 sourceCompatibility='1.7'
 targetCompatibility='1.7'
 version='1.0'
-project.ext 
+project.ext
 {
 	dropwizardVersion='0.7.+'
 	h2Version = '1.4+'
 	derbyversion = '10.11+'
 }
 
-mainClassName = 'se.solit.timeit.TimeITServerApplication'
+mainClassName = 'se.solit.timeit.application.TimeITServerApplication'
 
 repositories
 {
@@ -40,9 +40,9 @@ jacocoTestReport {
 }
 
 
-test 
+test
 {
-        testLogging 
+        testLogging
         {
                 // Show that tests are run in the command-line output
                 events 'started', 'passed'
