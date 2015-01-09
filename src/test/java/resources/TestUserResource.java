@@ -243,7 +243,6 @@ public class TestUserResource
 		roles.add(Role.ADMIN);
 		Collection<Role> roles2 = new ArrayList<Role>();
 		roles2.add(new Role(Role.ADMIN));
-		User expected = new User(username, name, password, email, roles2);
 		Form form = new Form();
 		form.add("submitType", "save");
 		form.add("userName", username);
