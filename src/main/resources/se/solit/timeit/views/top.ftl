@@ -8,6 +8,7 @@
 <div id="toolbar">
 <div id="menu">
 <a href="/">Home</a>
+${reportLink}
 <#if currentUser.hasRole("Admin")>
 <a href="/admin/">User Admin</a>
 </#if>

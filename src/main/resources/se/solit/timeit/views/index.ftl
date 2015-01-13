@@ -31,7 +31,6 @@
         	<#assign result>
         	<ol class="tree">
         	<#list items as entry>
-
         		<li>
         		<label for="${entry.key.name}">${entry.key.name}</label>
 				<input id="${entry.key.name}" type="checkbox" >
@@ -64,7 +63,6 @@
        	<div class="summary">
        	<table>
         	<#list todaysTimes as entry>
-
         		<tr>
         		<td>
         		${entry.key}

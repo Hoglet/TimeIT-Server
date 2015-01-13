@@ -16,7 +16,6 @@ import se.solit.timeit.entities.User;
 
 public class TimeView extends BaseView
 {
-
 	private final Time		time;
 	private final Action	action;
 	private final TaskDAO	taskDAO;

@@ -33,6 +33,7 @@ import se.solit.timeit.views.UserEditView;
 @Path("/user")
 public class UserResource
 {
+	private static final String	ACCESS_DENIED	= "Access denied";
 	private static final String			ADMIN_PATH	= "/admin";
 	private final EntityManagerFactory	emf;
 	private final UserDAO				userManager;
@@ -49,7 +50,7 @@ public class UserResource
 	public Response userEdit(@Auth User authorizedUser, @PathParam("username") final String username)
 			throws URISyntaxException
 	{
-		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN) || authorizedUser.getUsername().equals(username))
 		{
 			response = Response.ok(new UserEditView(username, emf, authorizedUser)).build();
@@ -85,7 +86,7 @@ public class UserResource
 	@Path("/add")
 	public Response userAdd(@Auth User authorizedUser) throws URISyntaxException
 	{
-		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			response = Response.ok(new UserAddView(emf, authorizedUser)).build();
@@ -151,7 +152,7 @@ public class UserResource
 	@Path("/delete/{username}")
 	public Response deleteConfirm(@Auth User authorizedUser, @PathParam("username") final String username)
 	{
-		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			response = Response.ok(new DeleteUserView(emf, authorizedUser, username)).build();
@@ -164,7 +165,7 @@ public class UserResource
 	@Path("/delete/{username}")
 	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username)
 	{
-		Response response = Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			User user = userManager.getUser(username);

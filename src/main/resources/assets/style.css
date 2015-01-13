@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+body
+{
+	background: darkgray;
+}
 #toolbar {
 	padding: 0;
 	background: black;
@@ -120,27 +124,6 @@
 body.showDialog #shadyOverlay {
 	display: block;
 }
-
-body.showDialog #dialog {
-	position: absolute;
-	display: block;
-	opacity: 1;
-	z-index: 99;
-	visibility: visible;
-	margin-left: 0;
-	margin-top: 2em;
-	box-shadow: 5px 5px 5px rgba(0,0,0,0.6);
-}
-
-#OKButton {
-	float: left;
-}
-
-#CancelButton {
-	float: right;
-}
-
-
 
 /********/
 html,body {
@@ -266,6 +249,33 @@ div.toolbar span
 {
 	display: table-cell;
 }
+
+div.tabs
+{
+	display: table-row;
+}
+div.tabs h1
+{
+	margin: 0.4em 0.2em 0.3em;
+}
+div.tab
+{
+	display: table-cell;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	background-color: transparent;
+	border-top-left-radius: 0.5em;
+	border-top-right-radius: 0.5em;
+	background: lightgray;
+	z-index: 0;
+}
+
+div.tab.selected
+{
+	background-color: white;
+	z-index: 1;
+}
+
 @media all and (min-resolution:130dpi) and (max-width:1000px),
 @media all and (min-resolution:200dpi) and (max-width:2000px)
 {
