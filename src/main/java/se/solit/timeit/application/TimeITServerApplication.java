@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.entities.User;
-import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.IndexResource;
 import se.solit.timeit.resources.ReportResource;
 import se.solit.timeit.resources.TaskResource;
@@ -65,7 +64,6 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(new TimeResource(emf));
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
-		environment.jersey().register(new AdminResource(emf));
 		environment.jersey().register(new UserResource(emf));
 		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
 		environment.jersey().register(new ReportResource(emf));

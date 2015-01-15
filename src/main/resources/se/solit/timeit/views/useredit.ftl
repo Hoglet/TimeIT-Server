@@ -5,11 +5,14 @@
 </head>
 <body>
 	<#include "top.ftl">
+	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Edit</h2></div></div>
 	<div id="userEdit" class="mainFrame">
-	<h1>Edit settings for user ${user.username}</h1>
 	<form method="POST" action='/user/${user.username}' name="Controller" autocomplete="off" >
-		<input type="hidden" name="userName" value="${user.username}"/>
 		<table>
+			<tr>
+				<td>Username</td>
+				<td>${user.username}</td>
+			</tr>
 			<tr>
 				<td>Real name</td>
 				<td><input type="text" name="name"  value="${user.name}" /></td>
@@ -41,7 +44,7 @@
 		</table>
 
 		<p>
-			<input type="submit" name="submitType" value="save" />&nbsp; <a href="/admin/"><button type="button">Cancel</button></a>
+			<input type="submit" name="submitType" value="save" />&nbsp; <a href="/user/"><button type="button">Cancel</button></a>
 		</p>
 	</form>
 	</div>

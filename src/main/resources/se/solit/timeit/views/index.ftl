@@ -4,7 +4,7 @@
 <head>
 <#include "head.ftl">
 </head>
-<body>
+<body id="mainPage">
     <#include "top.ftl">
     <div id="timeit-webui" class="mainFrame">
     <div id="tasks" class="container">

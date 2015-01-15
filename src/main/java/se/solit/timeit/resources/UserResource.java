@@ -28,13 +28,14 @@ import se.solit.timeit.entities.User;
 import se.solit.timeit.views.DeleteUserView;
 import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.UserAddView;
+import se.solit.timeit.views.UserAdminView;
 import se.solit.timeit.views.UserEditView;
 
 @Path("/user")
 public class UserResource
 {
-	private static final String	ACCESS_DENIED	= "Access denied";
-	private static final String			ADMIN_PATH	= "/admin";
+	private static final String			ACCESS_DENIED	= "Access denied";
+	private static final String			ADMIN_PATH		= "/admin";
 	private final EntityManagerFactory	emf;
 	private final UserDAO				userManager;
 
@@ -42,6 +43,21 @@ public class UserResource
 	{
 		this.emf = emf;
 		userManager = new UserDAO(emf);
+	}
+
+	@GET
+	@Produces("text/html;charset=UTF-8")
+	@Path("/")
+	public Response admin(@Auth User user)
+	{
+		if (user.hasRole(Role.ADMIN))
+		{
+			return Response.ok(new UserAdminView(emf, user)).build();
+		}
+		else
+		{
+			return Response.ok("Access denied").status(Status.UNAUTHORIZED).build();
+		}
 	}
 
 	@GET
@@ -125,6 +141,7 @@ public class UserResource
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			RoleDAO roleDAO = new RoleDAO(emf);
+
 			Collection<Role> roles = new ArrayList<Role>();
 			for (String id : roleIDs)
 			{

@@ -6,8 +6,8 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 </head>
 <body>
 	<#include "top.ftl">
+	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Add user</h2></div></div>
 	<div id="userAdd" class="mainFrame">
-	<h1>Add user</h1>
 
 	<form method="POST" action='/user/add' name="Controller" autocomplete="off">
 		<table>
@@ -38,9 +38,8 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 		</table>
 
 		<p>
-			<input type="submit" name="submitType" value="save" />&nbsp; <input
-				type="submit" name="submitType" value="cancel" />&nbsp;
-		</p>
+			<input type="submit" name="submitType" value="save" />&nbsp;
+			<a href="/user"><button type="button">Cancel</button></a>
 	</form>
 	</div>
 	<#include "bottom.ftl">

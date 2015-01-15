@@ -7,14 +7,14 @@ import javax.persistence.EntityManagerFactory;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
 
-public class AdminView extends BaseView
+public class UserAdminView extends BaseView
 {
 
 	private final UserDAO	userManager;
 
-	public AdminView(EntityManagerFactory emf, User user)
+	public UserAdminView(EntityManagerFactory emf, User user)
 	{
-		super("admin.ftl", user);
+		super("userAdmin.ftl", user);
 		userManager = new UserDAO(emf);
 	}
 

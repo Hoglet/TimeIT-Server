@@ -136,8 +136,15 @@ img { border: none; }
 
 div.mainFrame
 {
-	background: lightgray;
-	padding: 0.5em;
+	background: white;
+	padding: 1em;
+	min-width: 16em;
+	border-radius: 0.5em;
+	border-top-left-radius: 0;
+}
+
+#mainPage div.mainFrame
+{
 	border-radius: 0.5em;
 }
 
@@ -254,15 +261,16 @@ div.tabs
 {
 	display: table-row;
 }
-div.tabs h1
+div.tabs h1,
+div.tabs h2
 {
 	margin: 0.4em 0.2em 0.3em;
 }
 div.tab
 {
 	display: table-cell;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
+	padding-left: 0.8em;
+	padding-right: 0.8em;
 	background-color: transparent;
 	border-top-left-radius: 0.5em;
 	border-top-right-radius: 0.5em;
@@ -275,6 +283,12 @@ div.tab.selected
 	background-color: white;
 	z-index: 1;
 }
+
+#userlist td.username
+{
+	min-width: 15em;
+}
+
 
 @media all and (min-resolution:130dpi) and (max-width:1000px),
 @media all and (min-resolution:200dpi) and (max-width:2000px)

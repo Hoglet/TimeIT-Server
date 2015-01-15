@@ -5,9 +5,11 @@
 </head>
 <body>
 	<#include "top.ftl">
-	<div id="userDelete" class="mainFrame">
-	<h1>You are about to delete:</h1>
+	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Delete</h2></div></div>
 
+	<div id="userDelete" class="mainFrame">
+	You are about to delete:
+	<p>
 	<form method="POST" action='/user/delete/${user.username}' name="Controller"  >
 		<table>
 			<tr>
@@ -25,9 +27,10 @@
 		</table>
 		<p>
 		<b>Are you really sure?</b><br>
-			<input type="submit" name="submitType" value="Yes" />&nbsp; <a href="/admin/"><button type="button">No</button></a>
+			<input type="submit" name="submitType" value="Yes" />&nbsp; <a href="/user/"><button type="button">No</button></a>
 		</p>
 	</form>
+	</p>
 	</div>
 	<#include "bottom.ftl">
 </body>

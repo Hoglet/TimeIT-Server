@@ -1,5 +1,6 @@
 package resources;
 
+import static org.junit.Assert.fail;
 import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
@@ -33,7 +34,6 @@ import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.resources.AdminResource;
 import se.solit.timeit.resources.UserResource;
 
 import com.codahale.metrics.MetricRegistry;
@@ -58,7 +58,6 @@ public class TestUserResource
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
 																	.addResource(new UserResource(emf))
-																	.addResource(new AdminResource(emf))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))
@@ -102,6 +101,33 @@ public class TestUserResource
 		catch (EntityNotFoundException e)
 		{
 
+		}
+	}
+
+	@Test
+	public final void testAdmin()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/user/");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		String actual = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(actual.contains("Bob B"));
+	}
+
+	@Test
+	public final void testAdmin_failAccess()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/user/");
+		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
+		try
+		{
+			resource.accept("text/html").get(String.class);
+			fail("Should be denied");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
 	}
 
@@ -511,7 +537,8 @@ public class TestUserResource
 		WebResource resource = client.resource("/user/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("Edit settings for user minion"));
+		Assert.assertTrue(actual.contains("class=\"tab selected\"><h2>Edit</h2>"));
+		Assert.assertTrue(actual.contains("<td>minion</td>"));
 	}
 
 	@Test
@@ -522,7 +549,7 @@ public class TestUserResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("<h1>Add user</h1>"));
+		Assert.assertTrue(actual.contains("class=\"tab selected\"><h2>Add user</h2>"));
 	}
 
 	@Test
