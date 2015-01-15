@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 
 import org.joda.time.DateTime;
 
@@ -24,6 +25,8 @@ import se.solit.timeit.views.Action;
 import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.TaskChooserView;
 import se.solit.timeit.views.TaskView;
+
+import com.sun.jersey.api.core.HttpContext;
 
 @Path("/task")
 public class TaskResource
@@ -38,17 +41,17 @@ public class TaskResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public View getAdd(@Auth User user)
+	public View getAdd(@Auth User user, @Context HttpContext context)
 	{
 		Task task = new Task(UUID.randomUUID(), "", null, false, DateTime.now(), false, user);
-		return new TaskView(emf, task, user, Action.ADD);
+		return new TaskView(emf, task, user, Action.ADD, context);
 	}
 
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
 	public View postAdd(@Auth User user, @FormParam("name") String name, @FormParam("taskid") String id,
-			@FormParam("parent") String parentID) throws MalformedURLException
+			@FormParam("parent") String parentID, @Context HttpContext context) throws MalformedURLException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task parent = null;
@@ -61,25 +64,25 @@ public class TaskResource
 		taskdao.add(task);
 		String headline = "Task added successfully";
 		String url = "/";
-		return new MessageView(user, headline, "", url);
+		return new MessageView(user, headline, "", url, context);
 
 	}
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit")
-	public View edit(@Auth User user, @QueryParam("taskid") String id)
+	public View edit(@Auth User user, @QueryParam("taskid") String id, @Context HttpContext context)
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
-		return new TaskView(emf, task, user, Action.EDIT);
+		return new TaskView(emf, task, user, Action.EDIT, context);
 	}
 
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit")
 	public View postEdit(@Auth User user, @FormParam("name") String name, @FormParam("taskid") String id,
-			@FormParam("parent") String parentID) throws SQLException
+			@FormParam("parent") String parentID, @Context HttpContext context) throws SQLException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task parent = null;
@@ -93,14 +96,14 @@ public class TaskResource
 		String headline = "Task updated";
 		String text = "";
 		String url = "/";
-		return new MessageView(user, headline, text, url);
+		return new MessageView(user, headline, text, url, context);
 
 	}
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/")
-	public View chooser(@Auth User user, @QueryParam("action") String typeString)
+	public View chooser(@Auth User user, @QueryParam("action") String typeString, @Context HttpContext context)
 	{
 		Action type = Action.ADD;
 		if ("delete".equals(typeString))
@@ -111,13 +114,14 @@ public class TaskResource
 		{
 			type = Action.EDIT;
 		}
-		return new TaskChooserView(emf, user, type);
+		return new TaskChooserView(emf, user, type, context);
 	}
 
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete")
-	public View delete(@Auth User user, @FormParam("taskid") String id) throws SQLException
+	public View delete(@Auth User user, @FormParam("taskid") String id, @Context HttpContext context)
+			throws SQLException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
@@ -125,6 +129,6 @@ public class TaskResource
 		String headline = "Task is deleted";
 		String url = "/";
 		String text = "";
-		return new MessageView(user, headline, text, url);
+		return new MessageView(user, headline, text, url, context);
 	}
 }

@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
@@ -17,6 +18,8 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.MonthReportView;
 import se.solit.timeit.views.YearReportView;
+
+import com.sun.jersey.api.core.HttpContext;
 
 @Path("/report")
 public class ReportResource
@@ -34,7 +37,7 @@ public class ReportResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}")
 	public View getYearReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final String year)
+			@PathParam("year") final String year, @Context HttpContext context)
 	{
 		YearReportView result = null;
 		if (user.getUsername().equals(username))
@@ -42,7 +45,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			DateTime pointInTime = new DateTime(Integer.parseInt(year), 1, 1, 1, 1);
-			result = new YearReportView(emf, pointInTime, user, userToShow);
+			result = new YearReportView(emf, pointInTime, user, userToShow, context);
 		}
 		else
 		{
@@ -55,7 +58,7 @@ public class ReportResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}/{month}")
 	public View getMonthReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final String year, @PathParam("month") final String month)
+			@PathParam("year") final String year, @PathParam("month") final String month, @Context HttpContext context)
 	{
 		MonthReportView result = null;
 		if (user.getUsername().equals(username))
@@ -63,7 +66,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			DateTime pointInTime = new DateTime(Integer.parseInt(year), Integer.parseInt(month), 1, 1, 1);
-			result = new MonthReportView(emf, pointInTime, user, userToShow);
+			result = new MonthReportView(emf, pointInTime, user, userToShow, context);
 		}
 		else
 		{

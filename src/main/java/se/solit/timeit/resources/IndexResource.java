@@ -7,14 +7,17 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.IndexView;
 
+import com.sun.jersey.api.core.HttpContext;
+
 @Path("/")
 public class IndexResource
 {
-	private EntityManagerFactory	emf;
+	private final EntityManagerFactory	emf;
 
 	public IndexResource(EntityManagerFactory emf)
 	{
@@ -23,8 +26,8 @@ public class IndexResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	public View landingPage(@Auth User user)
+	public View landingPage(@Auth User user, @Context HttpContext context)
 	{
-		return new IndexView(user, emf);
+		return new IndexView(user, emf, context);
 	}
 }

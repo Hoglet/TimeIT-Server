@@ -13,14 +13,16 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class TaskChooserView extends BaseView
 {
 	private final TaskDAO	taskdao;
 	private final Action	type;
 
-	public TaskChooserView(EntityManagerFactory emf, User user, Action type2)
+	public TaskChooserView(EntityManagerFactory emf, User user, Action type2, HttpContext context)
 	{
-		super("taskChooser.ftl", user);
+		super("taskChooser.ftl", user, context);
 		taskdao = new TaskDAO(emf);
 		this.type = type2;
 	}

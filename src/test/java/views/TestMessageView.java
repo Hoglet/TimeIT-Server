@@ -26,7 +26,7 @@ public class TestMessageView
 	public final void testGetCurrentUser() throws MalformedURLException
 	{
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		MessageView taskAddedView = new MessageView(user2, "", "", "/");
+		MessageView taskAddedView = new MessageView(user2, "", "", "/", null);
 		Assert.assertEquals(user2, taskAddedView.getCurrentUser());
 	}
 
@@ -37,7 +37,7 @@ public class TestMessageView
 		String text = "the text";
 		String url = "/somewhere";
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		MessageView taskAddedView = new MessageView(user2, headline, text, url);
+		MessageView taskAddedView = new MessageView(user2, headline, text, url, null);
 		Assert.assertEquals(headline, taskAddedView.getHeadline());
 	}
 
@@ -48,7 +48,7 @@ public class TestMessageView
 		String text = "the text";
 		String url = "/somewhere";
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		MessageView taskAddedView = new MessageView(user2, headline, text, url);
+		MessageView taskAddedView = new MessageView(user2, headline, text, url, null);
 		Assert.assertEquals(text, taskAddedView.getText());
 	}
 
@@ -59,7 +59,7 @@ public class TestMessageView
 		String text = "the text";
 		String url = "/somewhere";
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		MessageView taskAddedView = new MessageView(user2, headline, text, url);
+		MessageView taskAddedView = new MessageView(user2, headline, text, url, null);
 		Assert.assertEquals(url, taskAddedView.getUrl());
 	}
 

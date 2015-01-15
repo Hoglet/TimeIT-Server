@@ -51,7 +51,7 @@ public class TestTaskView
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
+		TaskView taskView = new TaskView(emf, task, user2, Action.ADD, null);
 		String expected = "[b141b8ff-fa8e-47ff-8631-d86fe97cbc2b=Parent, c624ba2d-2027-4858-9696-3efc4e4106ad=Parent/child]";
 		Assert.assertEquals(expected, taskView.getParents().toString());
 	}
@@ -59,7 +59,7 @@ public class TestTaskView
 	@Test
 	public final void testGetTask()
 	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD);
+		TaskView taskView = new TaskView(emf, task, user2, Action.ADD, null);
 		Assert.assertEquals(task, taskView.getTask());
 	}
 

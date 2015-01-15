@@ -15,7 +15,7 @@ import se.solit.timeit.views.UserAdminView;
 public class TestAdminView
 {
 	public static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
-	private static UserAdminView			adminView;
+	private static UserAdminView		adminView;
 	private static User					user2;
 
 	@BeforeClass
@@ -26,7 +26,7 @@ public class TestAdminView
 		UserDAO userDao = new UserDAO(emf);
 		userDao.add(user1);
 		userDao.add(user2);
-		adminView = new UserAdminView(emf, user2);
+		adminView = new UserAdminView(emf, user2, null);
 	}
 
 	@AfterClass

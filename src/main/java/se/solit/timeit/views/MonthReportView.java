@@ -18,13 +18,16 @@ import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class MonthReportView extends ReportView
 {
 	private final TimeDAO	timeDAO;
 
-	public MonthReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser)
+	public MonthReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser,
+			HttpContext context)
 	{
-		super("monthReport.ftl", user, pointInMonth, reportedUser);
+		super("monthReport.ftl", user, pointInMonth, reportedUser, context);
 		timeDAO = new TimeDAO(emf);
 	}
 

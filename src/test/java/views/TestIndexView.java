@@ -58,7 +58,7 @@ public class TestIndexView
 	@Test
 	public final void testGetTasks() throws SQLException
 	{
-		IndexView view = new IndexView(user, emf);
+		IndexView view = new IndexView(user, emf, null);
 		String expected = "b141b8ff-fa8e-47ff-8631-d86fe97cbc2b";
 		Assert.assertEquals(1, view.getTasks().size());
 		Task result = view.getTasks().get(0).getKey();
@@ -68,7 +68,7 @@ public class TestIndexView
 	@Test
 	public final void testGetTimes() throws SQLException
 	{
-		IndexView view = new IndexView(user, emf);
+		IndexView view = new IndexView(user, emf, null);
 		String expected = "Parent";
 		Assert.assertEquals(1, view.getTodaysTimes().size());
 		String result = view.getTodaysTimes().get(0).getKey();

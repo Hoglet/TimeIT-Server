@@ -14,17 +14,17 @@ import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class TimeView extends BaseView
 {
 	private final Time		time;
-	private final Action	action;
 	private final TaskDAO	taskDAO;
 
-	public TimeView(EntityManagerFactory emf, Time time, User user, Action action)
+	public TimeView(EntityManagerFactory emf, Time time, User user, HttpContext context)
 	{
-		super("time.ftl", user);
+		super("time.ftl", user, context);
 		this.time = time;
-		this.action = action;
 		taskDAO = new TaskDAO(emf);
 	}
 

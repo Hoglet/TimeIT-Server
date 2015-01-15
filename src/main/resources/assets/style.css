@@ -38,6 +38,7 @@ body
 	margin: 3px;
 	color: white;
 	text-decoration: none;
+	border-radius: 0.2em;
 }
 
 #toolbar a:hover {
@@ -48,6 +49,13 @@ body
 #toolbar a:active {
 	color: green;
 }
+
+#toolbar a.selected
+{
+	background: green;
+	color: white;
+}
+
 
 #content {
 	vertical-align: top;
@@ -286,6 +294,7 @@ div.tab.selected
 {
 	min-width: 15em;
 }
+
 
 
 @media all and (min-resolution:130dpi) and (max-width:1000px),

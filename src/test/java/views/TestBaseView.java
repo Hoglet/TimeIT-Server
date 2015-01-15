@@ -10,6 +10,8 @@ import org.junit.Test;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.BaseView;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class TestBaseView
 {
 	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
@@ -24,7 +26,8 @@ public class TestBaseView
 	public final void testGetCurrentUser()
 	{
 		User user = new User("minion", "Do Er", "password", "email", null);
-		BaseView view = new BaseView("index.ftl", user);
+		HttpContext context = null;
+		BaseView view = new BaseView("index.ftl", user, context);
 		Assert.assertEquals(view.getCurrentUser(), user);
 	}
 }

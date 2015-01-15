@@ -48,7 +48,7 @@ public class TestTaskChooserView
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT);
+		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT, null);
 		String expected = "[24765cb7-d346-4ec4-8fc8-c381b6b38a6e=Parent, b0d3462a-d214-4969-98f0-1f90e8650cc7=Parent/child]";
 		Assert.assertEquals(expected, view.getTasks().toString());
 	}

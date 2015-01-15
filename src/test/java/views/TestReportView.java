@@ -59,16 +59,18 @@ public class TestReportView
 	@Test
 	public final void testGetYear()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user);
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null);
 		Assert.assertEquals("2014", view.getYear());
 	}
 
 	@Test
 	public final void testGetTabs()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user);
-		Assert.assertTrue(view.tabs(0).contains("<div class='tab selected'><h1>Month "));
-		Assert.assertTrue(view.tabs(1).contains("<div class='tab selected'><h1>Year "));
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null);
+		String tab1 = view.tabs(0);
+		String tab2 = view.tabs(1);
+		Assert.assertTrue(tab1.contains("<div class='tab selected'><h2>Month "));
+		Assert.assertTrue(tab2.contains("<div class='tab selected'><h2>Year "));
 	}
 
 }

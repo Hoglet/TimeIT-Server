@@ -17,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -30,6 +31,8 @@ import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.UserAddView;
 import se.solit.timeit.views.UserAdminView;
 import se.solit.timeit.views.UserEditView;
+
+import com.sun.jersey.api.core.HttpContext;
 
 @Path("/user")
 public class UserResource
@@ -48,11 +51,11 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/")
-	public Response admin(@Auth User user)
+	public Response admin(@Auth User user, @Context HttpContext context)
 	{
 		if (user.hasRole(Role.ADMIN))
 		{
-			return Response.ok(new UserAdminView(emf, user)).build();
+			return Response.ok(new UserAdminView(emf, user, context)).build();
 		}
 		else
 		{
@@ -63,13 +66,14 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}")
-	public Response userEdit(@Auth User authorizedUser, @PathParam("username") final String username)
+	public Response userEdit(@Auth User authorizedUser, @PathParam("username") final String username,
+			@Context HttpContext context)
 			throws URISyntaxException
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN) || authorizedUser.getUsername().equals(username))
 		{
-			response = Response.ok(new UserEditView(username, emf, authorizedUser)).build();
+			response = Response.ok(new UserEditView(username, emf, authorizedUser, context)).build();
 		}
 		return response;
 	}
@@ -100,12 +104,12 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public Response userAdd(@Auth User authorizedUser) throws URISyntaxException
+	public Response userAdd(@Auth User authorizedUser, @Context HttpContext context) throws URISyntaxException
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			response = Response.ok(new UserAddView(emf, authorizedUser)).build();
+			response = Response.ok(new UserAddView(emf, authorizedUser, context)).build();
 		}
 		return response;
 	}
@@ -167,12 +171,13 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete/{username}")
-	public Response deleteConfirm(@Auth User authorizedUser, @PathParam("username") final String username)
+	public Response deleteConfirm(@Auth User authorizedUser, @PathParam("username") final String username,
+			@Context HttpContext context)
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			response = Response.ok(new DeleteUserView(emf, authorizedUser, username)).build();
+			response = Response.ok(new DeleteUserView(emf, authorizedUser, username, context)).build();
 		}
 		return response;
 	}
@@ -180,14 +185,15 @@ public class UserResource
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete/{username}")
-	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username)
+	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username,
+			@Context HttpContext context)
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			User user = userManager.getUser(username);
 			userManager.delete(user);
-			response = Response.ok(new MessageView(authorizedUser, "User is deleted", "", ADMIN_PATH)).build();
+			response = Response.ok(new MessageView(authorizedUser, "User is deleted", "", ADMIN_PATH, context)).build();
 		}
 		return response;
 	}

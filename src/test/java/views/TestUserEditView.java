@@ -40,7 +40,7 @@ public class TestUserEditView
 		UserDAO userDAO = new UserDAO(emf);
 		userDAO.add(user1);
 		userDAO.add(user2);
-		userEditView = new UserEditView("egon", emf, user2);
+		userEditView = new UserEditView("egon", emf, user2, null);
 	}
 
 	@AfterClass

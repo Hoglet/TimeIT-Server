@@ -18,7 +18,6 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.Action;
 import se.solit.timeit.views.TimeView;
 
 public class TestTimeView
@@ -57,14 +56,14 @@ public class TestTimeView
 	@Test
 	public final void testGetTime()
 	{
-		TimeView view = new TimeView(emf, time, user, Action.ADD);
+		TimeView view = new TimeView(emf, time, user, null);
 		Assert.assertEquals(time, view.getTime());
 	}
 
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TimeView view = new TimeView(emf, time, user, Action.ADD);
+		TimeView view = new TimeView(emf, time, user, null);
 		String expected = "[e00b8d6f-3f89-4748-98ca-25ef6225d06a=parent, 4afe7048-fefe-4c5f-b32f-d4a771175b70=parent/child]";
 		String actual = view.getTasks().toString();
 		Assert.assertEquals(expected, actual);

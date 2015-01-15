@@ -12,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -22,9 +23,10 @@ import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.Action;
 import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.TimeView;
+
+import com.sun.jersey.api.core.HttpContext;
 
 @Path("/time")
 public class TimeResource
@@ -43,18 +45,19 @@ public class TimeResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public View getAdd(@Auth User user)
+	public View getAdd(@Auth User user, @Context HttpContext context)
 	{
 		DateTime now = DateTime.now();
 		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
-		return new TimeView(emf, time, user, Action.ADD);
+		return new TimeView(emf, time, user, context);
 	}
 
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
 	public View postAdd(@Auth User user, @FormParam("timeid") String id, @FormParam("start") String paramStart,
-			@FormParam("stop") String paramStop, @FormParam("taskid") String taskID, @FormParam("date") String date)
+			@FormParam("stop") String paramStop, @FormParam("taskid") String taskID, @FormParam("date") String date,
+			@Context HttpContext context)
 			throws SQLException
 	{
 		DateTime now = DateTime.now();
@@ -70,7 +73,7 @@ public class TimeResource
 		timedao.add(time);
 		String headline = "Time added successfully";
 		String url = "/";
-		return new MessageView(user, headline, "", url);
+		return new MessageView(user, headline, "", url, context);
 
 	}
 }

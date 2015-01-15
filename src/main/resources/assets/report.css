@@ -3,6 +3,9 @@ div.report
 {
 	width: 100%;
 	box-sizing: border-box;
+	border-top-right-radius: 0.5em;
+	border-bottom-right-radius: 0.5em;
+	border-bottom-left-radius: 0.5em;
 }
 div.report
 {

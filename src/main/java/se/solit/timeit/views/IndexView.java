@@ -19,14 +19,16 @@ import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class IndexView extends BaseView
 {
 	private final TaskDAO	taskdao;
 	private final TimeDAO	timedao;
 
-	public IndexView(User user, EntityManagerFactory emf)
+	public IndexView(User user, EntityManagerFactory emf, HttpContext context)
 	{
-		super("index.ftl", user);
+		super("index.ftl", user, context);
 		taskdao = new TaskDAO(emf);
 		timedao = new TimeDAO(emf);
 	}

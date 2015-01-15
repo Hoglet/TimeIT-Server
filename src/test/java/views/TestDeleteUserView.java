@@ -37,7 +37,7 @@ public class TestDeleteUserView
 	@Test
 	public final void testGetUser() throws SQLException
 	{
-		DeleteUserView view = new DeleteUserView(emf, user, user.getUsername());
+		DeleteUserView view = new DeleteUserView(emf, user, user.getUsername(), null);
 		Assert.assertEquals(user, view.getUser());
 	}
 

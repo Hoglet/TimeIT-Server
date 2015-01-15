@@ -13,6 +13,8 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class TaskView extends BaseView
 {
 
@@ -20,9 +22,9 @@ public class TaskView extends BaseView
 	private final TaskDAO	taskdao;
 	private final Action	action;
 
-	public TaskView(EntityManagerFactory emf, Task task, User user, Action action)
+	public TaskView(EntityManagerFactory emf, Task task, User user, Action action, HttpContext context)
 	{
-		super("task.ftl", user);
+		super("task.ftl", user, context);
 		this.task = task;
 		this.action = action;
 		taskdao = new TaskDAO(emf);

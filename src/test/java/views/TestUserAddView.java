@@ -51,7 +51,7 @@ public class TestUserAddView
 		roleDAO.add(otherRole);
 		roleDAO.add(adminRole);
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		UserAddView userAddView = new UserAddView(emf, user2);
+		UserAddView userAddView = new UserAddView(emf, user2, null);
 		Assert.assertEquals(2, userAddView.getRoles().size());
 	}
 

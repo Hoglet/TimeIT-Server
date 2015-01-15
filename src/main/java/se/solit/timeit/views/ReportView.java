@@ -4,6 +4,8 @@ import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.User;
 
+import com.sun.jersey.api.core.HttpContext;
+
 public class ReportView extends BaseView
 {
 	protected static final int	TWO						= 2;
@@ -15,9 +17,9 @@ public class ReportView extends BaseView
 	protected DateTime			pointInTime;
 	protected final User		reportedUser;
 
-	public ReportView(String template, User user, DateTime pointInTime, User reportedUser)
+	public ReportView(String template, User user, DateTime pointInTime, User reportedUser, HttpContext context)
 	{
-		super(template, user);
+		super(template, user, context);
 		this.pointInTime = pointInTime;
 		this.reportedUser = reportedUser;
 	}

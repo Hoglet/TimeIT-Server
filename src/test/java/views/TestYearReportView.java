@@ -65,14 +65,14 @@ public class TestYearReportView
 	@Test
 	public final void testGetYear()
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
 		Assert.assertEquals("2014", view.getYear());
 	}
 
 	@Test
 	public final void testGetTimes() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
 		String expected = "Name";
 		List<Entry<String, String>> result = view.getTimes(monthToTest);
 		Assert.assertEquals(1, result.size());
@@ -83,12 +83,12 @@ public class TestYearReportView
 	@Test
 	public final void testGetNextYear() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, now, user, user);
+		YearReportView view = new YearReportView(emf, now, user, user, null);
 		String expected = "<button type='button' disabled='disabled'>&gt;&gt;</button>";
 		String actual = view.getNextYearLink();
 
 		Assert.assertEquals(expected, actual);
-		view = new YearReportView(emf, pointInMonth, user, user);
+		view = new YearReportView(emf, pointInMonth, user, user, null);
 		expected = "<a href='/report/minion/2015'><button type='button'>&gt;&gt;</button></a>";
 		actual = view.getNextYearLink();
 		Assert.assertEquals(expected, actual);
@@ -97,7 +97,7 @@ public class TestYearReportView
 	@Test
 	public final void testGetPreviousYear() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
 		String expected = "<a href='/report/minion/2013'><button type='button'>&lt;&lt;</button></a>";
 		String actual = view.getPreviousYearLink();
 		Assert.assertEquals(expected, actual);

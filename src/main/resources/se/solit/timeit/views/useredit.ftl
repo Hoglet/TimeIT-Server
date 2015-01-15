@@ -5,7 +5,11 @@
 </head>
 <body>
 	<#include "top.ftl">
-	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Edit</h2></div></div>
+	<div class="tabs">
+	<#if currentUser.hasRole("Admin")>
+		<a href="/user"><div class="tab"><h2>Users</h2></div></a>
+	</#if>
+	<div class="tab selected"><h2>Edit</h2></div></div>
 	<div id="userEdit" class="mainFrame">
 	<form method="POST" action='/user/${user.username}' name="Controller" autocomplete="off" >
 		<table>

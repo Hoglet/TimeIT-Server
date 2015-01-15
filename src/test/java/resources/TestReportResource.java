@@ -71,7 +71,7 @@ public class TestReportResource
 		WebResource resource = client.resource("/report/minion/2014/12");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("<h1>Month report</h1>"));
+		Assert.assertTrue(actual.contains("<div id=\"MonthReport\""));
 		Assert.assertTrue(actual.contains("<div id=\"month\">December</div>"));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
 	}
@@ -83,7 +83,7 @@ public class TestReportResource
 		WebResource resource = client.resource("/report/minion/2014");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("<h1>Year report</h1>"));
+		Assert.assertTrue(actual.contains("<div id=\"YearReport\""));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
 	}
 
