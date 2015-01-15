@@ -112,7 +112,7 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("admin stuff"));
-		Assert.assertTrue(actual.contains("<h1>Add task</h1>"));
+		Assert.assertTrue(actual.contains("<h2>Add task</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/add'"));
 	}
 
@@ -124,7 +124,7 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("admin stuff"));
-		Assert.assertTrue(actual.contains("<h1>Edit task</h1>"));
+		Assert.assertTrue(actual.contains("<h2>Edit task</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/edit'"));
 	}
 

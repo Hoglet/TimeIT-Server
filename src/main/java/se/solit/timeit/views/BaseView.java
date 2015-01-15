@@ -4,6 +4,8 @@ import io.dropwizard.views.View;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.joda.time.DateTime;
 
@@ -16,11 +18,11 @@ import com.sun.jersey.api.core.HttpContext;
 public class BaseView extends View
 {
 
-	protected final User					user;
+	protected final User				user;
 
-	ArrayList<SimpleEntry<String, String>>	list;
+	List<SimpleEntry<String, String>>	list;
 
-	private String							currentPath	= "/";
+	private String						currentPath	= "/";
 
 	public BaseView(String template, User user, HttpContext context)
 	{
@@ -75,9 +77,9 @@ public class BaseView extends View
 
 	private String getCurrentKey()
 	{
-		for (SimpleEntry<String, String> e : list)
+		for (Entry<String, String> e : list)
 		{
-			if (currentPath.contains((e.getKey())))
+			if (currentPath.contains(e.getKey()))
 			{
 				return e.getValue();
 			}

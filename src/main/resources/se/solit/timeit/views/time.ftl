@@ -6,8 +6,14 @@
 </head>
 <body>
 	<#include "top.ftl">
+		<div class="tabs"><a href="/"><div class="tab">
+	<h3>Home</h3></div></a>
+	<div class="tab selected">
+		<h2>Add time</h2>
+	</div>
+	</div>
+
 	<div id="time" class="mainFrame">
-		<h1>Add time</h1>
 		<form method="POST" action='/time/add' name="Controller">
 		<#assign date=time.start.toString('yyyy-MM-dd')>
 		<#assign start=time.start.toString('hh:mm')>

@@ -5,7 +5,7 @@
 </head>
 <body>
 	<#include "top.ftl">
-	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Delete</h2></div></div>
+	<div class="tabs"><a href="/user"><div class="tab"><h3>Users</h3></div></a><div class="tab selected"><h2>Delete</h2></div></div>
 
 	<div id="userDelete" class="mainFrame">
 	You are about to delete:

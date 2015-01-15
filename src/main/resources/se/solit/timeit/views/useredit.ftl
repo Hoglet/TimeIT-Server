@@ -7,7 +7,7 @@
 	<#include "top.ftl">
 	<div class="tabs">
 	<#if currentUser.hasRole("Admin")>
-		<a href="/user"><div class="tab"><h2>Users</h2></div></a>
+		<a href="/user"><div class="tab"><h3>Users</h3></div></a>
 	</#if>
 	<div class="tab selected"><h2>Edit</h2></div></div>
 	<div id="userEdit" class="mainFrame">

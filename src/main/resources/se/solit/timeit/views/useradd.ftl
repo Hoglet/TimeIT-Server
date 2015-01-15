@@ -6,7 +6,7 @@ type="se.solit.dwtemplate.resources.UserAddView" -->
 </head>
 <body>
 	<#include "top.ftl">
-	<div class="tabs"><a href="/user"><div class="tab"><h2>Users</h2></div></a><div class="tab selected"><h2>Add user</h2></div></div>
+	<div class="tabs"><a href="/user"><div class="tab"><h3>Users</h3></div></a><div class="tab selected"><h2>Add user</h2></div></div>
 	<div id="userAdd" class="mainFrame">
 
 	<form method="POST" action='/user/add' name="Controller" autocomplete="off">

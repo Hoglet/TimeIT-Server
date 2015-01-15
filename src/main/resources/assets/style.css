@@ -267,8 +267,10 @@ div.tabs
 {
 	display: table-row;
 }
+
 div.tabs h1,
-div.tabs h2
+div.tabs h2,
+div.tabs h3
 {
 	margin: 0.4em 0.2em 0.3em;
 }

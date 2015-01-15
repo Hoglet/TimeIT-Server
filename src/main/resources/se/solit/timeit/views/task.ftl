@@ -6,14 +6,20 @@
 </head>
 <body>
 	<#include "top.ftl">
-	<div id="task" class="mainFrame">
+	<div class="tabs"><a href="/"><div class="tab">
+	<h3>Home</h3></div></a>
+	<div class="tab selected">
 	<#if edit()>
-		<h1>Edit task</h1>
+		<h2>Edit task</h2>
 		<form method="POST" action='/task/edit' name="Controller">
 	<#else>
-		<h1>Add task</h1>
+		<h2>Add task</h2>
 		<form method="POST" action='/task/add' name="Controller">
 	</#if>
+	</div>
+	</div>
+
+	<div id="task" class="mainFrame">
 		<input type="hidden" name="taskid" value="${task.getID().toString()}"/>
 		<table>
 			<tr>

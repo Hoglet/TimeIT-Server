@@ -6,16 +6,22 @@
 </head>
 <body>
 	<#include "top.ftl">
-	<div id="taskChooser" class="mainFrame">
+	<div class="tabs"><a href="/"><div class="tab">
+	<h3>Home</h3></div></a>
+	<div class="tab selected">
 	<#if isEditMode()>
-		<h1>Choose task to edit</h1>
+		<h2>Edit</h2>
 		<form method="GET" action='/task/edit' name="Controller">
 	<#else>
-		<h1>Choose task to delete</h1>
+		<h2>Delete</h2>
 		<form method="POST" action='/task/delete' name="Controller">
 	</#if>
+	</div>
+	</div>
+
+	<div id="taskChooser" class="mainFrame">
 		<p>
-			<select name="taskid">
+		Choose task: <select name="taskid">
 			<#list tasks as entry>
 				<option value="${entry.key}">${entry.value}</option>
 			</#list>

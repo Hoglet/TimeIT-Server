@@ -90,7 +90,7 @@ public class TestTimeResource
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("<h1>Add time</h1>"));
+		Assert.assertTrue(actual.contains("<h2>Add time</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/time/add'"));
 	}
 
