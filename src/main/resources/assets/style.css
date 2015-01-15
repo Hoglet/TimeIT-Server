@@ -3,6 +3,7 @@
 body
 {
 	background: darkgray;
+	margin-top: 1em;
 }
 #toolbar {
 	padding: 0;
@@ -14,6 +15,7 @@ body
 	display: table;
 	font-size: 120%;
 	box-sizing: border-box;
+	position: fixed;
 }
 #toolbar div#menu,
 #toolbar div#userinfo
@@ -31,13 +33,9 @@ body
 
 #toolbar a {
 	padding: 2px;
-	padding-left: 1em;
-	padding-right: 1em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 	margin: 3px;
-/*	background: lightgray;
-	border: groove;
-	border-radius: 0.5em;
-*/
 	color: white;
 	text-decoration: none;
 }
@@ -53,7 +51,7 @@ body
 
 #content {
 	vertical-align: top;
-	margin-top: 1em;
+	margin-top: 2em;
 	padding : 1em;
 	padding-left: 2em;
 	display: inline-block;

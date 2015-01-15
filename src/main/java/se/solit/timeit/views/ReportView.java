@@ -47,7 +47,7 @@ public class ReportView extends BaseView
 		{
 			stringBuilder.append("<div class='tab selected'>");
 		}
-		stringBuilder.append("<h1>Year report</h1>");
+		stringBuilder.append("<h2>Year report</h2>");
 		stringBuilder.append("</div>");
 		if (id == 0)
 		{
@@ -74,7 +74,7 @@ public class ReportView extends BaseView
 		{
 			stringBuilder.append("<div class='tab selected'>");
 		}
-		stringBuilder.append("<h1>Month report</h1>");
+		stringBuilder.append("<h2>Month report</h2>");
 		stringBuilder.append("</div>");
 		if (id == 1)
 		{

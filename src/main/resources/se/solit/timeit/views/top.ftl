@@ -10,7 +10,7 @@
 <a href="/">Home</a>
 ${reportLink}
 <#if currentUser.hasRole("Admin")>
-<a href="/user/">User&nbsp;Admin</a>
+<a href="/user/">Admin</a>
 </#if>
 </div>
 <div id="userinfo">
