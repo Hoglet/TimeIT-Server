@@ -21,9 +21,6 @@
 		<input type="hidden" name="timeid" value="${time.getID()}"/>
 		<table>
 			<tr>
-			<td>id:</td><td id="timeid">${time.getID()}</td>
-			</tr>
-			<tr>
 				<td>
 				Task:
 				</td>

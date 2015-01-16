@@ -23,9 +23,6 @@
 		<input type="hidden" name="taskid" value="${task.getID().toString()}"/>
 		<table>
 			<tr>
-			<td>id:</td><td id="taskid">${task.getID().toString()}</td>
-			</tr>
-			<tr>
 				<td>Name:</td>
 				<td><input type="text" name="name" value="${task.name}" /></td>
 			</tr>
