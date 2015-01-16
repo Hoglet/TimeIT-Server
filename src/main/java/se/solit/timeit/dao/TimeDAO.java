@@ -22,6 +22,9 @@ import se.solit.timeit.entities.User;
 
 public class TimeDAO
 {
+	private static final String	STOP	= "stop";
+	private static final String	USER	= "user";
+	private static final String	START	= "start";
 	private static final int			MILLISECONDS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	entityManagerFactory;
 
@@ -124,9 +127,9 @@ public class TimeDAO
 				.createQuery(
 						"SELECT t.task, SUM(:stop-t.start) FROM Time t WHERE t.task.owner = :user AND t.start>=:start AND t.start<=:stop AND t.stop>:stop GROUP BY t.task",
 						Object[].class);
-		getTimesQuery.setParameter("user", user);
-		getTimesQuery.setParameter("start", start.getMillis() / MILLISECONDS_PER_SECOND);
-		getTimesQuery.setParameter("stop", stop.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(USER, user);
+		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(STOP, stop.getMillis() / MILLISECONDS_PER_SECOND);
 		return getTimesQuery.getResultList();
 	}
 
@@ -136,9 +139,9 @@ public class TimeDAO
 				.createQuery(
 						"SELECT t.task, SUM(t.stop-:start) FROM Time t WHERE t.task.owner = :user AND t.start<:start AND t.stop>=:start AND t.stop<=:stop GROUP BY t.task",
 						Object[].class);
-		getTimesQuery.setParameter("user", user);
-		getTimesQuery.setParameter("start", start.getMillis() / MILLISECONDS_PER_SECOND);
-		getTimesQuery.setParameter("stop", stop.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(USER, user);
+		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(STOP, stop.getMillis() / MILLISECONDS_PER_SECOND);
 		return getTimesQuery.getResultList();
 	}
 
@@ -148,9 +151,9 @@ public class TimeDAO
 				.createQuery(
 						"SELECT t.task, SUM(t.stop-t.start) FROM Time t WHERE t.task.owner = :user AND t.start>=:start AND t.stop<=:stop GROUP BY t.task",
 						Object[].class);
-		getTimesQuery.setParameter("user", user);
-		getTimesQuery.setParameter("start", start.getMillis() / MILLISECONDS_PER_SECOND);
-		getTimesQuery.setParameter("stop", stop.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(USER, user);
+		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(STOP, stop.getMillis() / MILLISECONDS_PER_SECOND);
 
 		return getTimesQuery.getResultList();
 	}
