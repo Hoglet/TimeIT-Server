@@ -1,8 +1,6 @@
 package views;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -16,6 +14,7 @@ import org.junit.Test;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
+import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
@@ -74,9 +73,9 @@ public class TestYearReportView
 	{
 		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
 		String expected = "Name";
-		List<Entry<String, String>> result = view.getTimes(monthToTest);
+		TimeDescriptorList result = view.getTimes(monthToTest);
 		Assert.assertEquals(1, result.size());
-		String actual = result.get(0).getKey();
+		String actual = result.get(0).getTask().getName();
 		Assert.assertEquals(expected, actual);
 	}
 

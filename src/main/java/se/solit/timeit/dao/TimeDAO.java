@@ -1,12 +1,8 @@
 package se.solit.timeit.dao;
 
 import java.sql.SQLException;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -22,9 +18,9 @@ import se.solit.timeit.entities.User;
 
 public class TimeDAO
 {
-	private static final String	STOP	= "stop";
-	private static final String	USER	= "user";
-	private static final String	START	= "start";
+	private static final String			STOP					= "stop";
+	private static final String			USER					= "user";
+	private static final String			START					= "start";
 	private static final int			MILLISECONDS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	entityManagerFactory;
 
@@ -107,16 +103,16 @@ public class TimeDAO
 		}
 	}
 
-	public List<Entry<Task, Duration>> getTimesSummary(User user, DateTime start, DateTime stop)
+	public TimeDescriptorList getTimes(User user, DateTime start, DateTime stop)
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();
-		List<Entry<Task, Duration>> returnValue = new ArrayList<Map.Entry<Task, Duration>>();
+		TimeDescriptorList returnValue = new TimeDescriptorList();
 		List<Object[]> results = getCompletelyWithin(user, start, stop, em);
-		addToResult(returnValue, results);
+		addToResult2(returnValue, results);
 		results = getStartingBefore(user, start, stop, em);
-		addToResult(returnValue, results);
+		addToResult2(returnValue, results);
 		results = getEndingAfter(user, start, stop, em);
-		addToResult(returnValue, results);
+		addToResult2(returnValue, results);
 		em.close();
 		return returnValue;
 	}
@@ -158,37 +154,41 @@ public class TimeDAO
 		return getTimesQuery.getResultList();
 	}
 
-	private void addToResult(List<Entry<Task, Duration>> returnValue, List<Object[]> results)
+	private void addToResult2(TimeDescriptorList returnValue, List<Object[]> results)
 	{
 		for (Object[] result : results)
 		{
 			Task task = (Task) result[0];
 			long millis = MILLISECONDS_PER_SECOND * (long) result[1];
 			Duration duration = Duration.millis(millis);
-			Entry<Task, Duration> existingEntry = findInList(returnValue, task);
-			if (existingEntry != null)
-			{
-				Duration newDuration = existingEntry.getValue().plus(duration);
-				existingEntry.setValue(newDuration);
-			}
-			else
-			{
-				Entry<Task, Duration> entry = new SimpleEntry<Task, Duration>(task, duration);
-				returnValue.add(entry);
-			}
+			Duration durationWithChildren = duration;
+			addToResultList(returnValue, task, duration, durationWithChildren);
 		}
+
 	}
 
-	private Entry<Task, Duration> findInList(List<Entry<Task, Duration>> returnValue, Task task)
+	private void addToResultList(TimeDescriptorList returnValue, Task task, Duration duration,
+			Duration durationWithChildren)
 	{
-		UUID taskId = task.getID();
-		for (Entry<Task, Duration> entry : returnValue)
+		Task parent = task.getParent();
+		if (parent != null)
 		{
-			if (entry.getKey().getID().equals(taskId))
-			{
-				return entry;
-			}
+			Duration zeroDuration = new Duration(0);
+			addToResultList(returnValue, parent, zeroDuration, durationWithChildren);
 		}
-		return null;
+		TimeDescriptor existingItem = returnValue.find(task);
+		if (existingItem != null)
+		{
+			Duration newDuration = existingItem.getDuration().plus(duration);
+			existingItem.setDuration(newDuration);
+			Duration newDurationWithChildren = existingItem.getDurationWithChildren().plus(durationWithChildren);
+			existingItem.setDurationWithChildren(newDurationWithChildren);
+
+		}
+		else
+		{
+			TimeDescriptor entry = new TimeDescriptor(task, duration, durationWithChildren);
+			returnValue.add(entry);
+		}
 	}
 }

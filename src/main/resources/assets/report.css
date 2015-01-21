@@ -18,6 +18,11 @@ tr.Sun td
 	color: black;
 }
 
+td.duration,
+td.durationWithChildren
+{
+	text-align: center;
+}
 
 
 td.dayOfMonth

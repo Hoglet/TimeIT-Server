@@ -62,13 +62,13 @@
 		<h3>Today</h3>
        	<div class="summary">
        	<table>
-        	<#list todaysTimes as entry>
+        	<#list todaysTimes as item>
         		<tr>
         		<td>
-        		${entry.key}
+        		${item.getTask().getName()}
         		</td>
         		<td>
-        		${entry.value}
+        		${item.getDurationWithChildrenString()}
         		</td>
         		</tr>
 			</#list>
@@ -77,14 +77,13 @@
 		<h3>This month</h3>
 		<div class="summary">
        	<table>
-        	<#list monthsTimes as entry>
-
+        	<#list monthsTimes as item>
         		<tr>
         		<td>
-        		${entry.key}
+        		${item.getTask().getName()}
         		</td>
         		<td>
-        		${entry.value}
+        		${item.getDurationWithChildrenString()}
         		</td>
         		</tr>
 			</#list>
@@ -93,14 +92,13 @@
 		<h3>This year</h3>
 		   <div class="summary">
 		   <table>
-        	<#list yearsTimes as entry>
-
+        	<#list yearsTimes as item>
         		<tr>
         		<td>
-        		${entry.key}
+        		${item.getTask().getName()}
         		</td>
         		<td>
-        		${entry.value}
+        		${item.getDurationWithChildrenString()}
         		</td>
         		</tr>
 			</#list>

@@ -16,19 +16,20 @@
 	<h2>Totals</h2>
 	<hr>
 	<table class="timeTable" cellspacing=0>
-        	<#list allTimes as entry>
+        	<#list allTimes as item>
         		<tr>
         		<td>
         		</td>
-        		<td>
-        		<td>
         		<td class="taskName">
-        		${entry.key}
+        		${item.getIndentString()}${item.getTask().getName()}
         		</td>
         		<td class="duration">
-        		${entry.value}
+        		${item.getDurationString()}
         		</td>
         		<td></td>
+        		<td class="duration">
+        		${item.getDurationWithChildrenString()}
+        		</td>
         		</tr>
 			</#list>
 	</table>
@@ -36,20 +37,23 @@
 	<h2>Details</h2>
 	<hr>
 	<table class="timeTable" cellspacing=0>
+	<tr class=""><th class="dayOfMonth"></th><th class=""></th><th>Duration</th><th>&nbsp;</th><th>(With&nbsp;children)</th><th class="lastColumn"></th></tr>
 	<#list 1..12 as y>
 	<#assign month=getMonth(y)>
-	<tr class="monthRow"><td class="month">${month}</td><td></td><td></td><td></td><td class="lastColumn"></td></tr>
-        	<#list getTimes(y) as entry>
+	<tr class="monthRow"><td class="month">${month}</td><td></td><td></td><td></td><td></td><td></td></tr>
+        	<#list getTimes(y) as item>
         		<tr class="${month}">
         		<td>
         		</td>
-        		<td>
-        		<td>
         		<td class="taskName">
-        		${entry.key}
+        		${item.getIndentString()}${item.getTask().getName()}
         		</td>
         		<td class="duration">
-        		${entry.value}
+        		${item.getDurationString()}
+        		</td>
+        		<td></td>
+        		<td class="duration">
+        		${item.getDurationWithChildrenString()}
         		</td>
         		<td></td>
         		</tr>

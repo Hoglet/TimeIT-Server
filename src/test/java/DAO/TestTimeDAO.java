@@ -3,7 +3,6 @@ package DAO;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -23,6 +22,8 @@ import org.junit.Test;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
+import se.solit.timeit.dao.TimeDescriptor;
+import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
@@ -40,6 +41,7 @@ public class TestTimeDAO
 	private static UserDAO				userdao;
 	static TaskDAO						taskdao;
 	private static DateTime				now		= DateTime.now();
+	private static Task					child;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -48,10 +50,12 @@ public class TestTimeDAO
 		userdao = new UserDAO(emf);
 		userdao.add(user);
 		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
+		child = new Task(UUID.randomUUID(), "Task1", task, false, now, false, user);
 		task2 = new Task(UUID.randomUUID(), "Task2", null, false, now, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		taskdao.add(task2);
+		taskdao.add(child);
 	}
 
 	@AfterClass
@@ -175,13 +179,13 @@ public class TestTimeDAO
 		timedao.add(time);
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
-		Entry<Task, Duration> entry = result.get(0);
+		TimeDescriptor item = result.get(0);
 
-		Assert.assertEquals(task, entry.getKey());
+		Assert.assertEquals(task, item.getTask());
 		Duration expectedDuration = new Duration(60000);
-		Assert.assertEquals(expectedDuration, entry.getValue());
+		Assert.assertEquals(expectedDuration, item.getDuration());
 	}
 
 	@Test
@@ -193,13 +197,13 @@ public class TestTimeDAO
 		timedao.add(time);
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
-		Entry<Task, Duration> entry = result.get(0);
+		TimeDescriptor item = result.get(0);
 
-		Assert.assertEquals(task, entry.getKey());
+		Assert.assertEquals(task, item.getTask());
 		Duration expectedDuration = new Duration(stop.getMillis() - startOfDay.getMillis());
-		Assert.assertEquals(expectedDuration, entry.getValue());
+		Assert.assertEquals(expectedDuration, item.getDuration());
 
 	}
 
@@ -212,13 +216,13 @@ public class TestTimeDAO
 		timedao.add(time);
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, startOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
-		Entry<Task, Duration> entry = result.get(0);
+		TimeDescriptor item = result.get(0);
 
-		Assert.assertEquals(task, entry.getKey());
+		Assert.assertEquals(task, item.getTask());
 		Duration expectedDuration = new Duration(endOfDay.getMillis() - start.getMillis());
-		Assert.assertEquals(expectedDuration, entry.getValue());
+		Assert.assertEquals(expectedDuration, item.getDuration());
 	}
 
 	@Test
@@ -229,7 +233,7 @@ public class TestTimeDAO
 		timedao.add(time);
 		DateTime beginningOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(0, result.size());
 	}
 
@@ -241,7 +245,7 @@ public class TestTimeDAO
 		timedao.add(time);
 		DateTime beginningOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(0, result.size());
 	}
 
@@ -257,7 +261,7 @@ public class TestTimeDAO
 		timedao.add(time2);
 		DateTime beginningOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
 	}
 
@@ -274,11 +278,11 @@ public class TestTimeDAO
 
 		DateTime beginningOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
-		Entry<Task, Duration> entry = result.get(0);
+		TimeDescriptor item = result.get(0);
 		Duration expected = new Duration(60000 + 1000);
-		Assert.assertEquals(expected, entry.getValue());
+		Assert.assertEquals(expected, item.getDuration());
 	}
 
 	@Test
@@ -294,8 +298,27 @@ public class TestTimeDAO
 
 		DateTime beginningOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
-		List<Entry<Task, Duration>> result = timedao.getTimesSummary(user, beginningOfDay, endOfDay);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(2, result.size());
+	}
+
+	@Test
+	public final void testTimeHierarchy() throws SQLException
+	{
+		DateTime start = now.withHourOfDay(10);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, child);
+		timedao.add(time);
+
+		DateTime beginningOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
+		Assert.assertEquals(2, result.size());
+
+		TimeDescriptor parent = result.get(0);
+		Duration expected = new Duration(0);
+		Assert.assertEquals(expected, parent.getDuration());
+		expected = new Duration(5000);
+		Assert.assertEquals(expected, parent.getDurationWithChildren());
 	}
 
 }

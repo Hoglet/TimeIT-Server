@@ -27,7 +27,6 @@ public class TestIndexView
 	private static UUID					taskID		= UUID.randomUUID();
 	private static UUID					parentID	= UUID.fromString("b141b8ff-fa8e-47ff-8631-d86fe97cbc2b");
 	private static UUID					childID		= UUID.fromString("c624ba2d-2027-4858-9696-3efc4e4106ad");
-	private static Task					task;
 	private final static DateTime		now			= DateTime.now();
 
 	@BeforeClass
@@ -36,7 +35,6 @@ public class TestIndexView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task(taskID, "Name", null, false, DateTime.now(), false, user);
 		Task parent = new Task(parentID, "Parent", null, false, DateTime.now(), false, user);
 		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
@@ -46,6 +44,8 @@ public class TestIndexView
 		DateTime stop = start.plusMinutes(10);
 		Time time = new Time(UUID.randomUUID(), start, stop, false, now, parent);
 		TimeDAO timeDAO = new TimeDAO(emf);
+		timeDAO.add(time);
+		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
 		timeDAO.add(time);
 	}
 
@@ -71,7 +71,7 @@ public class TestIndexView
 		IndexView view = new IndexView(user, emf, null);
 		String expected = "Parent";
 		Assert.assertEquals(1, view.getTodaysTimes().size());
-		String result = view.getTodaysTimes().get(0).getKey();
+		String result = view.getTodaysTimes().get(0).getTask().getName();
 		Assert.assertEquals(expected, result);
 	}
 }
