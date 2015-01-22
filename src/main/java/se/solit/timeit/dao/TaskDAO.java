@@ -65,6 +65,15 @@ public class TaskDAO
 		return task;
 	}
 
+	public Collection<Task> getAllTasks(String username)
+	{
+		EntityManager em = emf.createEntityManager();
+		List<Task> tasks = iGetTasks(username, em, false);
+		tasks.addAll(iGetTasks(username, em, true));
+		em.close();
+		return tasks;
+	}
+
 	public final List<Task> getTasks(final String username) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();

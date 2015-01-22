@@ -24,7 +24,6 @@ public class TestIndexView
 {
 	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
 	private static User					user;
-	private static UUID					taskID		= UUID.randomUUID();
 	private static UUID					parentID	= UUID.fromString("b141b8ff-fa8e-47ff-8631-d86fe97cbc2b");
 	private static UUID					childID		= UUID.fromString("c624ba2d-2027-4858-9696-3efc4e4106ad");
 	private final static DateTime		now			= DateTime.now();

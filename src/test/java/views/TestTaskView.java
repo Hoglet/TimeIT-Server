@@ -63,4 +63,10 @@ public class TestTaskView
 		Assert.assertEquals(task, taskView.getTask());
 	}
 
+	@Test
+	public final void dummyEnumTest()
+	{
+		Action.valueOf(Action.ADD.toString());
+	}
+
 }

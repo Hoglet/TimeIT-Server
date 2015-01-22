@@ -103,9 +103,23 @@ public class TestTasksSyncResource
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
 		List<Task> resultingTasks = resource.accept("application/json").get(returnType);
 
-		Assert.assertEquals(resultingTasks.size(), 1);
+		Assert.assertEquals(1, resultingTasks.size());
 		Task resultingTask = resultingTasks.get(0);
 		Assert.assertTrue(resultingTask.equals(task));
+	}
+
+	@Test
+	public void testTasksGet_deleted()
+	{
+		Task task2 = new Task(UUID.randomUUID(), "Task1", null, false, DateTime.now(), true, user);
+		taskdao.add(task2);
+		WebResource resource = resources.client().resource("/sync/tasks/testman");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		List<Task> resultingTasks = resource.accept("application/json").get(returnType);
+
+		Assert.assertEquals(1, resultingTasks.size());
+		Task resultingTask = resultingTasks.get(0);
+		Assert.assertTrue(resultingTask.equals(task2));
 	}
 
 	@Test
@@ -113,6 +127,20 @@ public class TestTasksSyncResource
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
 		Task newTask = new Task(parentID, "newTask", null, false, DateTime.now(), false, user);
+		tasksToSend.add(newTask);
+		WebResource resource = resources.client().resource("/sync/tasks/testman");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		List<Task> resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
+	}
+
+	@Test
+	public void testTasksSync_deleted()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task newTask = new Task(parentID, "newTask", null, false, DateTime.now(), true, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -194,4 +222,5 @@ public class TestTasksSyncResource
 				.put(returnType, tasksToSend);
 		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
 	}
+
 }

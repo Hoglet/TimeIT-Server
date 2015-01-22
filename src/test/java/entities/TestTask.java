@@ -27,10 +27,13 @@ public class TestTask
 	private static final User	other			= new User("U2", "Ser", "Password", "email", null);
 	private final UUID			taskID			= UUID.randomUUID();
 	private final UUID			parentID		= UUID.randomUUID();
+	private final DateTime		createTime		= new DateTime(1000 * 1000);
+	private Task				task;
 
 	@Before
 	public void setUp() throws Exception
 	{
+		task = new Task(taskID, "", null, false, createTime, false, user);
 	}
 
 	@Test
@@ -63,34 +66,42 @@ public class TestTask
 	@Test
 	public final void testSetName()
 	{
-		Task task = new Task(taskID, "", null, false, DateTime.now(), false, user);
 		task.setName(JUST_A_STRING);
 		assertEquals(task.getName(), JUST_A_STRING);
+		assertTrue(createTime.isBefore(task.getLastChange()));
 	}
 
 	@Test
 	public final void testSetParent()
 	{
-		Task task = new Task(taskID, "", null, false, DateTime.now(), false, user);
 		Task parent = new Task(parentID, "", null, false, DateTime.now(), false, user);
 		task.setParent(parent);
 		assertEquals(task.getParent(), parent);
+		assertTrue(createTime.isBefore(task.getLastChange()));
 	}
 
 	@Test
 	public final void testSetCompleted()
 	{
-		Task task = new Task(taskID, "", null, false, DateTime.now(), false, user);
 		task.setCompleted(true);
 		assertTrue(task.getCompleted());
+		assertTrue(createTime.isBefore(task.getLastChange()));
 	}
 
 	@Test
 	public final void testSetOwner()
 	{
-		Task task = new Task(taskID, "", null, false, DateTime.now(), false, user);
 		task.setOwner(other);
 		assertTrue(task.getOwner().equals(other));
+		assertTrue(createTime.isBefore(task.getLastChange()));
+	}
+
+	@Test
+	public final void testSetDeleted()
+	{
+		task.setDeleted(true);
+		assertEquals(true, task.getDeleted());
+		assertTrue(createTime.isBefore(task.getLastChange()));
 	}
 
 	@Test

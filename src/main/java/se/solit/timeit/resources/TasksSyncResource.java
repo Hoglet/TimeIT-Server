@@ -23,8 +23,8 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TasksSyncResource
 {
-	private final TaskDAO	taskDAO;
-	private SyncHelper		syncHelper;
+	private final TaskDAO		taskDAO;
+	private final SyncHelper	syncHelper;
 
 	public TasksSyncResource(final EntityManagerFactory emf)
 	{
@@ -38,7 +38,7 @@ public class TasksSyncResource
 			throws SQLException
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
-		return taskDAO.getTasks(username);
+		return taskDAO.getAllTasks(username);
 	}
 
 	@PUT
@@ -49,6 +49,6 @@ public class TasksSyncResource
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTaskOwnership(authorizedUser, paramTasks);
 		taskDAO.updateOrAdd(paramTasks);
-		return taskDAO.getTasks(username);
+		return taskDAO.getAllTasks(username);
 	}
 }

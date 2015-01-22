@@ -77,6 +77,7 @@ public class Task
 	public final void setDeleted(final boolean deleted2)
 	{
 		this.deleted = deleted2;
+		lastChange = DateTime.now();
 	}
 
 	public final UUID getID()
@@ -220,6 +221,7 @@ public class Task
 		{
 			throw new NullPointerException("Owner is not allowed to be null");
 		}
+		lastChange = DateTime.now();
 		owner = owner2;
 	}
 
