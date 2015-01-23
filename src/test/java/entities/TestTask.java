@@ -49,6 +49,55 @@ public class TestTask
 	}
 
 	@Test
+	public final void serializeToJSON_withParent() throws IOException
+	{
+		ObjectMapper MAPPER = Jackson.newObjectMapper();
+		User user = new User("testman", "Test Tester", "password", "", null);
+		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
+		UUID parentID = UUID.fromString("6fd9a659-8834-4d31-a69c-1c6b601b8f50");
+		Task parent = new Task(parentID, "parent", null, false, new DateTime(1000 * 1000), false, user);
+		Task task = new Task(id, "Task1", parent, false, new DateTime(1000 * 1000), false, user);
+		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+		String jsonString = MAPPER.writeValueAsString(task);
+		Assert.assertEquals(fixture("fixtures/taskWithParent.json"), jsonString);
+	}
+
+	@Test
+	public final void deserializeFromJSON() throws IOException
+	{
+		ObjectMapper MAPPER = Jackson.newObjectMapper();
+		User user = new User("testman", "Test Tester", "password", "", null);
+		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
+		Task expected = new Task(id, "Task1", null, false, new DateTime(1000 * 1000), false, user);
+		Task actual = MAPPER.readValue(fixture("fixtures/task.json"), Task.class);
+		Assert.assertEquals("Name: ", expected.getName(), actual.getName());
+		Assert.assertEquals("Deleted: ", expected.getDeleted(), actual.getDeleted());
+		Assert.assertEquals("ID: ", expected.getID(), actual.getID());
+		Assert.assertEquals("Owner: ", expected.getOwner().getUsername(), actual.getOwner().getUsername());
+		Assert.assertEquals("Completed: ", expected.getCompleted(), actual.getCompleted());
+		Assert.assertEquals("Changed: ", expected.getLastChange(), actual.getLastChange());
+	}
+
+	@Test
+	public final void deserializeFromJSON_withParent() throws IOException
+	{
+		ObjectMapper MAPPER = Jackson.newObjectMapper();
+		User user = new User("testman", "Test Tester", "password", "", null);
+		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
+		UUID parentID = UUID.fromString("6fd9a659-8834-4d31-a69c-1c6b601b8f50");
+		Task parent = new Task(parentID, "parent", null, false, new DateTime(1000 * 1000), false, user);
+		Task expected = new Task(id, "Task1", parent, false, new DateTime(1000 * 1000), false, user);
+		Task actual = MAPPER.readValue(fixture("fixtures/taskWithParent.json"), Task.class);
+		Assert.assertEquals("Name: ", expected.getName(), actual.getName());
+		Assert.assertEquals("Deleted: ", expected.getDeleted(), actual.getDeleted());
+		Assert.assertEquals("ID: ", expected.getID(), actual.getID());
+		Assert.assertEquals("Owner: ", expected.getOwner().getUsername(), actual.getOwner().getUsername());
+		Assert.assertEquals("Parent: ", expected.getParent().getID(), actual.getParent().getID());
+		Assert.assertEquals("Completed: ", expected.getCompleted(), actual.getCompleted());
+		Assert.assertEquals("Changed: ", expected.getLastChange(), actual.getLastChange());
+	}
+
+	@Test
 	public final void forceID()
 	{
 		try

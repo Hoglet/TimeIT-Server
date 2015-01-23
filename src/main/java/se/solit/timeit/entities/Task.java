@@ -14,14 +14,18 @@ import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampDeserializer;
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
+import se.solit.timeit.serializers.TaskDeserializer;
 import se.solit.timeit.serializers.TaskSerializer;
 import se.solit.timeit.serializers.UserSerializer;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @XmlRootElement(name = "Task")
+@JsonDeserialize(using = TaskDeserializer.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Task
 {
 	@Id
@@ -69,15 +73,10 @@ public class Task
 		lastChange = paramLastChange;
 	}
 
-	public final void setLastChange(final DateTime lastChange2)
-	{
-		this.lastChange = lastChange2;
-	}
-
 	public final void setDeleted(final boolean deleted2)
 	{
-		this.deleted = deleted2;
 		lastChange = DateTime.now();
+		this.deleted = deleted2;
 	}
 
 	public final UUID getID()

@@ -3,6 +3,9 @@
   "name" : "Task1",
   "completed" : false,
   "deleted" : false,
+  "parent" : {
+    "id" : "6fd9a659-8834-4d31-a69c-1c6b601b8f50"
+  },
   "lastChange" : 1000,
   "owner" : {
     "username" : "testman"
