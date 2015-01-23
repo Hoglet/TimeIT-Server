@@ -38,10 +38,10 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 		if (node.findValue("lastChange") != null)
 		{
 			name = node.get("name").textValue();
-			// String pid = node.get("parent").textValue();
 
 			long millis = node.get("lastChange").longValue() * MILLISECONDS_PER_SECOND;
 			lastChanged = new DateTime(millis);
+
 			deleted = node.get("deleted").asBoolean();
 			JsonNode jn = node.get("owner");
 			owner = mapper.readValue(jn.traverse(oc), User.class);

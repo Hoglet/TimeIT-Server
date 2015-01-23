@@ -23,17 +23,19 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class TestTime
 {
-	private static final UUID		timeID	= UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-	private static final DateTime	now		= DateTime.now();
-	private static final User		owner	= new User("123", "", "", "", null);
-	private static final Task		task1	= new Task(UUID.randomUUID(), "task1", null, false, now, false, owner);
-	private static final Task		task2	= new Task(UUID.randomUUID(), "task2", null, false, now, false, owner);
+	private static final UUID		timeID			= UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
+	private static final DateTime	creationTime	= new DateTime(1000 * 1000);
+	private static final User		owner			= new User("123", "", "", "", null);
+	private static final Task		task1			= new Task(UUID.randomUUID(), "task1", null, false, creationTime,
+															false, owner);
+	private static final Task		task2			= new Task(UUID.randomUUID(), "task2", null, false, creationTime,
+															false, owner);
 	private Time					time;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time(timeID, new DateTime(0), new DateTime(1 * 1000), false, now, task1);
+		time = new Time(timeID, new DateTime(0), new DateTime(1 * 1000), false, creationTime, task1);
 	}
 
 	@Test
@@ -52,17 +54,27 @@ public class TestTime
 	}
 
 	@Test
-	public final void testGetUUID()
+	public final void deserializeFromJSON() throws IOException
 	{
-		assertEquals(time.getID(), timeID);
+		ObjectMapper MAPPER = Jackson.newObjectMapper();
+		User user = new User("testman", "Test Tester", "password", "", null);
+		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
+		Task task = new Task(id, "Task1", null, false, new DateTime(100 * 1000), false, user);
+
+		Time time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false,
+				new DateTime(100 * 1000), task);
+		Time result = MAPPER.readValue(fixture("fixtures/time2.json"), Time.class);
+		Assert.assertEquals(time.getDeleted(), result.getDeleted());
+		Assert.assertEquals(time.getID(), result.getID());
+		Assert.assertEquals(time.getStart(), result.getStart());
+		Assert.assertEquals(time.getStop(), result.getStop());
+		Assert.assertEquals(time.getChanged(), result.getChanged());
 	}
 
 	@Test
-	public final void testSetChanged()
+	public final void testGetUUID()
 	{
-		DateTime now = DateTime.now();
-		time.setChanged(now);
-		assertEquals(time.getChanged(), now);
+		assertEquals(time.getID(), timeID);
 	}
 
 	@Test
@@ -71,6 +83,7 @@ public class TestTime
 		assertFalse(time.getTask().equals(task2));
 		time.setTask(task2);
 		assertTrue(time.getTask().equals(task2));
+		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
 	}
 
 	@Test
@@ -79,6 +92,7 @@ public class TestTime
 		DateTime now = DateTime.now().withMillis(0);
 		time.setStart(now);
 		assertEquals(now, time.getStart());
+		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
 	}
 
 	@Test
@@ -87,6 +101,7 @@ public class TestTime
 		DateTime now = DateTime.now().withMillis(0);
 		time.setStop(now);
 		assertEquals(now, time.getStop());
+		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
 	}
 
 	@Test
@@ -95,6 +110,7 @@ public class TestTime
 		assertFalse(time.getDeleted());
 		time.setDeleted(true);
 		assertTrue(time.getDeleted());
+		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
 	}
 
 	@Test

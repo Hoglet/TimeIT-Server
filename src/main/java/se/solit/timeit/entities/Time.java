@@ -10,14 +10,15 @@ import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
-import se.solit.timeit.serializers.DateAsTimestampDeserializer;
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskSerializer;
+import se.solit.timeit.serializers.TimeDeserializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
+@JsonDeserialize(using = TimeDeserializer.class)
 public class Time
 {
 
@@ -33,17 +34,14 @@ public class Time
 	private Task				task;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
 	private long				start;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
 	private long				stop;
 
 	private boolean				deleted;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
 	private DateTime			changed;
 
 	protected Time()
@@ -64,11 +62,6 @@ public class Time
 	public final DateTime getChanged()
 	{
 		return changed;
-	}
-
-	public final void setChanged(final DateTime changed2)
-	{
-		this.changed = changed2;
 	}
 
 	public final void setTask(final Task task2)

@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
 
-import se.solit.timeit.serializers.DateAsTimestampDeserializer;
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskDeserializer;
 import se.solit.timeit.serializers.TaskSerializer;
@@ -37,7 +36,6 @@ public class Task
 	private boolean		completed;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	@JsonDeserialize(using = DateAsTimestampDeserializer.class)
 	private DateTime	lastChange;
 	private boolean		deleted;
 
