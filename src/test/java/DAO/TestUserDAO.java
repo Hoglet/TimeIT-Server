@@ -50,6 +50,21 @@ public class TestUserDAO
 	}
 
 	@Test
+	public final void testInvalidUser()
+	{
+		User user = new User("", "tester", "password", "email", null);
+		try
+		{
+			userdao.add(user);
+			Assert.fail("Zero length username should not be allowed");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Username must have non zero length", e.getMessage());
+		}
+	}
+
+	@Test
 	public final void testGetUser()
 	{
 		User user = new User("Test Tester", "tester", "password", "email", null);
@@ -67,6 +82,21 @@ public class TestUserDAO
 		userdao.update(u2);
 		User u3 = userdao.getUser(user.getUsername());
 		Assert.assertEquals(u3, u2);
+	}
+
+	@Test
+	public final void testUpdateOfNonExisting()
+	{
+		User user = new User("Test Tester", "tester", "password", "email", null);
+		try
+		{
+			userdao.update(user);
+			Assert.fail("Non existing user should not be added by update");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("User does not exist", e.getMessage());
+		}
 	}
 
 	@Test

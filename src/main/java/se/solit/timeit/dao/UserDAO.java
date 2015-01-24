@@ -30,6 +30,10 @@ public class UserDAO
 
 	public void add(User user)
 	{
+		if (user.getUsername().length() == 0)
+		{
+			throw new IllegalArgumentException("Username must have non zero length");
+		}
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		em.persist(user);
@@ -48,6 +52,10 @@ public class UserDAO
 	public void update(User user)
 	{
 		EntityManager em = emf.createEntityManager();
+		if (em.find(User.class, user.getUsername()) == null)
+		{
+			throw new IllegalArgumentException("User does not exist");
+		}
 		try
 		{
 			em.getTransaction().begin();

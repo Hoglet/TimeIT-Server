@@ -32,8 +32,7 @@ public class TestUser
 		try
 		{
 			user = new User(null, "", "", "", null);
-			Assert.assertTrue("Should not allow null user", false);
-			user.setEmail("");
+			Assert.fail("Should not allow null user");
 		}
 		catch (Exception e)
 		{
@@ -82,7 +81,13 @@ public class TestUser
 		Collection<Role> roles = new ArrayList<Role>();
 		Collection<Role> roles2 = new ArrayList<Role>();
 
-		User x = new User("testman", "Test Tester", "Password", "email", roles); // equals and hashCode check name field value
+		User x = new User("testman", "Test Tester", "Password", "email", roles); // equals
+																					// and
+																					// hashCode
+																					// check
+																					// name
+																					// field
+																					// value
 		User y = new User("testman", "Test Tester", "Password", "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
