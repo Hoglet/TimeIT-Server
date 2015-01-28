@@ -22,9 +22,6 @@ public class TestTimeDescriptorlist
 	private static DateTime				changeTime		= DateTime.now();
 	private static UUID					parentID		= UUID.randomUUID();
 	private static UUID					childID			= UUID.randomUUID();
-	private static TimeDescriptor		timeDescriptor1;
-	private static TimeDescriptor		timeDescriptor2;
-	private static TimeDescriptor		timeDescriptor3;
 	private static Duration				duration;
 	private static Duration				durationWithChildren;
 	private static Task					parent;

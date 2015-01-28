@@ -89,6 +89,18 @@ public class MonthReportView extends ReportView
 		}
 	}
 
+	public String getMonthLink()
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("/report/");
+		stringBuilder.append(reportedUser.getUsername());
+		stringBuilder.append("/");
+		stringBuilder.append(String.valueOf(pointInTime.getYear()));
+		stringBuilder.append("/");
+		stringBuilder.append(String.valueOf(pointInTime.getMonthOfYear()));
+		return stringBuilder.toString();
+	}
+
 	private String createUrl(DateTime nextPointInTime, boolean forward)
 	{
 		StringBuilder stringBuilder = new StringBuilder();

@@ -8,6 +8,9 @@ import com.sun.jersey.api.core.HttpContext;
 
 public class ReportView extends BaseView
 {
+	private static final int	YEAR_TAB_ID				= 0;
+	private static final int	MONTH_TAB_ID			= 1;
+	private static final int	DAY_TAB_ID				= 2;
 	protected static final int	TWO						= 2;
 	protected static final int	MONTHS_IN_YEAR			= 12;
 	protected static final int	LAST_SECOND_OF_MINUTE	= 59;
@@ -26,17 +29,21 @@ public class ReportView extends BaseView
 
 	public String tabs(int id)
 	{
-		String year = pointInTime.toString("YYYY");
-		String month = pointInTime.toString("M");
+		int year = pointInTime.getYear();
+		int month = pointInTime.getMonthOfYear();
+		int day = pointInTime.getDayOfYear();
 		StringBuilder stringBuilder = new StringBuilder();
-		monthTab(id, year, month, stringBuilder);
+		stringBuilder.append("<div class='tabs'>");
 		yearTab(id, year, stringBuilder);
+		monthTab(id, year, month, stringBuilder);
+		dayTab(id, year, month, day, stringBuilder);
+		stringBuilder.append("</div>");
 		return stringBuilder.toString();
 	}
 
-	private void yearTab(int id, String year, StringBuilder stringBuilder)
+	private void yearTab(int id, int year, StringBuilder stringBuilder)
 	{
-		if (id == 0)
+		if (id != YEAR_TAB_ID)
 		{
 			stringBuilder.append("<a href='/report/");
 			stringBuilder.append(reportedUser.getUsername());
@@ -49,19 +56,17 @@ public class ReportView extends BaseView
 		{
 			stringBuilder.append("<div class='tab selected'>");
 		}
-		stringBuilder.append("<h2>Year report</h2>");
+		stringBuilder.append("<h2>Year</h2>");
 		stringBuilder.append("</div>");
-		if (id == 0)
+		if (id != YEAR_TAB_ID)
 		{
 			stringBuilder.append("</a>");
 		}
-		stringBuilder.append("</div>");
 	}
 
-	private void monthTab(int id, String year, String month, StringBuilder stringBuilder)
+	private void monthTab(int id, int year, int month, StringBuilder stringBuilder)
 	{
-		stringBuilder.append("<div class='tabs'>");
-		if (id == 1)
+		if (id != MONTH_TAB_ID)
 		{
 			stringBuilder.append("<a href='/report/");
 			stringBuilder.append(reportedUser.getUsername());
@@ -76,9 +81,36 @@ public class ReportView extends BaseView
 		{
 			stringBuilder.append("<div class='tab selected'>");
 		}
-		stringBuilder.append("<h2>Month report</h2>");
+		stringBuilder.append("<h2>Month</h2>");
 		stringBuilder.append("</div>");
-		if (id == 1)
+		if (id != MONTH_TAB_ID)
+		{
+			stringBuilder.append("</a>");
+		}
+	}
+
+	private void dayTab(int id, int year, int month, int day, StringBuilder stringBuilder)
+	{
+		if (id != DAY_TAB_ID)
+		{
+			stringBuilder.append("<a href='/report/");
+			stringBuilder.append(reportedUser.getUsername());
+			stringBuilder.append("/");
+			stringBuilder.append(year);
+			stringBuilder.append("/");
+			stringBuilder.append(month);
+			stringBuilder.append("/");
+			stringBuilder.append(day);
+			stringBuilder.append("'>");
+			stringBuilder.append("<div class='tab'>");
+		}
+		else
+		{
+			stringBuilder.append("<div class='tab selected'>");
+		}
+		stringBuilder.append("<h2>Day</h2>");
+		stringBuilder.append("</div>");
+		if (id != DAY_TAB_ID)
 		{
 			stringBuilder.append("</a>");
 		}

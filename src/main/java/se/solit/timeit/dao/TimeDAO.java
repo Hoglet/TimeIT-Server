@@ -1,7 +1,6 @@
 package se.solit.timeit.dao;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,7 +67,7 @@ public class TimeDAO
 		return item;
 	}
 
-	public final Collection<Time> getTimes(final String username) throws SQLException
+	public final List<Time> getTimes(final String username) throws SQLException
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();
 		List<Time> items = iGetTimes(username, em);
@@ -190,5 +189,18 @@ public class TimeDAO
 			TimeDescriptor entry = new TimeDescriptor(task, duration, durationWithChildren);
 			returnValue.add(entry);
 		}
+	}
+
+	public List<Time> getTimeItems(Task task, DateTime start, DateTime stop)
+	{
+		EntityManager em = entityManagerFactory.createEntityManager();
+		TypedQuery<Time> getTimesQuery = em
+				.createQuery(
+						"SELECT t FROM Time t WHERE t.task=:task AND ((t.start>=:start AND t.start<=:stop) OR (t.stop>=:start AND t.stop<=:stop))",
+						Time.class);
+		getTimesQuery.setParameter("task", task);
+		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
+		getTimesQuery.setParameter(STOP, stop.getMillis() / MILLISECONDS_PER_SECOND);
+		return getTimesQuery.getResultList();
 	}
 }

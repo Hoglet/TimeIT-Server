@@ -65,6 +65,35 @@ public class TestReportResource
 	}
 
 	@Test
+	public void testDayReport()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/report/minion/2014/12/1");
+		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
+		String actual = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(actual.contains("<div id=\"DayReport\""));
+		Assert.assertTrue(actual.contains("<div id=\"month\">December</div>"));
+		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
+	}
+
+	@Test
+	public void testGetDayReport_wrongUser()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/report/minion/2014/12/1");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		try
+		{
+			resource.accept("text/html").get(String.class);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
 	public void testGetMonthReport()
 	{
 		Client client = resources.client();

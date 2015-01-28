@@ -46,7 +46,8 @@ table.timeTable td.taskName
 	min-width: 10em ;
 }
 body.report #month,
-body.report #year
+body.report #year,
+body.report #day
 {
 	display: inline-block;
 	font-size: 140%;
@@ -62,4 +63,92 @@ body.report #dateBar
 {
 	display: inline-block;
 	background-color: lightgrey;
+}
+#DayReport table
+{
+	border-spacing: 0;
+	padding: 2px;
+}
+#DayReport table th
+{
+	padding-left: 0.3em;
+	padding-right: 0.5em;
+	border-radius: 0.3em;
+}
+#DayReport table.timeTable .Column0
+{
+	background-color: lawngreen;
+	min-width: 5em;
+}
+
+#DayReport table.timeTable .Column1
+{
+	background-color: lightblue;
+	min-width: 5em;
+}
+
+#DayReport table.timeTable .Column2
+{
+	background-color: pink;
+	min-width: 5em;
+}
+#DayReport table.timeTable .Column3
+{
+	background-color: yellow;
+	min-width: 5em;
+}
+
+#DayReport table.timeTable .Column4
+{
+	background-color: orange;
+	min-width: 5em;
+}
+
+
+#DayReport table.timeTable .Column5
+{
+	background-color: lavender;
+	min-width: 5em;
+}
+
+#DayReport table.timeTable .Column6
+{
+	background-color: orchid;
+	min-width: 5em;
+}
+#DayReport table.timeTable .Column7,
+#DayReport table.timeTable .Column8,
+#DayReport table.timeTable .Column9,
+#DayReport table.timeTable .Column10,
+#DayReport table.timeTable .Column11,
+#DayReport table.timeTable .Column12,
+#DayReport table.timeTable .Column13
+{
+	background-color: lightgray;
+	min-width: 5em;
+}
+
+@media print
+{
+	body
+	{
+		font-size: 10pt;
+	}
+	#DayReport table.timeTable .Column0,
+	#DayReport table.timeTable .Column1,
+	#DayReport table.timeTable .Column2,
+	#DayReport table.timeTable .Column3,
+	#DayReport table.timeTable .Column4,
+	#DayReport table.timeTable .Column5,
+	#DayReport table.timeTable .Column6,
+	#DayReport table.timeTable .Column7,
+	#DayReport table.timeTable .Column8,
+	#DayReport table.timeTable .Column9,
+	#DayReport table.timeTable .Column10,
+	#DayReport table.timeTable .Column11,
+	#DayReport table.timeTable .Column12,
+	#DayReport table.timeTable .Column13
+	{
+		border: solid 1px black;
+	}
 }

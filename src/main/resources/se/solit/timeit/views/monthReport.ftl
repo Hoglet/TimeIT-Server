@@ -6,7 +6,7 @@
 </head>
 <body class="report">
 	<#include "top.ftl">
-	${tabs(0)}
+	${tabs(1)}
 	<div id="MonthReport" class="report">
 		<div id="dateBar">
 		${previousMonthLink}<div id="month">${month}</div>${nextMonthLink} ${previousYearLink}<div id="year">${year}</div>${nextYearLink}
@@ -40,7 +40,11 @@
 	<tr class=""><th class="dayOfMonth"></th><th></th><th class=""></th><th></th><th>Duration</th><th>&nbsp;</th><th>(With&nbsp;children)</th><th class="lastColumn"></th></tr>
 	<#list 1..daysInMonth as d>
 	<#assign day=getDay(d)>
-	<tr class="dayRow ${day}"><td class="dayOfMonth">${d}</td><td></td><td class="${day}">${day}</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td></td><td class="lastColumn"></td></tr>
+	<tr class="dayRow ${day}"><td class="dayOfMonth">
+		<a href="${monthLink}/${d}">
+		${d}
+		</a>
+	</td><td></td><td class="${day}">${day}</td><td></td><td>&nbsp;</td><td>&nbsp;</td><td></td><td class="lastColumn"></td></tr>
         	<#list getTimes(d) as item>
         		<tr class="${day}">
         		<td>

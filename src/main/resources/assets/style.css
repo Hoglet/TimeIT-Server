@@ -272,14 +272,22 @@ div.tabs h1,
 div.tabs h2,
 div.tabs h3
 {
-	margin: 0.4em 0.2em 0.3em;
+	margin: 0.3em 0.2em 0.2em;
 }
+
+div.tabs a,
 div.tab
 {
 	display: table-cell;
+}
+
+div.tab
+{
 	padding-left: 0.8em;
 	padding-right: 0.8em;
 	background-color: transparent;
+	border: 1px solid darkgray;
+	border-bottom: none;
 	border-top-left-radius: 0.5em;
 	border-top-right-radius: 0.5em;
 	background: lightgray;

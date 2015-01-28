@@ -69,8 +69,10 @@ public class TestReportView
 		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null);
 		String tab1 = view.tabs(0);
 		String tab2 = view.tabs(1);
-		Assert.assertTrue(tab1.contains("<div class='tab selected'><h2>Month "));
-		Assert.assertTrue(tab2.contains("<div class='tab selected'><h2>Year "));
+		String tab3 = view.tabs(2);
+		Assert.assertTrue(tab1.contains("<div class='tab selected'><h2>Year"));
+		Assert.assertTrue(tab2.contains("<div class='tab selected'><h2>Month"));
+		Assert.assertTrue(tab3.contains("<div class='tab selected'><h2>Day"));
 	}
 
 }

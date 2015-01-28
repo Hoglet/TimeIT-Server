@@ -62,6 +62,16 @@ public class YearReportView extends ReportView
 		}
 	}
 
+	public String getYearLink()
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("/report/");
+		stringBuilder.append(reportedUser.getUsername());
+		stringBuilder.append("/");
+		stringBuilder.append(String.valueOf(pointInTime.getYear()));
+		return stringBuilder.toString();
+	}
+
 	private String createUrl(DateTime nextPointInTime, boolean forward)
 	{
 		StringBuilder stringBuilder = new StringBuilder();

@@ -321,4 +321,25 @@ public class TestTimeDAO
 		Assert.assertEquals(expected, parent.getDurationWithChildren());
 	}
 
+	@Test
+	public final void testGetTimeItems() throws SQLException
+	{
+		DateTime start = now.withHourOfDay(10);
+		DateTime beginingOfDay = now.withTimeAtStartOfDay();
+		DateTime endOfDay = now.withTime(23, 59, 59, 0);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task2);
+		Time time2 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(1), beginingOfDay.plusHours(1), false, now,
+				task2);
+		Time time3 = new Time(UUID.randomUUID(), endOfDay.minusHours(1), endOfDay.plusHours(2), false, now, task2);
+		Time time4 = new Time(UUID.randomUUID(), endOfDay.plusHours(1), endOfDay.plusHours(2), false, now, task2);
+		Time time5 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(2), beginingOfDay.minusHours(1), false, now,
+				task2);
+		timedao.add(time);
+		timedao.add(time2);
+		timedao.add(time3);
+		timedao.add(time4);
+		timedao.add(time5);
+		List<Time> actual = timedao.getTimeItems(task2, beginingOfDay, endOfDay);
+		Assert.assertEquals(3, actual.size());
+	}
 }
