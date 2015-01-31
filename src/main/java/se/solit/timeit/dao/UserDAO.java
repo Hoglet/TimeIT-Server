@@ -1,13 +1,11 @@
 package se.solit.timeit.dao;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
-import se.solit.timeit.entities.Task;
-import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
 public class UserDAO
@@ -87,27 +85,17 @@ public class UserDAO
 
 	private void removeAllTimes(String username, EntityManager em)
 	{
-		List<Time> times = TimeDAO.iGetTimes(username, em);
-		for (Time time : times)
-		{
-			em.remove(time);
-		}
+		Query query = em.createQuery("DELETE FROM Time t WHERE t.task.owner.username=:username");
+		query.setParameter("username", username);
+		query.executeUpdate();
 		em.flush();
 	}
 
 	private void removeAllTasks(String username, EntityManager em)
 	{
-		List<Task> tasks = TaskDAO.iGetTasks(username, em, false);
-		for (Task task : tasks)
-		{
-			em.remove(task);
-		}
-		tasks = TaskDAO.iGetTasks(username, em, true);
-		for (Task task : tasks)
-		{
-			em.remove(task);
-		}
-
+		Query query = em.createQuery("DELETE FROM Task t WHERE t.owner.username=:username");
+		query.setParameter("username", username);
+		query.executeUpdate();
 		em.flush();
 	}
 
