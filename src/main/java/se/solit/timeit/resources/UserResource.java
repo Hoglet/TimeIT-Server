@@ -3,7 +3,6 @@ package se.solit.timeit.resources;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mockito.Mockito;
+
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
@@ -36,12 +37,13 @@ import se.solit.timeit.views.UserEditView;
 import com.sun.jersey.api.core.HttpContext;
 
 @Path("/user")
-public class UserResource
+public class UserResource extends BaseResource
 {
 	private static final String			ACCESS_DENIED	= "Access denied";
 	private static final String			ADMIN_PATH		= "/user/";
 	private final EntityManagerFactory	emf;
 	private final UserDAO				userManager;
+	private final HttpSession			session			= Mockito.mock(HttpSession.class);
 
 	public UserResource(EntityManagerFactory emf)
 	{
@@ -56,9 +58,7 @@ public class UserResource
 	{
 		if (user.hasRole(Role.ADMIN))
 		{
-			String message = (String) session.getAttribute("message");
-			session.removeAttribute("message");
-			return Response.ok(new UserAdminView(emf, user, context, message)).build();
+			return Response.ok(new UserAdminView(emf, user, context, session)).build();
 		}
 		else
 		{
@@ -76,7 +76,7 @@ public class UserResource
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN) || authorizedUser.getUsername().equals(username))
 		{
-			response = Response.ok(new UserEditView(username, emf, authorizedUser, context)).build();
+			response = Response.ok(new UserEditView(username, emf, authorizedUser, context, session)).build();
 		}
 		return response;
 	}
@@ -107,12 +107,13 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public Response userAdd(@Auth User authorizedUser, @Context HttpContext context) throws URISyntaxException
+	public Response userAdd(@Auth User authorizedUser, @Context HttpContext context, @Session HttpSession session)
+			throws URISyntaxException
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			response = Response.ok(new UserAddView(emf, authorizedUser, context)).build();
+			response = Response.ok(new UserAddView(emf, authorizedUser, context, session)).build();
 		}
 		return response;
 	}
@@ -164,23 +165,16 @@ public class UserResource
 		throw redirect(ADMIN_PATH);
 	}
 
-	private WebApplicationException redirect(String destination) throws URISyntaxException
-	{
-		URI uri = new URI(destination);
-		Response response = Response.seeOther(uri).build();
-		return new WebApplicationException(response);
-	}
-
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete/{username}")
 	public Response deleteConfirm(@Auth User authorizedUser, @PathParam("username") final String username,
-			@Context HttpContext context)
+			@Context HttpContext context, @Session HttpSession session)
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			response = Response.ok(new DeleteUserView(emf, authorizedUser, username, context)).build();
+			response = Response.ok(new DeleteUserView(emf, authorizedUser, username, context, session)).build();
 		}
 		return response;
 	}

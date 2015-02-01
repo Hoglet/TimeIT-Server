@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.joda.time.DateTime;
@@ -21,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.application.MyAuthenticator;
 import se.solit.timeit.dao.TaskDAO;
@@ -31,6 +33,7 @@ import se.solit.timeit.resources.TaskResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.representation.Form;
@@ -49,11 +52,16 @@ public class TestTaskResource
 	private static User						user;
 
 	private Task							task;
+	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
 																	.addResource(new TaskResource(emf))
+																	.addProvider(
+																			new SessionInjectableProvider<HttpSession>(
+																					HttpSession.class,
+																					mockSession))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))
@@ -351,9 +359,14 @@ public class TestTaskResource
 		Form form = new Form();
 		form.add("taskid", id.toString());
 
-		String result = resource.accept("text/html").post(String.class, form);
-		Assert.assertTrue(result.contains("Task is deleted"));
-		Assert.assertEquals(true, taskDAO.getByID(id).getDeleted());
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
+		}
 	}
 
 	@Test

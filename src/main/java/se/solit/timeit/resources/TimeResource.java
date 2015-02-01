@@ -1,12 +1,15 @@
 package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
+import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,13 +26,12 @@ import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.TimeView;
 
 import com.sun.jersey.api.core.HttpContext;
 
 @Path("/time")
-public class TimeResource
+public class TimeResource extends BaseResource
 {
 	private final EntityManagerFactory	emf;
 	private final TaskDAO				taskDAO;
@@ -45,11 +47,11 @@ public class TimeResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public View getAdd(@Auth User user, @Context HttpContext context)
+	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
 		DateTime now = DateTime.now();
 		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
-		return new TimeView(emf, time, user, context);
+		return new TimeView(emf, time, user, context, session);
 	}
 
 	@POST
@@ -57,8 +59,8 @@ public class TimeResource
 	@Path("/add")
 	public View postAdd(@Auth User user, @FormParam("timeid") String id, @FormParam("start") String paramStart,
 			@FormParam("stop") String paramStop, @FormParam("taskid") String taskID, @FormParam("date") String date,
-			@Context HttpContext context)
-			throws SQLException
+			@Context HttpContext context, @Session HttpSession session)
+			throws SQLException, URISyntaxException
 	{
 		DateTime now = DateTime.now();
 
@@ -72,8 +74,7 @@ public class TimeResource
 		Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
 		timedao.add(time);
 		String headline = "Time added successfully";
-		String url = "/";
-		return new MessageView(user, headline, "", url, context);
-
+		setMessage(session, headline);
+		throw redirect("/");
 	}
 }

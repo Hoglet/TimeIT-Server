@@ -1,9 +1,11 @@
 package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
+import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,8 +28,8 @@ public class IndexResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	public View landingPage(@Auth User user, @Context HttpContext context)
+	public View landingPage(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
-		return new IndexView(user, emf, context);
+		return new IndexView(user, emf, context, session);
 	}
 }

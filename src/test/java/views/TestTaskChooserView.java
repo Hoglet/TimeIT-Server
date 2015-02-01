@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -25,6 +27,7 @@ public class TestTaskChooserView
 	private static User					user2;
 	private static UUID					parentID	= UUID.fromString("24765cb7-d346-4ec4-8fc8-c381b6b38a6e");
 	private static UUID					childID		= UUID.fromString("b0d3462a-d214-4969-98f0-1f90e8650cc7");
+	private final HttpSession			session		= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void beforeClass()
@@ -48,7 +51,7 @@ public class TestTaskChooserView
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT, null);
+		TaskChooserView view = new TaskChooserView(emf, user2, Action.EDIT, null, session);
 		String expected = "[24765cb7-d346-4ec4-8fc8-c381b6b38a6e=Parent, b0d3462a-d214-4969-98f0-1f90e8650cc7=Parent/child]";
 		Assert.assertEquals(expected, view.getTasks().toString());
 	}

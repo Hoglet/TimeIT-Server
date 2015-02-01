@@ -3,6 +3,7 @@ package se.solit.timeit.views;
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -17,9 +18,9 @@ public class UserEditView extends BaseView
 	private final RoleDAO	roleDAO;
 	private final UserDAO	userDAO;
 
-	public UserEditView(String username, EntityManagerFactory emf, User user, HttpContext context)
+	public UserEditView(String username, EntityManagerFactory emf, User user, HttpContext context, HttpSession session)
 	{
-		super("useredit.ftl", user, context);
+		super("useredit.ftl", user, context, session);
 		userDAO = new UserDAO(emf);
 		roleDAO = new RoleDAO(emf);
 		this.username = username;

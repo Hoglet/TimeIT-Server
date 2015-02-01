@@ -4,11 +4,13 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
@@ -37,7 +39,8 @@ public class TestDeleteUserView
 	@Test
 	public final void testGetUser() throws SQLException
 	{
-		DeleteUserView view = new DeleteUserView(emf, user, user.getUsername(), null);
+		HttpSession session = Mockito.mock(HttpSession.class);
+		DeleteUserView view = new DeleteUserView(emf, user, user.getUsername(), null, session);
 		Assert.assertEquals(user, view.getUser());
 	}
 

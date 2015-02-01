@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 
@@ -24,9 +25,9 @@ public class IndexView extends BaseView
 	private final TaskDAO	taskdao;
 	private final TimeDAO	timedao;
 
-	public IndexView(User user, EntityManagerFactory emf, HttpContext context)
+	public IndexView(User user, EntityManagerFactory emf, HttpContext context, HttpSession session)
 	{
-		super("index.ftl", user, context);
+		super("index.ftl", user, context, session);
 		taskdao = new TaskDAO(emf);
 		timedao = new TimeDAO(emf);
 	}

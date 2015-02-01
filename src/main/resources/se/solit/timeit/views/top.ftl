@@ -24,3 +24,9 @@ ${reportLink}
 </div>
 </div>
 <div id="content">
+		<p>
+		<#if message?length gt 0>
+			<div id="message">${message}
+			</div>
+		</#if>
+		</p>

@@ -2,6 +2,7 @@ package views;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -9,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.entities.Role;
@@ -19,6 +21,7 @@ public class TestUserAddView
 {
 
 	private static EntityManagerFactory	emf;
+	private final HttpSession			session	= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
@@ -51,7 +54,7 @@ public class TestUserAddView
 		roleDAO.add(otherRole);
 		roleDAO.add(adminRole);
 		User user2 = new User("minion", "Do Er", "password", "email", null);
-		UserAddView userAddView = new UserAddView(emf, user2, null);
+		UserAddView userAddView = new UserAddView(emf, user2, null, session);
 		Assert.assertEquals(2, userAddView.getRoles().size());
 	}
 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
@@ -22,9 +23,10 @@ public class TaskView extends BaseView
 	private final TaskDAO	taskdao;
 	private final Action	action;
 
-	public TaskView(EntityManagerFactory emf, Task task, User user, Action action, HttpContext context)
+	public TaskView(EntityManagerFactory emf, Task task, User user, Action action, HttpContext context,
+			HttpSession session)
 	{
-		super("task.ftl", user, context);
+		super("task.ftl", user, context, session);
 		this.task = task;
 		this.action = action;
 		taskdao = new TaskDAO(emf);

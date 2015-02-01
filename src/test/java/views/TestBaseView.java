@@ -2,6 +2,7 @@ package views;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -27,8 +28,9 @@ public class TestBaseView
 	@Test
 	public final void testGetCurrentUser()
 	{
+		HttpSession session = Mockito.mock(HttpSession.class);
 		User user = new User("minion", "Do Er", "password", "email", null);
-		BaseView view = new BaseView("index.ftl", user, null);
+		BaseView view = new BaseView("index.ftl", user, null, session);
 		Assert.assertEquals(view.getCurrentUser(), user);
 	}
 
@@ -40,11 +42,13 @@ public class TestBaseView
 		HttpRequestContext mockRequest = Mockito.mock(HttpRequestContext.class);
 		Mockito.when(mockRequest.getPath()).thenReturn("report/");
 		Mockito.when(context.getRequest()).thenReturn(mockRequest);
-		BaseView view = new BaseView("index.ftl", user, context);
+
+		HttpSession session = Mockito.mock(HttpSession.class);
+		BaseView view = new BaseView("index.ftl", user, context, session);
 		Assert.assertEquals("selected", view.getClasses("report"));
 
 		Mockito.when(mockRequest.getPath()).thenReturn("/");
-		view = new BaseView("index.ftl", user, context);
+		view = new BaseView("index.ftl", user, context, session);
 		Assert.assertEquals("", view.getClasses("report"));
 
 	}

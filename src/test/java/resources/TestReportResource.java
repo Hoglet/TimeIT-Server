@@ -6,6 +6,7 @@ import io.dropwizard.views.ViewMessageBodyWriter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.junit.AfterClass;
@@ -13,6 +14,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.application.MyAuthenticator;
 import se.solit.timeit.dao.UserDAO;
@@ -35,11 +37,17 @@ public class TestReportResource
 
 	private static User						otheruser;
 
+	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
+
 	@SuppressWarnings("deprecation")
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
 																	.addResource(new ReportResource(emf))
+																	.addProvider(
+																			new SessionInjectableProvider<HttpSession>(
+																					HttpSession.class,
+																					mockSession))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))

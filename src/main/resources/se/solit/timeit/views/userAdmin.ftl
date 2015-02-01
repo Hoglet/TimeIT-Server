@@ -24,11 +24,5 @@
 			</#list>
 			</tbody>
 		</table>
-		<p>
-		<#if message?length gt 0>
-			<div id="message">${message}
-			</div>
-		</#if>
-		</p>
 </body>
 </html>

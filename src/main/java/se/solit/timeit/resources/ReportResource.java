@@ -1,11 +1,13 @@
 package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
+import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.sql.SQLException;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -40,7 +42,7 @@ public class ReportResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}")
 	public View getYearReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final int year, @Context HttpContext context)
+			@PathParam("year") final int year, @Context HttpContext context, @Session HttpSession session)
 	{
 		YearReportView result = null;
 		if (user.getUsername().equals(username))
@@ -48,7 +50,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			DateTime pointInTime = new DateTime(year, 1, 1, 1, 1);
-			result = new YearReportView(emf, pointInTime, user, userToShow, context);
+			result = new YearReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
 		{
@@ -61,7 +63,8 @@ public class ReportResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}/{month}")
 	public View getMonthReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final int year, @PathParam("month") final int month, @Context HttpContext context)
+			@PathParam("year") final int year, @PathParam("month") final int month, @Context HttpContext context,
+			@Session HttpSession session)
 	{
 		MonthReportView result = null;
 		if (user.getUsername().equals(username))
@@ -69,7 +72,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			DateTime pointInTime = new DateTime(year, month, 1, 1, 1);
-			result = new MonthReportView(emf, pointInTime, user, userToShow, context);
+			result = new MonthReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
 		{
@@ -83,7 +86,7 @@ public class ReportResource
 	@Path("/{username}/{year}/{month}/{day}")
 	public View getDayReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @PathParam("month") final int month, @PathParam("day") final int day,
-			@Context HttpContext context) throws SQLException
+			@Context HttpContext context, @Session HttpSession session) throws SQLException
 	{
 		DayReportView result = null;
 		if (user.getUsername().equals(username))
@@ -91,7 +94,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			DateTime pointInTime = new DateTime(year, month, day, 1, 1);
-			result = new DayReportView(emf, pointInTime, user, userToShow, context);
+			result = new DayReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
 		{

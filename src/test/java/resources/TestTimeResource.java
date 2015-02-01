@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.joda.time.DateTime;
@@ -17,6 +18,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.application.MyAuthenticator;
 import se.solit.timeit.dao.TaskDAO;
@@ -46,6 +48,7 @@ public class TestTimeResource
 	private static TimeDAO					timeDAO;
 
 	private static User						user;
+	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
 
 	private static Time						time;
 	private static Task						task;
@@ -55,6 +58,10 @@ public class TestTimeResource
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
 																	.addResource(new TimeResource(emf))
+																	.addProvider(
+																			new SessionInjectableProvider<HttpSession>(
+																					HttpSession.class,
+																					mockSession))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))

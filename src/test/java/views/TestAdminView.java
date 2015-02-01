@@ -2,11 +2,13 @@ package views;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
@@ -26,7 +28,8 @@ public class TestAdminView
 		UserDAO userDao = new UserDAO(emf);
 		userDao.add(user1);
 		userDao.add(user2);
-		adminView = new UserAdminView(emf, user2, null, null);
+		HttpSession mockSession = Mockito.mock(HttpSession.class);
+		adminView = new UserAdminView(emf, user2, null, mockSession);
 	}
 
 	@AfterClass

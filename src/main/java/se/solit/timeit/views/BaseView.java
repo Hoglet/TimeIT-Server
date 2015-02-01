@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpSession;
+
 import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.Role;
@@ -24,10 +26,19 @@ public class BaseView extends View
 
 	private String						currentPath	= "/";
 
-	public BaseView(String template, User user, HttpContext context)
+	private String						message;
+
+	public BaseView(String template, User user, HttpContext context, HttpSession session)
 	{
 		super(template, Charsets.UTF_8);
 		this.user = user;
+		this.message = (String) session.getAttribute("message");
+		if (this.message == null)
+		{
+			this.message = "";
+		}
+		session.removeAttribute("message");
+
 		if (context != null)
 		{
 			currentPath = context.getRequest().getPath();
@@ -85,5 +96,10 @@ public class BaseView extends View
 			}
 		}
 		return "home";
+	}
+
+	public String getMessage()
+	{
+		return message;
 	}
 }

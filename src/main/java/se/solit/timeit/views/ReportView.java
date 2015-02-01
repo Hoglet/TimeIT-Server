@@ -1,5 +1,7 @@
 package se.solit.timeit.views;
 
+import javax.servlet.http.HttpSession;
+
 import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.User;
@@ -20,9 +22,10 @@ public class ReportView extends BaseView
 	protected DateTime			pointInTime;
 	protected final User		reportedUser;
 
-	public ReportView(String template, User user, DateTime pointInTime, User reportedUser, HttpContext context)
+	public ReportView(String template, User user, DateTime pointInTime, User reportedUser, HttpContext context,
+			HttpSession session)
 	{
-		super(template, user, context);
+		super(template, user, context, session);
 		this.pointInTime = pointInTime;
 		this.reportedUser = reportedUser;
 	}

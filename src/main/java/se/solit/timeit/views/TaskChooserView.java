@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
@@ -20,9 +21,9 @@ public class TaskChooserView extends BaseView
 	private final TaskDAO	taskdao;
 	private final Action	type;
 
-	public TaskChooserView(EntityManagerFactory emf, User user, Action type2, HttpContext context)
+	public TaskChooserView(EntityManagerFactory emf, User user, Action type2, HttpContext context, HttpSession session)
 	{
-		super("taskChooser.ftl", user, context);
+		super("taskChooser.ftl", user, context, session);
 		taskdao = new TaskDAO(emf);
 		this.type = type2;
 	}

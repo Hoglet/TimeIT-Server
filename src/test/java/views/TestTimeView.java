@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
@@ -28,6 +30,7 @@ public class TestTimeView
 	private static UUID					timeID		= UUID.randomUUID();
 	private static UUID					parentID	= UUID.fromString("e00b8d6f-3f89-4748-98ca-25ef6225d06a");
 	private static UUID					childID		= UUID.fromString("4afe7048-fefe-4c5f-b32f-d4a771175b70");
+	private final HttpSession			session		= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -56,14 +59,14 @@ public class TestTimeView
 	@Test
 	public final void testGetTime()
 	{
-		TimeView view = new TimeView(emf, time, user, null);
+		TimeView view = new TimeView(emf, time, user, null, session);
 		Assert.assertEquals(time, view.getTime());
 	}
 
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		TimeView view = new TimeView(emf, time, user, null);
+		TimeView view = new TimeView(emf, time, user, null, session);
 		String expected = "[e00b8d6f-3f89-4748-98ca-25ef6225d06a=parent, 4afe7048-fefe-4c5f-b32f-d4a771175b70=parent/child]";
 		String actual = view.getTasks().toString();
 		Assert.assertEquals(expected, actual);

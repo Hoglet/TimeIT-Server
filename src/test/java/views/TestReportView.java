@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
@@ -22,10 +24,11 @@ import se.solit.timeit.views.ReportView;
 
 public class TestReportView
 {
-	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
 	private static User					user;
 	private static DateTime				pointInMonth;
 	private static int					dayToTest;
+	private final HttpSession			session	= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -59,14 +62,14 @@ public class TestReportView
 	@Test
 	public final void testGetYear()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null);
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session);
 		Assert.assertEquals("2014", view.getYear());
 	}
 
 	@Test
 	public final void testGetTabs()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null);
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session);
 		String tab1 = view.tabs(0);
 		String tab2 = view.tabs(1);
 		String tab3 = view.tabs(2);

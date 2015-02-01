@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -40,7 +42,8 @@ public class TestUserEditView
 		UserDAO userDAO = new UserDAO(emf);
 		userDAO.add(user1);
 		userDAO.add(user2);
-		userEditView = new UserEditView("egon", emf, user2, null);
+		HttpSession session = Mockito.mock(HttpSession.class);
+		userEditView = new UserEditView("egon", emf, user2, null, session);
 	}
 
 	@AfterClass

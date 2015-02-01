@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
@@ -23,12 +25,13 @@ import se.solit.timeit.views.YearReportView;
 
 public class TestYearReportView
 {
-	private static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
 	private static User					user;
 	private static DateTime				pointInMonth;
 	private static int					monthToTest;
 	private static int					dayToTest;
 	private static DateTime				now;
+	private final HttpSession			session	= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -64,14 +67,14 @@ public class TestYearReportView
 	@Test
 	public final void testGetYear()
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null, session);
 		Assert.assertEquals("2014", view.getYear());
 	}
 
 	@Test
 	public final void testGetTimes() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null, session);
 		String expected = "Name";
 		TimeDescriptorList result = view.getTimes(monthToTest);
 		Assert.assertEquals(1, result.size());
@@ -82,12 +85,12 @@ public class TestYearReportView
 	@Test
 	public final void testGetNextYear() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, now, user, user, null);
+		YearReportView view = new YearReportView(emf, now, user, user, null, session);
 		String expected = "<button type='button' disabled='disabled'>&gt;&gt;</button>";
 		String actual = view.getNextYearLink();
 
 		Assert.assertEquals(expected, actual);
-		view = new YearReportView(emf, pointInMonth, user, user, null);
+		view = new YearReportView(emf, pointInMonth, user, user, null, session);
 		expected = "<a href='/report/minion/2015'><button type='button'>&gt;&gt;</button></a>";
 		actual = view.getNextYearLink();
 		Assert.assertEquals(expected, actual);
@@ -96,7 +99,7 @@ public class TestYearReportView
 	@Test
 	public final void testGetPreviousYear() throws SQLException
 	{
-		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null);
+		YearReportView view = new YearReportView(emf, pointInMonth, user, user, null, session);
 		String expected = "<a href='/report/minion/2013'><button type='button'>&lt;&lt;</button></a>";
 		String actual = view.getPreviousYearLink();
 		Assert.assertEquals(expected, actual);

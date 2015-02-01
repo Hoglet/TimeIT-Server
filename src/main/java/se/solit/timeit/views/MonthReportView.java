@@ -1,6 +1,9 @@
 package se.solit.timeit.views;
 
+import io.dropwizard.jersey.sessions.Session;
+
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 
@@ -15,9 +18,9 @@ public class MonthReportView extends ReportView
 	private final TimeDAO	timeDAO;
 
 	public MonthReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser,
-			HttpContext context)
+			HttpContext context, @Session HttpSession session)
 	{
-		super("monthReport.ftl", user, pointInMonth, reportedUser, context);
+		super("monthReport.ftl", user, pointInMonth, reportedUser, context, session);
 		timeDAO = new TimeDAO(emf);
 	}
 
