@@ -13,15 +13,26 @@ public class UserAdminView extends BaseView
 {
 
 	private final UserDAO	userManager;
+	private String			message	= "";
 
-	public UserAdminView(EntityManagerFactory emf, User user, HttpContext context)
+	public UserAdminView(EntityManagerFactory emf, User user, HttpContext context, String message)
 	{
 		super("userAdmin.ftl", user, context);
 		userManager = new UserDAO(emf);
+		if (message != null)
+		{
+			this.message = message;
+		}
+
 	}
 
 	public Collection<User> getUsers()
 	{
 		return userManager.getUsers();
+	}
+
+	public String getMessage()
+	{
+		return message;
 	}
 }

@@ -26,7 +26,7 @@ public class TestAdminView
 		UserDAO userDao = new UserDAO(emf);
 		userDao.add(user1);
 		userDao.add(user2);
-		adminView = new UserAdminView(emf, user2, null);
+		adminView = new UserAdminView(emf, user2, null, null);
 	}
 
 	@AfterClass

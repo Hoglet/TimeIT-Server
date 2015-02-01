@@ -14,6 +14,7 @@ import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.joda.time.DateTime;
@@ -24,6 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import se.solit.timeit.application.MyAuthenticator;
 import se.solit.timeit.dao.RoleDAO;
@@ -53,11 +55,16 @@ public class TestUserResource
 
 	private static User						admin;
 	private User							minion;
+	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
 
 	@ClassRule
 	public static final ResourceTestRule	resources		= ResourceTestRule
 																	.builder()
 																	.addResource(new UserResource(emf))
+																	.addProvider(
+																			new SessionInjectableProvider<HttpSession>(
+																					HttpSession.class,
+																					mockSession))
 																	.addProvider(
 																			new ViewMessageBodyWriter(
 																					new MetricRegistry()))
@@ -110,6 +117,9 @@ public class TestUserResource
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		Mockito.when(mockSession.getAttribute("message")).thenReturn("apa");
+
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("Bob B"));
 	}

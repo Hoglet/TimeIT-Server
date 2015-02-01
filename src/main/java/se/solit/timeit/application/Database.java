@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -33,7 +35,17 @@ public class Database
 		props.put("javax.persistence.schema-generation.database.action", "create");
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("Default", props);
 		populateTables(emf);
+		cleanData(emf);
 		return emf;
+	}
+
+	private void cleanData(EntityManagerFactory emf)
+	{
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Query query = em.createQuery("DELETE FROM Time t WHERE t.stop < (t.start +15) ");
+		query.executeUpdate();
+		em.getTransaction().commit();
 	}
 
 	private void populateTables(EntityManagerFactory emf)

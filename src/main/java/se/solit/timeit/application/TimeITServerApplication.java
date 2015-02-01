@@ -67,6 +67,8 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(new UserResource(emf));
 		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
 		environment.jersey().register(new ReportResource(emf));
+		environment.jersey().register(HttpSessionProvider.class);
+		environment.servlets().setSessionHandler(new SessionHandler());
 	}
 
 	// SONAR:OFF

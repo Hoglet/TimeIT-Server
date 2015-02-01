@@ -1,6 +1,7 @@
 package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
+import io.dropwizard.jersey.sessions.Session;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -27,7 +29,6 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.DeleteUserView;
-import se.solit.timeit.views.MessageView;
 import se.solit.timeit.views.UserAddView;
 import se.solit.timeit.views.UserAdminView;
 import se.solit.timeit.views.UserEditView;
@@ -38,7 +39,7 @@ import com.sun.jersey.api.core.HttpContext;
 public class UserResource
 {
 	private static final String			ACCESS_DENIED	= "Access denied";
-	private static final String			ADMIN_PATH		= "/admin";
+	private static final String			ADMIN_PATH		= "/user/";
 	private final EntityManagerFactory	emf;
 	private final UserDAO				userManager;
 
@@ -51,11 +52,13 @@ public class UserResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/")
-	public Response admin(@Auth User user, @Context HttpContext context)
+	public Response admin(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
 		if (user.hasRole(Role.ADMIN))
 		{
-			return Response.ok(new UserAdminView(emf, user, context)).build();
+			String message = (String) session.getAttribute("message");
+			session.removeAttribute("message");
+			return Response.ok(new UserAdminView(emf, user, context, message)).build();
 		}
 		else
 		{
@@ -186,14 +189,16 @@ public class UserResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete/{username}")
 	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username,
-			@Context HttpContext context)
+			@Context HttpContext context, @Session HttpSession session) throws URISyntaxException
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
 			User user = userManager.getUser(username);
 			userManager.delete(user);
-			response = Response.ok(new MessageView(authorizedUser, "User is deleted", "", ADMIN_PATH, context)).build();
+			String message = "Deleted user " + username;
+			session.setAttribute("message", message);
+			throw redirect(ADMIN_PATH);
 		}
 		return response;
 	}
