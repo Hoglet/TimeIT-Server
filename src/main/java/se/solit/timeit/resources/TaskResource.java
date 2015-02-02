@@ -33,6 +33,7 @@ import com.sun.jersey.api.core.HttpContext;
 @Path("/task")
 public class TaskResource extends BaseResource
 {
+	private static final String	NOT_ALLOWED	= "Not allowed";
 	private final EntityManagerFactory	emf;
 	private static final Logger			LOGGER	= LoggerFactory.getLogger(TaskResource.class);
 
@@ -75,11 +76,16 @@ public class TaskResource extends BaseResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit")
 	public View edit(@Auth User user, @QueryParam("taskid") String id, @Context HttpContext context,
-			@Session HttpSession session)
+			@Session HttpSession session) throws URISyntaxException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
-		return new TaskView(emf, task, user, Action.EDIT, context, session);
+		if (task.getOwner().equals(user))
+		{
+			return new TaskView(emf, task, user, Action.EDIT, context, session);
+		}
+		setMessage(session, NOT_ALLOWED);
+		throw redirect("/");
 	}
 
 	@POST
@@ -98,9 +104,18 @@ public class TaskResource extends BaseResource
 				parent = taskdao.getByID(parentID);
 			}
 			DateTime now = DateTime.now();
-			Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
-			taskdao.update(task);
-			String headline = "Task updated";
+			Task existingTask = taskdao.getByID(id);
+			String headline;
+			if (existingTask.getOwner().equals(user))
+			{
+				Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
+				taskdao.update(task);
+				headline = "Task updated";
+			}
+			else
+			{
+				headline = NOT_ALLOWED;
+			}
 			setMessage(session, headline);
 		}
 		catch (Exception e)
@@ -146,7 +161,7 @@ public class TaskResource extends BaseResource
 		}
 		else
 		{
-			headline = "Not allowed";
+			headline = NOT_ALLOWED;
 		}
 		setMessage(session, headline);
 		throw redirect("/");

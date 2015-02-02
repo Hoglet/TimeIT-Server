@@ -76,7 +76,9 @@ public class TestTaskResource
 		UserDAO userDAO = new UserDAO(emf);
 		taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
+		User testUser = new User("tester", "Bob B", "password", "email", null);
 		userDAO.add(user);
+		userDAO.add(testUser);
 	}
 
 	@AfterClass
@@ -134,6 +136,24 @@ public class TestTaskResource
 		Assert.assertTrue(actual.contains("admin stuff"));
 		Assert.assertTrue(actual.contains("<h2>Edit task</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/edit'"));
+	}
+
+	@Test
+	public final void testEditPage_otherUser()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit?taskid=" + taskID);
+		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
+		try
+		{
+			resource.accept("text/html").get(String.class);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
 	}
 
 	@Test
@@ -325,6 +345,34 @@ public class TestTaskResource
 	}
 
 	@Test
+	public final void testPostEditPage_otherUser()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
+
+		String id = UUID.randomUUID().toString();
+		String name = "Banarne";
+		Task task = new Task(UUID.fromString(id), name, null, false, DateTime.now(), false, user);
+		Form form = new Form();
+		form.add("taskid", id);
+		form.add("parent", null);
+		form.add("name", "Trazan");
+		taskDAO.add(task);
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+		Task result = taskDAO.getByID(id);
+		Assert.assertEquals(name, result.getName());
+	}
+
+	@Test
 	public final void testChooserPage_edit()
 	{
 		Client client = resources.client();
@@ -367,6 +415,7 @@ public class TestTaskResource
 		{
 			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
 		}
+		Assert.assertEquals(id, taskDAO.getByID(id).getID());
 	}
 
 	@Test
@@ -391,6 +440,31 @@ public class TestTaskResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+		Assert.assertEquals(task2delete, taskDAO.getByID(id));
+	}
+
+	@Test
+	public final void testDelete_otherUser()
+	{
+		UUID id = UUID.randomUUID();
+		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
+		taskDAO.add(task2delete);
+		Client client = resources.client();
+		WebResource resource = client.resource("/task/delete");
+		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
+
+		Form form = new Form();
+		form.add("taskid", id.toString());
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
+		}
+		Assert.assertEquals(id, taskDAO.getByID(id).getID());
 	}
 
 }
