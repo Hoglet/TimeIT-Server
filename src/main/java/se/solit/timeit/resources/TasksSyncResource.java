@@ -14,6 +14,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
@@ -23,6 +26,7 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TasksSyncResource
 {
+	private static final Logger	LOGGER	= LoggerFactory.getLogger(TasksSyncResource.class);
 	private final TaskDAO		taskDAO;
 	private final SyncHelper	syncHelper;
 
@@ -35,7 +39,6 @@ public class TasksSyncResource
 	@GET
 	@Path("/{username}")
 	public final Collection<Task> tasksGet(@Auth User authorizedUser, @PathParam("username") final String username)
-			throws SQLException
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		return taskDAO.getAllTasks(username);
@@ -44,11 +47,18 @@ public class TasksSyncResource
 	@PUT
 	@Path("/{user}")
 	public final Collection<Task> tasksSync(@Auth User authorizedUser, @PathParam("user") final String username,
-			final Task[] paramTasks) throws SQLException
+			final Task[] paramTasks)
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTaskOwnership(authorizedUser, paramTasks);
-		taskDAO.updateOrAdd(paramTasks);
+		try
+		{
+			taskDAO.updateOrAdd(paramTasks);
+		}
+		catch (SQLException e)
+		{
+			LOGGER.error("Error syncing tasks for user " + authorizedUser.getUsername(), e);
+		}
 		return taskDAO.getAllTasks(username);
 	}
 }

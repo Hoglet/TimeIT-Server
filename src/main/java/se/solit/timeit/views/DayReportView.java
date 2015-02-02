@@ -2,7 +2,6 @@ package se.solit.timeit.views;
 
 import io.dropwizard.jersey.sessions.Session;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ public class DayReportView extends ReportView
 	private Map<Integer, List<Time>>	items;
 
 	public DayReportView(EntityManagerFactory emf, DateTime pointInTime, User user, User reportedUser,
-			HttpContext context, @Session HttpSession session) throws SQLException
+			HttpContext context, @Session HttpSession session)
 	{
 		super("dayReport.ftl", user, pointInTime, reportedUser, context, session);
 		timeDAO = new TimeDAO(emf);

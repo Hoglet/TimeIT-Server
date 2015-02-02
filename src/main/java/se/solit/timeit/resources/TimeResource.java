@@ -5,7 +5,6 @@ import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +19,8 @@ import javax.ws.rs.core.Context;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TimeDAO;
@@ -36,6 +37,7 @@ public class TimeResource extends BaseResource
 	private final EntityManagerFactory	emf;
 	private final TaskDAO				taskDAO;
 	private final TimeDAO				timedao;
+	private static final Logger			LOGGER	= LoggerFactory.getLogger(TimeResource.class);
 
 	public TimeResource(EntityManagerFactory emf)
 	{
@@ -59,22 +61,32 @@ public class TimeResource extends BaseResource
 	@Path("/add")
 	public View postAdd(@Auth User user, @FormParam("timeid") String id, @FormParam("start") String paramStart,
 			@FormParam("stop") String paramStop, @FormParam("taskid") String taskID, @FormParam("date") String date,
-			@Context HttpContext context, @Session HttpSession session)
-			throws SQLException, URISyntaxException
+			@Session HttpSession session)
+			throws URISyntaxException
 	{
-		DateTime now = DateTime.now();
+		try
+		{
+			DateTime now = DateTime.now();
 
-		LocalDate d = LocalDate.parse(date);
-		LocalTime s1 = LocalTime.parse(paramStart);
-		LocalTime s2 = LocalTime.parse(paramStop);
+			LocalDate d = LocalDate.parse(date);
+			LocalTime s1 = LocalTime.parse(paramStart);
+			LocalTime s2 = LocalTime.parse(paramStop);
 
-		DateTime start = d.toDateTime(s1);
-		DateTime stop = d.toDateTime(s2);
-		Task task = taskDAO.getByID(taskID);
-		Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
-		timedao.add(time);
-		String headline = "Time added successfully";
-		setMessage(session, headline);
+			DateTime start = d.toDateTime(s1);
+			DateTime stop = d.toDateTime(s2);
+			Task task = taskDAO.getByID(taskID);
+			Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
+			timedao.add(time);
+			String headline = "Time added successfully";
+			setMessage(session, headline);
+		}
+		catch (Exception e)
+		{
+			String errorMessage = "Add time failed: ";
+			setMessage(session, errorMessage + e.getMessage());
+			LOGGER.error(errorMessage, e);
+
+		}
 		throw redirect("/");
 	}
 }

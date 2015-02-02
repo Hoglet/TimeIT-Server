@@ -4,8 +4,6 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
-import java.sql.SQLException;
-
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
@@ -86,7 +84,7 @@ public class ReportResource
 	@Path("/{username}/{year}/{month}/{day}")
 	public View getDayReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @PathParam("month") final int month, @PathParam("day") final int day,
-			@Context HttpContext context, @Session HttpSession session) throws SQLException
+			@Context HttpContext context, @Session HttpSession session)
 	{
 		DayReportView result = null;
 		if (user.getUsername().equals(username))

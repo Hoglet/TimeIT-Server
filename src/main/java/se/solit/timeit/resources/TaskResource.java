@@ -4,9 +4,7 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +18,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
@@ -34,6 +34,7 @@ import com.sun.jersey.api.core.HttpContext;
 public class TaskResource extends BaseResource
 {
 	private final EntityManagerFactory	emf;
+	private static final Logger			LOGGER	= LoggerFactory.getLogger(TaskResource.class);
 
 	public TaskResource(EntityManagerFactory emf)
 	{
@@ -53,8 +54,8 @@ public class TaskResource extends BaseResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
 	public View postAdd(@Auth User user, @FormParam("name") String name, @FormParam("taskid") String id,
-			@FormParam("parent") String parentID, @Context HttpContext context, @Session HttpSession session)
-			throws MalformedURLException, URISyntaxException
+			@FormParam("parent") String parentID, @Session HttpSession session)
+			throws URISyntaxException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task parent = null;
@@ -66,7 +67,6 @@ public class TaskResource extends BaseResource
 		Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
 		taskdao.add(task);
 		String headline = "Task added successfully";
-		String url = "/";
 		setMessage(session, headline);
 		throw redirect("/");
 	}
@@ -86,22 +86,29 @@ public class TaskResource extends BaseResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit")
 	public View postEdit(@Auth User user, @FormParam("name") String name, @FormParam("taskid") String id,
-			@FormParam("parent") String parentID, @Context HttpContext context, @Session HttpSession session)
-			throws SQLException, URISyntaxException
+			@FormParam("parent") String parentID, @Session HttpSession session)
+			throws URISyntaxException
 	{
-		TaskDAO taskdao = new TaskDAO(emf);
-		Task parent = null;
-		if (!parentID.isEmpty())
+		try
 		{
-			parent = taskdao.getByID(parentID);
+			TaskDAO taskdao = new TaskDAO(emf);
+			Task parent = null;
+			if (!parentID.isEmpty())
+			{
+				parent = taskdao.getByID(parentID);
+			}
+			DateTime now = DateTime.now();
+			Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
+			taskdao.update(task);
+			String headline = "Task updated";
+			setMessage(session, headline);
 		}
-		DateTime now = DateTime.now();
-		Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
-		taskdao.update(task);
-		String headline = "Task updated";
-		String text = "";
-		String url = "/";
-		setMessage(session, headline);
+		catch (Exception e)
+		{
+			String errorMessage = "Task edit failed: ";
+			setMessage(session, errorMessage + e.getMessage());
+			LOGGER.error(errorMessage, e);
+		}
 		throw redirect("/");
 	}
 
@@ -126,14 +133,21 @@ public class TaskResource extends BaseResource
 	@POST
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete")
-	public View delete(@Auth User user, @FormParam("taskid") String id, @Context HttpContext context,
+	public View delete(@Auth User user, @FormParam("taskid") String id,
 			@Session HttpSession session)
-			throws SQLException, URISyntaxException
+			throws URISyntaxException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
-		taskdao.delete(task);
 		String headline = "Task is deleted";
+		if (task.getOwner().equals(user))
+		{
+			taskdao.delete(task);
+		}
+		else
+		{
+			headline = "Not allowed";
+		}
 		setMessage(session, headline);
 		throw redirect("/");
 	}

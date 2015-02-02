@@ -183,7 +183,7 @@ public class UserResource extends BaseResource
 	@Produces("text/html;charset=UTF-8")
 	@Path("/delete/{username}")
 	public Response delete(@Auth User authorizedUser, @PathParam("username") final String username,
-			@Context HttpContext context, @Session HttpSession session) throws URISyntaxException
+			@Session HttpSession session) throws URISyntaxException
 	{
 		Response response = Response.ok(ACCESS_DENIED).status(Status.UNAUTHORIZED).build();
 		if (authorizedUser.hasRole(Role.ADMIN))

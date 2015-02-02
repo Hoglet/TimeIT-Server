@@ -4,6 +4,7 @@ import io.dropwizard.auth.Auth;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -14,6 +15,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
@@ -23,9 +27,11 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TimesSyncResource
 {
-	private final TimeDAO	timeDAO;
+	private static final Logger	LOGGER	= LoggerFactory.getLogger(TimesSyncResource.class);
 
-	private SyncHelper		syncHelper;
+	private final TimeDAO		timeDAO;
+
+	private final SyncHelper	syncHelper;
 
 	public TimesSyncResource(final EntityManagerFactory emf)
 	{
@@ -36,20 +42,37 @@ public class TimesSyncResource
 	@GET
 	@Path("/{user}")
 	public final Collection<Time> timesGet(@Auth User authorizedUser, @PathParam("user") final String username)
-			throws SQLException
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
-		return timeDAO.getTimes(username);
+		Collection<Time> result = null;
+		try
+		{
+			result = timeDAO.getTimes(username);
+		}
+		catch (SQLException e)
+		{
+			LOGGER.error("Failed to get times for user " + authorizedUser.getUsername(), e);
+		}
+		return result;
 	}
 
 	@PUT
 	@Path("/{user}")
 	public final Collection<Time> timesSync(@Auth User authorizedUser, @PathParam("user") final String username,
-			final Time[] paramTimes) throws SQLException
+			final Time[] paramTimes)
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTimesOwnership(authorizedUser, paramTimes);
-		timeDAO.updateOrAdd(paramTimes);
-		return timeDAO.getTimes(username);
+		List<Time> result = null;
+		try
+		{
+			timeDAO.updateOrAdd(paramTimes);
+			result = timeDAO.getTimes(username);
+		}
+		catch (SQLException e)
+		{
+			LOGGER.error("Failed to sync times for user " + authorizedUser.getUsername(), e);
+		}
+		return result;
 	}
 }
