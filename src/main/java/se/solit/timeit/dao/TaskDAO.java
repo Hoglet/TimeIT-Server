@@ -27,6 +27,7 @@ public class TaskDAO
 		try
 		{
 			final Task existingTask = getByID(task.getID());
+			manageRecursion(existingTask, task, em);
 			em.getTransaction().begin();
 			if (isChangedAfterExisting(task, existingTask))
 			{
@@ -39,6 +40,33 @@ public class TaskDAO
 			em.close();
 		}
 
+	}
+
+	private void manageRecursion(Task existingTask, Task task, EntityManager em) throws SQLException
+	{
+		Task junction = findChildParent(existingTask, task);
+		if (junction != null)
+		{
+			junction.setParent(existingTask.getParent());
+			em.merge(junction);
+		}
+	}
+
+	private Task findChildParent(Task existingTask, Task task)
+	{
+		Task parent = task.getParent();
+		if (parent != null)
+		{
+			if (existingTask.getID().equals(parent.getID()))
+			{
+				return task;
+			}
+			else
+			{
+				return findChildParent(existingTask, parent);
+			}
+		}
+		return parent;
 	}
 
 	public final void add(final Task task)
