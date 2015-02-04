@@ -67,7 +67,7 @@ public class TestTimeView
 	public final void testGetParents() throws SQLException
 	{
 		TimeView view = new TimeView(emf, time, user, null, session);
-		String expected = "[e00b8d6f-3f89-4748-98ca-25ef6225d06a=parent, 4afe7048-fefe-4c5f-b32f-d4a771175b70=parent/child]";
+		String expected = "[e00b8d6f-3f89-4748-98ca-25ef6225d06a=parent, 4afe7048-fefe-4c5f-b32f-d4a771175b70=child]";
 		String actual = view.getTasks().toString();
 		Assert.assertEquals(expected, actual);
 	}

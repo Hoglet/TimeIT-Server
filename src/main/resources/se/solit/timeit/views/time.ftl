@@ -26,8 +26,8 @@
 				</td>
 				<td>
 					<select name="taskid">
-					<#list tasks as entry>
-						<option value="${entry.key}">${entry.value}</option>
+					<#list tasks as task>
+						<option value="${task.id}">${task.indentString}${task.name}</option>
 					</#list>
 					</select>
 		      	</td>

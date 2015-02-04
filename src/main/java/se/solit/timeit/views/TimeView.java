@@ -1,16 +1,14 @@
 package se.solit.timeit.views;
 
 import java.sql.SQLException;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map.Entry;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
 import se.solit.timeit.dao.TaskDAO;
+import se.solit.timeit.dao.TaskDescriptor;
+import se.solit.timeit.dao.TaskDescriptorList;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
@@ -34,26 +32,15 @@ public class TimeView extends BaseView
 		return time;
 	}
 
-	public List<Entry<String, String>> getTasks() throws SQLException
+	public TaskDescriptorList getTasks() throws SQLException
 	{
-		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>();
+		TaskDescriptorList list = new TaskDescriptorList();
 		Collection<Task> tasks = taskDAO.getTasks(user.getUsername());
 		for (Task t : tasks)
 		{
-			String parentString = getParentString(t);
-			list.add(new SimpleEntry<String, String>(t.getID().toString(), parentString));
+			list.add(new TaskDescriptor(t));
 		}
 		return list;
-	}
-
-	private String getParentString(Task task2)
-	{
-		String result = "";
-		if (task2.getParent() != null)
-		{
-			result = getParentString(task2.getParent()).concat("/");
-		}
-		return result.concat(task2.getName());
 	}
 
 }

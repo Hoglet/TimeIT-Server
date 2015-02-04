@@ -47,4 +47,9 @@ public class TaskDescriptor
 		return task.getID().toString();
 	}
 
+	@Override
+	public String toString()
+	{
+		return getId() + "=" + getName();
+	}
 }

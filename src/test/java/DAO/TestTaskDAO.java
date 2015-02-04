@@ -193,7 +193,7 @@ public class TestTaskDAO
 		tasks = new Task[] { task };
 		taskdao.updateOrAdd(tasks);
 		Collection<Task> resultingTasks = taskdao.getTasks(user.getUsername());
-		assertEquals(resultingTasks.size(), 1);
+		assertEquals(1, resultingTasks.size());
 		Task t2 = resultingTasks.iterator().next();
 		assertTrue(t2.getName().equals("TWo"));
 	}
