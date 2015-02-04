@@ -40,18 +40,24 @@ public class TaskDescriptorList extends ArrayList<TaskDescriptor>
 	{
 		if (find(td.getTask()) != null)
 		{
-			throw new IllegalArgumentException("Task allready exists");
+			return true;
 		}
 		Task parent = td.getTask().getParent();
 		if (parent != null)
 		{
-			int index = this.indexOf(find(parent));
+			TaskDescriptor found = find(parent);
+			if (found == null)
+			{
+				add(new TaskDescriptor(parent));
+				found = find(parent);
+			}
+			int index = this.indexOf(found);
 			super.add(index + 1, td);
+			return true;
 		}
 		else
 		{
-			super.add(td);
+			return super.add(td);
 		}
-		return false;
 	}
 }
