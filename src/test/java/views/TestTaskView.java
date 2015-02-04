@@ -1,6 +1,5 @@
 package views;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -49,14 +48,6 @@ public class TestTaskView
 	public static void afterClass()
 	{
 		emf.close();
-	}
-
-	@Test
-	public final void testGetParents() throws SQLException
-	{
-		TaskView taskView = new TaskView(emf, task, user2, Action.ADD, null, session);
-		String expected = "[b141b8ff-fa8e-47ff-8631-d86fe97cbc2b=Parent, c624ba2d-2027-4858-9696-3efc4e4106ad=Parent/child]";
-		Assert.assertEquals(expected, taskView.getParents().toString());
 	}
 
 	@Test

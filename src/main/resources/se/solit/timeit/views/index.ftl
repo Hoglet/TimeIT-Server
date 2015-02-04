@@ -11,42 +11,23 @@
     	<h2>Tasks</h2>
     	<div class="toolbar">
     	<span>
-    	<form method="get" action='/task/add' name="Controller">
-			<button type="submit" value="add" >Add</button>
-		</form>
-		</span>
-		<span>
-    	<form method="get" action='/task' name="Controller">
-			<button type="submit" name="action" value="edit" >Edit</button>
-		</form>
-		</span>
-		<span>
-    	<form method="get" action='/task' name="Controller">
-			<button type="submit" name="action" value="delete" >Delete</button>
+    	<a href="/task/add">
+			<button type="button">Add</button>
+		</a>
 		</form>
 		</span>
 		</div>
     	<div id="tasks-inner" class="data">
-        <#function test items>
-        	<#assign result>
-        	<ol class="tree">
-        	<#list items as entry>
-        		<li>
-        		<label for="${entry.key.name}">${entry.key.name}</label>
-				<input id="${entry.key.name}" type="checkbox" >
-		        		<#if entry.value??>
-        			${test(entry.value)}
-        		</#if>
-        		</li>
-			</#list>
-			</ol>
-			</#assign>
-			<#return result>
-		</#function>
-		<#-- call the macro: -->
-		<#if tasks??>
-			${test(tasks)}
-		</#if>
+		<table>
+		<#list tasks as task>
+        	<tr>
+        	<td class="name">${task.indentString}${task.name}</td>
+        	<td>&nbsp;</td>
+        	<td><a href="/task/edit/${task.id}"><button>Edit</button></a></td>
+        	<td><a href="/task/delete/${task.id}"><button>Delete</button></a></td>
+        	</tr>
+		</#list>
+		</table>
 		</div>
 	</div>
     <div id="times" class="container">

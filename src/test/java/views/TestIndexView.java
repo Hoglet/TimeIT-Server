@@ -63,8 +63,9 @@ public class TestIndexView
 	{
 		IndexView view = new IndexView(user, emf, null, session);
 		String expected = "b141b8ff-fa8e-47ff-8631-d86fe97cbc2b";
-		Assert.assertEquals(1, view.getTasks().size());
-		Task result = view.getTasks().get(0).getKey();
+		Assert.assertEquals(2, view.getTasks().size());
+
+		Task result = view.getTasks().get(0).getTask();
 		Assert.assertEquals(expected, result.getID().toString());
 	}
 

@@ -130,7 +130,7 @@ public class TestTaskResource
 	public final void testEditPage()
 	{
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/edit?taskid=" + taskID);
+		WebResource resource = client.resource("/task/edit/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("admin stuff"));
@@ -142,7 +142,7 @@ public class TestTaskResource
 	public final void testEditPage_otherUser()
 	{
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/edit?taskid=" + taskID);
+		WebResource resource = client.resource("/task/edit/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
 		try
 		{
@@ -373,43 +373,18 @@ public class TestTaskResource
 	}
 
 	@Test
-	public final void testChooserPage_edit()
-	{
-		Client client = resources.client();
-		WebResource resource = client.resource("/task?action=edit");
-		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-		resource = resource.queryParam("action", "edit");
-		String result = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(result.contains("<form method=\"GET\" action='/task/edit'"));
-	}
-
-	@Test
-	public final void testChooserPage_delete()
-	{
-		Client client = resources.client();
-		WebResource resource = client.resource("/task?action=delete");
-		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-		resource = resource.queryParam("action", "delete");
-		String result = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(result.contains("<form method=\"POST\" action='/task/delete'"));
-	}
-
-	@Test
 	public final void testDelete()
 	{
 		UUID id = UUID.randomUUID();
 		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/delete");
+		WebResource resource = client.resource("/task/delete/" + id.toString());
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-
-		Form form = new Form();
-		form.add("taskid", id.toString());
 
 		try
 		{
-			resource.accept("text/html").post(String.class, form);
+			resource.accept("text/html").get(String.class);
 		}
 		catch (Exception e)
 		{
@@ -425,15 +400,12 @@ public class TestTaskResource
 		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/delete");
+		WebResource resource = client.resource("/task/delete/" + id.toString());
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
-
-		Form form = new Form();
-		form.add("taskid", id.toString());
 
 		try
 		{
-			resource.accept("text/html").post(String.class, form);
+			resource.accept("text/html").get(String.class);
 			Assert.fail("Should have thrown exception");
 		}
 		catch (Exception e)
@@ -450,15 +422,12 @@ public class TestTaskResource
 		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
-		WebResource resource = client.resource("/task/delete");
+		WebResource resource = client.resource("/task/delete/" + id.toString());
 		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
-
-		Form form = new Form();
-		form.add("taskid", id.toString());
 
 		try
 		{
-			resource.accept("text/html").post(String.class, form);
+			resource.accept("text/html").get(String.class);
 		}
 		catch (Exception e)
 		{

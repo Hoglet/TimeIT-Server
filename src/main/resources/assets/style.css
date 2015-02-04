@@ -5,6 +5,13 @@ body
 	background: darkgray;
 	margin-top: 1em;
 }
+
+#tasks-inner button
+{
+	font-size: 90%
+}
+
+
 #toolbar {
 	padding: 0;
 	background: black;
@@ -198,61 +205,6 @@ div#times
 {
 	min-height: 1em;
 }
-/**********/
-/* CSS Tree menu styles */
-ol.tree
-{
-	padding: 0 0 0 30px;
-	width: 10em;
-}
-li
-{
-	position: relative;
-	margin-left: -15px;
-	list-style: none;
-}
-li input
-{
-	position: absolute;
-	left: 0;
-	margin-left: 0;
-	opacity: 0;
-	z-index: 2;
-	cursor: pointer;
-	height: 1em;
-	width: 1em;
-	top: 0;
-}
-li input + ol
-{
-	background: url("/assets/toggle-small-expand.png") 40px -3px no-repeat;
-	margin: -1em 0 0 -44px; /* 15px */
-	height: 1em;
-}
-
-li input + ol > li
-{
-	display: none; margin-left: -14px !important; padding-left: 1px;
-}
-
-li label
-{
-	/*background: url(/assets/folder-horizontal.png) 15px 1px no-repeat;*/
-	cursor: pointer;
-	display: block;
-	padding-left: 15px;
-}
-
-li input:checked + ol
-{
-	background: url("/assets/toggle-small.png") 40px -3px no-repeat;
-	margin: -1em 0 0 -44px; /* 20px */
-	padding: 1em 0 0 80px;
-	height: auto;
-}
-
-li input:checked + ol > li { display: block; margin: 0 0 0.125em;  /* 2px */}
-li input:checked + ol > li:last-child { margin: 0 0 0.063em; /* 1px */ }
 
 div.toolbar
 {

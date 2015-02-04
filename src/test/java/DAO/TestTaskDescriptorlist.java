@@ -5,32 +5,29 @@ import static org.junit.Assert.assertEquals;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import se.solit.timeit.dao.TimeDescriptor;
-import se.solit.timeit.dao.TimeDescriptorList;
+import se.solit.timeit.dao.TaskDescriptor;
+import se.solit.timeit.dao.TaskDescriptorList;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
-public class TestTimeDescriptorlist
+public class TestTaskDescriptorlist
 {
 
-	private static TimeDescriptorList	list;
+	private static TaskDescriptorList	list;
 	private static User					owner			= new User("owner", "Owner", "password", "email", null);
 	private static DateTime				changeTime		= DateTime.now();
 	private static UUID					parentID		= UUID.randomUUID();
 	private static UUID					childID			= UUID.randomUUID();
-	private static Duration				duration;
-	private static Duration				durationWithChildren;
 	private static Task					parent;
 	private static Task					child;
 	private static UUID					parent2ID		= UUID.randomUUID();
 	private static Task					parent2;
 	private static UUID					child2ID		= UUID.randomUUID();
 	private static Task					child2;
-	private static TimeDescriptor		tdToFind;
+	private static TaskDescriptor		tdToFind;
 	private final UUID					grandchildID	= UUID.randomUUID();
 
 	@BeforeClass
@@ -40,21 +37,18 @@ public class TestTimeDescriptorlist
 		parent2 = new Task(parent2ID, "parent2", null, false, changeTime, false, owner);
 		child = new Task(childID, "child", parent, false, changeTime, false, owner);
 		child2 = new Task(child2ID, "child", parent2, false, changeTime, false, owner);
-		duration = new Duration(70000);
-		durationWithChildren = new Duration(140000);
-		list = new TimeDescriptorList();
-		tdToFind = new TimeDescriptor(parent2, duration, durationWithChildren);
-		list.add(new TimeDescriptor(parent, duration, durationWithChildren));
-		list.add(new TimeDescriptor(child, duration, durationWithChildren));
-		list.add(new TimeDescriptor(child, duration, durationWithChildren));
+		list = new TaskDescriptorList();
+		tdToFind = new TaskDescriptor(parent2);
+		list.add(new TaskDescriptor(parent));
+		list.add(new TaskDescriptor(child));
 		list.add(tdToFind);
-		list.add(new TimeDescriptor(child2, duration, durationWithChildren));
+		list.add(new TaskDescriptor(child2));
 	}
 
 	@Test
 	public void testFind()
 	{
-		TimeDescriptor found = list.find(parent2);
+		TaskDescriptor found = list.find(parent2);
 		assertEquals(tdToFind, found);
 
 		Task oddTask = new Task(UUID.randomUUID(), "Oddy", null, false, changeTime, false, owner);
@@ -64,13 +58,13 @@ public class TestTimeDescriptorlist
 	}
 
 	@Test
-	public void testSortedAddTimeDescriptor()
+	public void testSortedAddTaskDescriptor()
 	{
 		Task grandChild = new Task(grandchildID, "grandChild", child, false, changeTime, false, owner);
-		TimeDescriptor td_toAdd = new TimeDescriptor(grandChild, duration, durationWithChildren);
-		list.add(td_toAdd);
+		TaskDescriptor tdToAdd = new TaskDescriptor(grandChild);
+		list.add(tdToAdd);
 		StringBuilder sb = new StringBuilder();
-		for (TimeDescriptor td : list)
+		for (TaskDescriptor td : list)
 		{
 			sb.append(td.getTask().getName());
 			sb.append("\n");
@@ -81,11 +75,11 @@ public class TestTimeDescriptorlist
 
 		try
 		{
-			list.add(td_toAdd);
+			list.add(tdToAdd);
 		}
 		catch (Exception e)
 		{
-			assertEquals(Exception.class, e.getClass());
+			assertEquals(IllegalArgumentException.class, e.getClass());
 		}
 
 	}

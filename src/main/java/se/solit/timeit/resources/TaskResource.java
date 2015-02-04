@@ -13,8 +13,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.joda.time.DateTime;
@@ -25,7 +25,6 @@ import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.Action;
-import se.solit.timeit.views.TaskChooserView;
 import se.solit.timeit.views.TaskView;
 
 import com.sun.jersey.api.core.HttpContext;
@@ -74,8 +73,8 @@ public class TaskResource extends BaseResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	@Path("/edit")
-	public View edit(@Auth User user, @QueryParam("taskid") String id, @Context HttpContext context,
+	@Path("/edit/{taskid}")
+	public View edit(@Auth User user, @PathParam("taskid") String id, @Context HttpContext context,
 			@Session HttpSession session) throws URISyntaxException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
@@ -129,26 +128,8 @@ public class TaskResource extends BaseResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	@Path("/")
-	public View chooser(@Auth User user, @QueryParam("action") String typeString, @Context HttpContext context,
-			@Session HttpSession session)
-	{
-		Action type = Action.ADD;
-		if ("delete".equals(typeString))
-		{
-			type = Action.DELETE;
-		}
-		if ("edit".equals(typeString))
-		{
-			type = Action.EDIT;
-		}
-		return new TaskChooserView(emf, user, type, context, session);
-	}
-
-	@POST
-	@Produces("text/html;charset=UTF-8")
-	@Path("/delete")
-	public View delete(@Auth User user, @FormParam("taskid") String id,
+	@Path("/delete/{taskid}")
+	public View delete(@Auth User user, @PathParam("taskid") String id,
 			@Session HttpSession session)
 			throws URISyntaxException
 	{

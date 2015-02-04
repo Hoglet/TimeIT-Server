@@ -1,10 +1,7 @@
 package se.solit.timeit.views;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
@@ -12,10 +9,10 @@ import javax.servlet.http.HttpSession;
 import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.TaskDAO;
+import se.solit.timeit.dao.TaskDescriptorList;
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.TimeDescriptor;
 import se.solit.timeit.dao.TimeDescriptorList;
-import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 
 import com.sun.jersey.api.core.HttpContext;
@@ -32,28 +29,9 @@ public class IndexView extends BaseView
 		timedao = new TimeDAO(emf);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<Entry<Task, List>> getTasks(Task parent)
+	public TaskDescriptorList getTasks() throws SQLException
 	{
-		List<Entry<Task, List>> list = null;
-		List<Task> tasks = taskdao.getTasks(user.getUsername(), parent, false);
-		if (!tasks.isEmpty())
-		{
-			list = new ArrayList();
-			for (Task task : tasks)
-			{
-				List<Entry<Task, List>> children = getTasks(task);
-				Entry<Task, List> entry = new SimpleEntry<Task, List>(task, children);
-				list.add(entry);
-			}
-		}
-		return list;
-	}
-
-	@SuppressWarnings({ "rawtypes" })
-	public List<Entry<Task, List>> getTasks()
-	{
-		return getTasks(null);
+		return new TaskDescriptorList(taskdao.getTasks(user.getUsername()));
 	}
 
 	public TimeDescriptorList getTodaysTimes()

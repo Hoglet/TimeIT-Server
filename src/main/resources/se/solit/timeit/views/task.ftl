@@ -37,16 +37,15 @@
 			      	<#else>
 			      		<option value="" selected>-</option>
 			      	</#if>
-
-		      	<#list parents as entry>
+		      	<#list parents as item>
 		      		<#if task.parent??>
-		      			<#if task.parent.ID == entry.key>
-		           			<option value="${entry.key}" selected>${entry.value}</option>
+		      			<#if task.parent.ID == item.id>
+		           			<option value="${item.id}" selected>${item.indentString}${item.name}</option>
 		      			<#else>
-		      				<option value="${entry.key}">${entry.value}</option>
+		      				<option value="${item.id}">${item.indentString}${item.name}</option>
 		      			</#if>
 		      		<#else>
-		      			<option value="${entry.key}">${entry.value}</option>
+		      			<option value="${item.id}">${item.indentString}${item.name}</option>
 		      		</#if>
 		      	</#list>
 		      	</select>
