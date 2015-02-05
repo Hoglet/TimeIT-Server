@@ -20,8 +20,13 @@ public class YearReportView extends ReportView
 	public YearReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser,
 			HttpContext context, @Session HttpSession session)
 	{
-		super("yearReport.ftl", user, pointInMonth, reportedUser, context, session);
+		super("yearReport.ftl", user, pointInMonth, reportedUser, context, session, emf);
 		timeDAO = new TimeDAO(emf);
+		DateTime beginingOfYear = pointInTime.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
+		DateTime endOfYear = beginingOfYear.plusMonths(MONTHS_IN_YEAR).minusDays(1)
+				.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+		extractTimeDescriptors(beginingOfYear, endOfYear);
+		extractTasks();
 	}
 
 	public String getMonth(int m)

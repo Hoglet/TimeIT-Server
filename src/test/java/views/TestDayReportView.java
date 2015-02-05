@@ -196,7 +196,7 @@ public class TestDayReportView
 	public final void testGetColumnClass() throws SQLException
 	{
 		DayReportView view = new DayReportView(emf, pointInMonth, user, user, null, session);
-		String expected = "Column0";
+		String expected = "Item0";
 		String actual = view.getColumnClass(0);
 		Assert.assertEquals(expected, actual);
 	}
@@ -226,19 +226,19 @@ public class TestDayReportView
 		Assert.assertEquals(expected, actual);
 
 		actual = view.getCellClass(10, 0);
-		expected = "Column0";
+		expected = "Item0";
 		Assert.assertEquals(expected, actual);
 
 		actual = view.getCellClass(6, 0);
-		expected = "Column0";
+		expected = "Item0";
 		Assert.assertEquals(expected, actual);
 
 		actual = view.getCellClass(15, 0);
-		expected = "Column0";
+		expected = "Item0";
 		Assert.assertEquals(expected, actual);
 
 		actual = view.getCellClass(16, 0);
-		expected = "Column0";
+		expected = "Item0";
 		Assert.assertEquals(expected, actual);
 
 		view = new DayReportView(emf, pointInMonth.plusDays(1), user, user, null, session);

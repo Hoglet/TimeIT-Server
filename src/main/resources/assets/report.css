@@ -75,57 +75,64 @@ body.report #dateBar
 	padding-right: 0.5em;
 	border-radius: 0.3em;
 }
-#DayReport table.timeTable .Column0
+table.timeTable .Item0
 {
 	background-color: lawngreen;
 	min-width: 5em;
 }
 
-#DayReport table.timeTable .Column1
+table.timeTable .Item1
 {
 	background-color: lightblue;
 	min-width: 5em;
 }
 
-#DayReport table.timeTable .Column2
+table.timeTable .Item2
 {
 	background-color: pink;
 	min-width: 5em;
 }
-#DayReport table.timeTable .Column3
+table.timeTable .Item3
 {
 	background-color: yellow;
 	min-width: 5em;
 }
 
-#DayReport table.timeTable .Column4
+table.timeTable .Item4
 {
 	background-color: orange;
 	min-width: 5em;
 }
 
 
-#DayReport table.timeTable .Column5
+table.timeTable .Item5
 {
 	background-color: lavender;
 	min-width: 5em;
 }
 
-#DayReport table.timeTable .Column6
+table.timeTable .Item6
 {
 	background-color: orchid;
 	min-width: 5em;
 }
-#DayReport table.timeTable .Column7,
-#DayReport table.timeTable .Column8,
-#DayReport table.timeTable .Column9,
-#DayReport table.timeTable .Column10,
-#DayReport table.timeTable .Column11,
-#DayReport table.timeTable .Column12,
-#DayReport table.timeTable .Column13
+table.timeTable .Item7,
+table.timeTable .Item8,
+table.timeTable .Item9,
+table.timeTable .Item10,
+table.timeTable .Item11,
+table.timeTable .Item12,
+table.timeTable .Item13
 {
 	background-color: lightgray;
 	min-width: 5em;
+}
+
+table.timeTable span.Item
+{
+	border-radius: 0.5em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
 
 @media print
@@ -134,20 +141,20 @@ body.report #dateBar
 	{
 		font-size: 10pt;
 	}
-	#DayReport table.timeTable .Column0,
-	#DayReport table.timeTable .Column1,
-	#DayReport table.timeTable .Column2,
-	#DayReport table.timeTable .Column3,
-	#DayReport table.timeTable .Column4,
-	#DayReport table.timeTable .Column5,
-	#DayReport table.timeTable .Column6,
-	#DayReport table.timeTable .Column7,
-	#DayReport table.timeTable .Column8,
-	#DayReport table.timeTable .Column9,
-	#DayReport table.timeTable .Column10,
-	#DayReport table.timeTable .Column11,
-	#DayReport table.timeTable .Column12,
-	#DayReport table.timeTable .Column13
+	table.timeTable .Item0,
+	table.timeTable .Item1,
+	table.timeTable .Item2,
+	table.timeTable .Item3,
+	table.timeTable .Item4,
+	table.timeTable .Item5,
+	table.timeTable .Item6,
+	table.timeTable .Item7,
+	table.timeTable .Item8,
+	table.timeTable .Item9,
+	table.timeTable .Item10,
+	table.timeTable .Item11,
+	table.timeTable .Item12,
+	table.timeTable .Item13
 	{
 		border: solid 1px black;
 	}

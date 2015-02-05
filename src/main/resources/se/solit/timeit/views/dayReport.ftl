@@ -21,7 +21,7 @@
         	<#assign task=item.getTask()>
         		<tr>
         		<td class="taskName">
-        		${item.getIndentString()}${task.getName()}
+        		${item.getIndentString()}<span class="${getTaskClass(task)}">${task.getName()}</div>
         		</td>
         		<td class="duration">
                 ${item.getDurationString()}

@@ -28,6 +28,7 @@ public class TestReportView
 	private static User					user;
 	private static DateTime				pointInMonth;
 	private static int					dayToTest;
+	private static Task					task;
 	private final HttpSession			session	= Mockito.mock(HttpSession.class);
 
 	@BeforeClass
@@ -42,7 +43,7 @@ public class TestReportView
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		Task task = new Task(taskID, "Name", null, false, DateTime.now(), false, user);
+		task = new Task(taskID, "Name", null, false, DateTime.now(), false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		DateTime start = pointInMonth.withHourOfDay(10);
@@ -60,16 +61,30 @@ public class TestReportView
 	}
 
 	@Test
+	public final void testGetTaskClass()
+	{
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session, emf);
+
+		DateTime start = pointInMonth.withTimeAtStartOfDay();
+		DateTime stop = start.withHourOfDay(23);
+		view.extractTimeDescriptors(start, stop);
+		view.extractTasks();
+		Assert.assertEquals("Item Item0", view.getTaskClass(task));
+		Task unknownTask = new Task(UUID.randomUUID(), "Who", null, false, pointInMonth, false, user);
+		Assert.assertEquals("Item ", view.getTaskClass(unknownTask));
+	}
+
+	@Test
 	public final void testGetYear()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session);
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session, emf);
 		Assert.assertEquals("2014", view.getYear());
 	}
 
 	@Test
 	public final void testGetTabs()
 	{
-		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session);
+		ReportView view = new ReportView("monthReport.ftl", user, pointInMonth, user, null, session, emf);
 		String tab1 = view.tabs(0);
 		String tab2 = view.tabs(1);
 		String tab3 = view.tabs(2);

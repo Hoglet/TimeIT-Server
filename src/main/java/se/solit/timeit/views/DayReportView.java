@@ -2,7 +2,6 @@ package se.solit.timeit.views;
 
 import io.dropwizard.jersey.sessions.Session;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
-import se.solit.timeit.dao.TimeDAO;
-import se.solit.timeit.dao.TimeDescriptor;
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
@@ -25,46 +21,20 @@ import com.sun.jersey.api.core.HttpContext;
 public class DayReportView extends ReportView
 {
 	private static final String			DISABLED_FORWARD_BUTTON	= "<button type='button' disabled='disabled'>&gt;&gt;</button>";
-	private final TimeDAO				timeDAO;
-	private String[]					columnClass;
-	private TimeDescriptorList			times;
-	private final List<Task>			tasks;
+
 	private Map<Integer, List<Time>>	items;
 
 	public DayReportView(EntityManagerFactory emf, DateTime pointInTime, User user, User reportedUser,
 			HttpContext context, @Session HttpSession session)
 	{
-		super("dayReport.ftl", user, pointInTime, reportedUser, context, session);
-		timeDAO = new TimeDAO(emf);
-		tasks = new ArrayList<Task>();
+		super("dayReport.ftl", user, pointInTime, reportedUser, context, session, emf);
 
 		DateTime start = pointInTime.withTimeAtStartOfDay();
 		DateTime stop = start.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
 
-		extractTimeDescriptors(user, start, stop);
+		extractTimeDescriptors(start, stop);
 		extractTasks();
 		extractItems(start, stop);
-	}
-
-	private void extractTimeDescriptors(User user, DateTime start, DateTime stop)
-	{
-		times = timeDAO.getTimes(user, start, stop);
-		columnClass = new String[times.size()];
-		for (int c = 0; c < times.size(); c++)
-		{
-			columnClass[c] = "Column" + c;
-		}
-	}
-
-	private void extractTasks()
-	{
-		for (TimeDescriptor time : times)
-		{
-			if (time.getDuration().isLongerThan(new Duration(0)))
-			{
-				tasks.add(time.getTask());
-			}
-		}
 	}
 
 	private void extractItems(DateTime start, DateTime stop)
@@ -145,7 +115,7 @@ public class DayReportView extends ReportView
 
 	public String getColumnClass(int taskColumn)
 	{
-		return columnClass[taskColumn];
+		return itemClass[taskColumn];
 	}
 
 	public TimeDescriptorList getAllTimes()

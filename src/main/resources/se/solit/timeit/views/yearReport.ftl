@@ -21,7 +21,7 @@
         		<td>
         		</td>
         		<td class="taskName">
-        		${item.getIndentString()}${item.getTask().getName()}
+        		${item.getIndentString()}<span class="${getTaskClass(item.getTask())}">${item.getTask().getName()}</span>
         		</td>
         		<td class="duration">
         		${item.getDurationString()}
@@ -50,7 +50,7 @@
         		<td>
         		</td>
         		<td class="taskName">
-        		${item.getIndentString()}${item.getTask().getName()}
+        		${item.getIndentString()}<span class="${getTaskClass(item.getTask())}">${item.getTask().getName()}</span>
         		</td>
         		<td class="duration">
         		${item.getDurationString()}

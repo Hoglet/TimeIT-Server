@@ -38,10 +38,28 @@ public class TaskDescriptorList extends ArrayList<TaskDescriptor>
 	@Override
 	public boolean add(TaskDescriptor td)
 	{
+		// if exists ignore
 		if (find(td.getTask()) != null)
 		{
 			return true;
 		}
+
+		// find parent
+		int index = indexOfParent(td);
+
+		if (index >= 0)
+		{
+			super.add(index + 1, td);
+			return true;
+		}
+		else
+		{
+			return super.add(td);
+		}
+	}
+
+	private int indexOfParent(TaskDescriptor td)
+	{
 		Task parent = td.getTask().getParent();
 		if (parent != null)
 		{
@@ -51,13 +69,8 @@ public class TaskDescriptorList extends ArrayList<TaskDescriptor>
 				add(new TaskDescriptor(parent));
 				found = find(parent);
 			}
-			int index = this.indexOf(found);
-			super.add(index + 1, td);
-			return true;
+			return this.indexOf(found);
 		}
-		else
-		{
-			return super.add(td);
-		}
+		return -1;
 	}
 }

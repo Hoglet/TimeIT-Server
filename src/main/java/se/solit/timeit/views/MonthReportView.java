@@ -16,12 +16,19 @@ import com.sun.jersey.api.core.HttpContext;
 public class MonthReportView extends ReportView
 {
 	private final TimeDAO	timeDAO;
+	private final DateTime	beginingOfMonth;
+	private final DateTime	endOfMonth;
 
 	public MonthReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser,
 			HttpContext context, @Session HttpSession session)
 	{
-		super("monthReport.ftl", user, pointInMonth, reportedUser, context, session);
+		super("monthReport.ftl", user, pointInMonth, reportedUser, context, session, emf);
 		timeDAO = new TimeDAO(emf);
+		beginingOfMonth = pointInTime.withDayOfMonth(1).withTimeAtStartOfDay();
+		endOfMonth = beginingOfMonth.plusMonths(1).minusDays(1)
+				.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+		extractTimeDescriptors(beginingOfMonth, endOfMonth);
+		extractTasks();
 	}
 
 	public String getMonth()
@@ -48,10 +55,7 @@ public class MonthReportView extends ReportView
 
 	public TimeDescriptorList getAllTimes()
 	{
-		DateTime start = pointInTime.withDayOfMonth(1).withTimeAtStartOfDay();
-		DateTime stop = start.plusMonths(1).minusDays(1)
-				.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
-		return timeDAO.getTimes(user, start, stop);
+		return times;
 	}
 
 	public String getPreviousMonthLink()
