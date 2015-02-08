@@ -91,6 +91,96 @@ public class TestTimeResource
 	}
 
 	@Test
+	public final void testEditTimePage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/time/edit/" + timeID.toString());
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		String actual = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(actual.contains("<h2>Edit time</h2>"));
+		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/time/edit'"));
+	}
+
+	@Test
+	public final void testEditTimePageAuth()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/time/edit/" + timeID.toString());
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
+		try
+		{
+			resource.accept("text/html").get(String.class);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
+	public final void testEditTimePostPage() throws SQLException
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/time/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+
+		Mockito.when(mockSession.getAttribute("returnPoint")).thenReturn("/");
+		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
+		DateTime stop = new DateTime(start.plus(60000));
+
+		Time expected = new Time(timeID, start, stop, false, stop, task);
+
+		Form form = new Form();
+		form.add("timeid", timeID.toString());
+		form.add("date", start.toString("yyy-MM-dd"));
+		form.add("start", start.toString("HH:mm"));
+		form.add("stop", stop.toString("HH:mm"));
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+
+		Time actual = timeDAO.getByID(timeID);
+		Assert.assertEquals(expected.getID(), actual.getID());
+		Assert.assertEquals(expected.getStart().toString(), actual.getStart().toString());
+		Assert.assertEquals(expected.getStop().toString(), actual.getStop().toString());
+		Assert.assertEquals(expected.getTask().getID(), actual.getTask().getID());
+	}
+
+	@Test
+	public final void testEditTimePostPageAuth()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/time/edit");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
+
+		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
+		DateTime stop = new DateTime(start.plus(60000));
+
+		Form form = new Form();
+		form.add("timeid", timeID.toString());
+		form.add("date", start.toString("yyy-MM-dd"));
+
+		form.add("start", start.toString("HH:mm"));
+		form.add("stop", stop.toString("HH:mm"));
+
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
 	public final void testAddPage()
 	{
 		Client client = resources.client();

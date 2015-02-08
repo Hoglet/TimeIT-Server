@@ -91,6 +91,20 @@ public class TestDayReportView
 	}
 
 	@Test
+	public final void testGetMonthOfYear() throws SQLException
+	{
+		DayReportView view = new DayReportView(emf, pointInMonth, user, user, null, session);
+		Assert.assertEquals(1, view.getMonthOfYear());
+	}
+
+	@Test
+	public final void testGetUser() throws SQLException
+	{
+		DayReportView view = new DayReportView(emf, pointInMonth, user, user, null, session);
+		Assert.assertEquals("minion", view.getUser());
+	}
+
+	@Test
 	public final void testGetYear() throws SQLException
 	{
 		DayReportView view = new DayReportView(emf, pointInMonth, user, user, null, session);

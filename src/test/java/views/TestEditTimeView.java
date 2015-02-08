@@ -20,9 +20,9 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-import se.solit.timeit.views.EditTimeView;
+import se.solit.timeit.views.TimeView;
 
-public class TestTimeView
+public class TestEditTimeView
 {
 	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
 	private static User					user;
@@ -59,16 +59,16 @@ public class TestTimeView
 	@Test
 	public final void testGetTime()
 	{
-		EditTimeView view = new EditTimeView(emf, time, user, null, session);
+		TimeView view = new TimeView(emf, time, user, null, session);
 		Assert.assertEquals(time, view.getTime());
 	}
 
 	@Test
 	public final void testGetParents() throws SQLException
 	{
-		EditTimeView view = new EditTimeView(emf, time, user, null, session);
-		String expected = "parent";
-		String actual = view.getTaskName();
+		TimeView view = new TimeView(emf, time, user, null, session);
+		String expected = "[e00b8d6f-3f89-4748-98ca-25ef6225d06a=parent, 4afe7048-fefe-4c5f-b32f-d4a771175b70=child]";
+		String actual = view.getTasks().toString();
 		Assert.assertEquals(expected, actual);
 	}
 

@@ -5,6 +5,7 @@ import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +14,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
@@ -27,6 +29,7 @@ import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
+import se.solit.timeit.views.EditTimeView;
 import se.solit.timeit.views.TimeView;
 
 import com.sun.jersey.api.core.HttpContext;
@@ -88,5 +91,60 @@ public class TimeResource extends BaseResource
 
 		}
 		throw redirect("/");
+	}
+
+	@GET
+	@Produces("text/html;charset=UTF-8")
+	@Path("/edit/{timeid}")
+	public View getEdit(@Auth User user, @PathParam("timeid") String timeid, @Context HttpContext context,
+			@Session HttpSession session) throws URISyntaxException
+	{
+		Time time;
+		try
+		{
+			time = timedao.getByID(UUID.fromString(timeid));
+			return new EditTimeView(emf, time, user, context, session);
+		}
+		catch (SQLException e)
+		{
+			String message = "Failed to find time item ";
+			setMessage(session, message + e.getMessage());
+			LOGGER.error(message, e);
+			throw redirect("/");
+		}
+	}
+
+	@POST
+	@Produces("text/html;charset=UTF-8")
+	@Path("/edit")
+	public View postEdit(@Auth User user, @FormParam("timeid") String id, @FormParam("start") String paramStart,
+			@FormParam("stop") String paramStop, @FormParam("date") String date,
+			@Session HttpSession session)
+			throws URISyntaxException
+	{
+		try
+		{
+			LocalDate d = LocalDate.parse(date);
+			LocalTime s1 = LocalTime.parse(paramStart);
+			LocalTime s2 = LocalTime.parse(paramStop);
+
+			DateTime start = d.toDateTime(s1);
+			DateTime stop = d.toDateTime(s2);
+			Time time = timedao.getByID(UUID.fromString(id));
+			time.setStart(start);
+			time.setStop(stop);
+			timedao.update(time);
+			String headline = "Time updated successfully";
+			setMessage(session, headline);
+		}
+		catch (Exception e)
+		{
+			String errorMessage = "Add time failed: ";
+			setMessage(session, errorMessage + e.getMessage());
+			LOGGER.error(errorMessage, e);
+
+		}
+		String returnPath = (String) session.getAttribute("returnPoint");
+		throw redirect(returnPath);
 	}
 }

@@ -88,9 +88,11 @@ public class TestReportView
 		String tab1 = view.tabs(0);
 		String tab2 = view.tabs(1);
 		String tab3 = view.tabs(2);
+		String tab4 = view.tabs(3);
 		Assert.assertTrue(tab1.contains("<div class='tab selected'><h2>Year"));
 		Assert.assertTrue(tab2.contains("<div class='tab selected'><h2>Month"));
 		Assert.assertTrue(tab3.contains("<div class='tab selected'><h2>Day"));
+		Assert.assertTrue(tab4.contains("<div class='tab selected'><h2>Details"));
 	}
 
 }

@@ -22,6 +22,7 @@ public class ReportView extends BaseView
 	private static final int		YEAR_TAB_ID				= 0;
 	private static final int		MONTH_TAB_ID			= 1;
 	private static final int		DAY_TAB_ID				= 2;
+	private static final int		DETAILS_TAB_ID			= 3;
 	protected static final int		TWO						= 2;
 	protected static final int		MONTHS_IN_YEAR			= 12;
 	protected static final int		LAST_SECOND_OF_MINUTE	= 59;
@@ -87,14 +88,26 @@ public class ReportView extends BaseView
 	{
 		int year = pointInTime.getYear();
 		int month = pointInTime.getMonthOfYear();
-		int day = pointInTime.getDayOfYear();
+		int day = pointInTime.getDayOfMonth();
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<div class='tabs'>");
 		yearTab(id, year, stringBuilder);
 		monthTab(id, year, month, stringBuilder);
 		dayTab(id, year, month, day, stringBuilder);
+		detailTab(id, stringBuilder);
 		stringBuilder.append("</div>");
 		return stringBuilder.toString();
+	}
+
+	private void detailTab(int id, StringBuilder stringBuilder)
+	{
+		if (id == DETAILS_TAB_ID)
+		{
+			stringBuilder.append("<div class='tab selected'>");
+			stringBuilder.append("<h2>Details</h2>");
+			stringBuilder.append("</div>");
+		}
+
 	}
 
 	private void yearTab(int id, int year, StringBuilder stringBuilder)

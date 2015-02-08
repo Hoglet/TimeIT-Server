@@ -27,4 +27,5 @@ public class BaseResource
 	{
 		session.setAttribute("message", message);
 	}
+
 }

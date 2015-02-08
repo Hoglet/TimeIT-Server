@@ -52,6 +52,11 @@ public class DayReportView extends ReportView
 		return pointInTime.toString("MMMMMMMMMM");
 	}
 
+	public int getMonthOfYear()
+	{
+		return pointInTime.getMonthOfYear();
+	}
+
 	public String getDay()
 	{
 		return pointInTime.toString("EEE");
@@ -180,6 +185,11 @@ public class DayReportView extends ReportView
 		{
 			return createUrl(nextPointInTime, true);
 		}
+	}
+
+	public String getUser()
+	{
+		return reportedUser.getUsername();
 	}
 
 	private String createUrl(DateTime nextPointInTime, boolean forward)
