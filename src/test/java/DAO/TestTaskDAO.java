@@ -284,6 +284,23 @@ public class TestTaskDAO
 		taskdao.delete(child);
 		resultingTasks = taskdao.getTasks(user.getUsername(), parent, false);
 		assertEquals(0, resultingTasks.size());
+
+		taskdao.delete(parent);
+		Task actualChild = taskdao.getByID(child.getID());
+		assertEquals(parent, actualChild.getParent());
+	}
+
+	@Test
+	public final void testDelete2()
+	{
+		Task parent = new Task(parentID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
+
+		taskdao.add(parent);
+		taskdao.add(child);
+		taskdao.delete(parent);
+		Task actualChild = taskdao.getByID(child.getID());
+		assertEquals(null, actualChild.getParent());
 	}
 
 	@Test

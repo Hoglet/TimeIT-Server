@@ -192,7 +192,7 @@ public class TaskDAO
 		{
 			em.getTransaction().begin();
 			em.merge(task2);
-			List<Task> tasks = getChildren(task2, em);
+			List<Task> tasks = getNotDeletedChildren(task2, em);
 			for (Task task : tasks)
 			{
 				task.setParent(null);
@@ -206,9 +206,10 @@ public class TaskDAO
 
 	}
 
-	private List<Task> getChildren(Task task2, EntityManager em)
+	private List<Task> getNotDeletedChildren(Task task2, EntityManager em)
 	{
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t WHERE t.parent = :parent", Task.class);
+		TypedQuery<Task> getQuery = em.createQuery(
+				"SELECT t FROM Task t WHERE t.parent = :parent AND t.deleted = false", Task.class);
 		getQuery.setParameter("parent", task2);
 		return getQuery.getResultList();
 	}
