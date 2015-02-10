@@ -28,6 +28,7 @@ import se.solit.timeit.resources.IndexResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
@@ -76,7 +77,7 @@ public class TestIndexResource
 	}
 
 	@Test
-	public final void testLandingPage()
+	public final void testIndexPage()
 	{
 		Client client = resources.client();
 		WebResource resource = client.resource("/");
@@ -84,4 +85,31 @@ public class TestIndexResource
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("admin stuff"));
 	}
+
+	@Test
+	public final void testLandingPage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/");
+		String actual = resource.accept("text/html").get(String.class);
+		Assert.assertTrue(actual.contains("<H1>TimeIT server</H1>"));
+	}
+
+	@Test
+	public final void testLoginPage()
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/login");
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		try
+		{
+			resource.accept("text/html").get(String.class);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
+		}
+	}
+
 }
