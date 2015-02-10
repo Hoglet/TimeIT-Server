@@ -46,6 +46,7 @@ test
         {
                 // Show that tests are run in the command-line output
                 events 'started', 'passed'
+                exceptionFormat = 'full'
         }
 //      reportsDir = file("$buildDir/junit")
 }
