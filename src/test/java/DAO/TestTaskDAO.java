@@ -13,8 +13,8 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.RollbackException;
-import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -64,12 +64,8 @@ public class TestTaskDAO
 	private void deleteAllTasks()
 	{
 		em.getTransaction().begin();
-		TypedQuery<Task> getQuery = em.createQuery("SELECT t FROM Task t", Task.class);
-		List<Task> tasks = getQuery.getResultList();
-		for (Task task : tasks)
-		{
-			em.remove(task);
-		}
+		Query query = em.createQuery("DELETE FROM Task t");
+		query.executeUpdate();
 		em.getTransaction().commit();
 	}
 

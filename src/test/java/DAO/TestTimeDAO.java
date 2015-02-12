@@ -8,8 +8,8 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.RollbackException;
-import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -74,18 +74,10 @@ public class TestTimeDAO
 	public void tearDown() throws Exception
 	{
 		EntityManager em = emf.createEntityManager();
-		TypedQuery<Time> getTimeQuery = em.createQuery("SELECT t FROM Time t", Time.class);
-		List<Time> times;
-		do
-		{
-			em.getTransaction().begin();
-			times = getTimeQuery.getResultList();
-			for (Time time : times)
-			{
-				em.remove(time);
-			}
-			em.getTransaction().commit();
-		} while (times.size() > 0);
+		em.getTransaction().begin();
+		Query query = em.createQuery("DELETE FROM Time t");
+		query.executeUpdate();
+		em.getTransaction().commit();
 		em.close();
 	}
 
