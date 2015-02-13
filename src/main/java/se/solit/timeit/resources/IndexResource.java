@@ -36,7 +36,7 @@ public class IndexResource extends BaseResource
 	{
 		if (user == null)
 		{
-			return new LandingView();
+			return new LandingView(context, session);
 		}
 		else
 		{

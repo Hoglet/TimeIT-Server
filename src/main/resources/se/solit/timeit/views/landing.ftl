@@ -5,11 +5,16 @@
 <#include "head.ftl">
 </head>
 <body id="landingPage">
+    <#include "top.ftl">
     <div class="mainFrame">
     <H1>TimeIT server</H1>
     <p>Welcome to the TimeIT web service.</p>
     <p>If you already have an account you can <a href="/login">Login</a> and start
     using the system</p>
+
+    <p>
+    Lost you pasword? Request a new password on the <a href="/recover">recovery</a> page.
+    </p>
 
 	</div>
 </body>

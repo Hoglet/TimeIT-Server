@@ -115,4 +115,16 @@ public class TestUserDAO
 		userdao.delete(user);
 	}
 
+	@Test
+	public final void testGetUserByEmail()
+	{
+		User user = new User("Test Tester", "tester", "password", "email@main.com", null);
+		userdao.add(user);
+		User u2 = userdao.getByEMail("email@main.com");
+		Assert.assertEquals(user, u2);
+
+		u2 = userdao.getByEMail("noOne@main.com");
+		Assert.assertEquals(null, u2);
+	}
+
 }

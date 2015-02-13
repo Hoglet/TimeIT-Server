@@ -90,6 +90,7 @@ dependencies
 	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: project.ext.dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
+	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
 	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
 	compile group: 'org.apache.derby', name: 'derby', version: derbyversion

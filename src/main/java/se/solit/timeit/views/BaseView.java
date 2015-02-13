@@ -44,7 +44,7 @@ public class BaseView extends View
 			currentPath = context.getRequest().getPath();
 		}
 		list = new ArrayList<SimpleEntry<String, String>>();
-		if (user.hasRole(Role.ADMIN))
+		if (user != null && user.hasRole(Role.ADMIN))
 		{
 			list.add(new SimpleEntry<String, String>("user/", "admin"));
 		}

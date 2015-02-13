@@ -1,6 +1,7 @@
 package se.solit.timeit.entities;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -143,7 +144,7 @@ public class User
 
 	public final void setEmail(final String email)
 	{
-		this.email = email;
+		this.email = email.toLowerCase(Locale.ENGLISH);
 	}
 
 	public final void setPassword(final String password)

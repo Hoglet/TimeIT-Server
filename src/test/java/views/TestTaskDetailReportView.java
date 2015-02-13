@@ -30,7 +30,6 @@ public class TestTaskDetailReportView
 	private static User					user;
 	private static DateTime				pointInMonth;
 	private static int					dayToTest;
-	private static DateTime				now;
 	private static Task					task;
 
 	@BeforeClass
@@ -39,7 +38,6 @@ public class TestTaskDetailReportView
 		user = new User("minion", "Do Er", "password", "email", null);
 		dayToTest = 11;
 		pointInMonth = new DateTime(2014, 1, dayToTest, 0, 0);
-		now = DateTime.now();
 
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);

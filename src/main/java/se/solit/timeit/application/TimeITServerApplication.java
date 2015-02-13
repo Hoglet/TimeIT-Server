@@ -8,6 +8,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 
+import javax.mail.internet.AddressException;
 import javax.persistence.EntityManagerFactory;
 
 import org.eclipse.jetty.server.session.SessionHandler;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.entities.User;
+import se.solit.timeit.resources.CredentialRecoveryResource;
 import se.solit.timeit.resources.IndexResource;
 import se.solit.timeit.resources.ReportResource;
 import se.solit.timeit.resources.TaskResource;
@@ -45,7 +47,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 	}
 
 	@Override
-	public void run(TimeITConfiguration configuration, Environment environment)
+	public void run(TimeITConfiguration configuration, Environment environment) throws AddressException
 	{
 		Database db = new Database(configuration.getDatabase());
 		EntityManagerFactory emf = db.createJpaPersistFactory();
@@ -59,6 +61,10 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
 
+		String mailserver = configuration.getMailserver();
+		MailerInterface mailer = new Mailer(mailserver);
+
+		environment.jersey().register(new CredentialRecoveryResource(emf, mailer));
 		environment.jersey().register(new IndexResource(emf));
 		environment.jersey().register(new TaskResource(emf));
 		environment.jersey().register(new TimeResource(emf));

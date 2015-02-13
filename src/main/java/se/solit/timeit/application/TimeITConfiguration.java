@@ -14,6 +14,8 @@ public class TimeITConfiguration extends Configuration
 	@NotEmpty
 	private String					defaultName	= "Stranger";
 
+	private String					mailserver	= "";
+
 	@NotNull
 	@Valid
 	private DatabaseConfiguration	database;
@@ -30,6 +32,11 @@ public class TimeITConfiguration extends Configuration
 		this.defaultName = name;
 	}
 
+	public void setMailserver(String name)
+	{
+		this.mailserver = name;
+	}
+
 	public DatabaseConfiguration getDatabase()
 	{
 		return database;
@@ -38,6 +45,11 @@ public class TimeITConfiguration extends Configuration
 	public void setDatabase(DatabaseConfiguration database)
 	{
 		this.database = database;
+	}
+
+	public String getMailserver()
+	{
+		return mailserver;
 	}
 
 }

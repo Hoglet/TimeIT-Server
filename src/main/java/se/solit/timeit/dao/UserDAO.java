@@ -4,13 +4,18 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.solit.timeit.entities.User;
 
 public class UserDAO
 {
 	private final EntityManagerFactory	emf;
+	private static final Logger			LOGGER	= LoggerFactory.getLogger(UserDAO.class);
 
 	public UserDAO(EntityManagerFactory emf)
 	{
@@ -99,4 +104,21 @@ public class UserDAO
 		em.flush();
 	}
 
+	public User getByEMail(String mailaddress)
+	{
+		EntityManager em = emf.createEntityManager();
+		User result = null;
+		try
+		{
+			Query query = em.createQuery("SELECT u FROM User u WHERE u.email=:email");
+			query.setParameter("email", mailaddress);
+			result = (User) query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			LOGGER.error("Searching for user with e-mail: " + mailaddress + " failed ", e);
+		}
+		em.close();
+		return result;
+	}
 }

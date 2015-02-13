@@ -21,7 +21,6 @@ public class TestTaskDescriptor
 	private static UUID				childID		= UUID.randomUUID();
 	private static TaskDescriptor	taskDescriptor1;
 	private static TaskDescriptor	taskDescriptor2;
-	private static TaskDescriptor	taskDescriptor3;
 	private static Task				parent;
 	private static Task				child;
 
@@ -32,7 +31,6 @@ public class TestTaskDescriptor
 		child = new Task(childID, "child", parent, false, changeTime, false, owner);
 		taskDescriptor1 = new TaskDescriptor(parent);
 		taskDescriptor2 = new TaskDescriptor(child);
-		taskDescriptor3 = new TaskDescriptor(child);
 	}
 
 	@AfterClass

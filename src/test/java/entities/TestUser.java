@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,21 +45,21 @@ public class TestUser
 	public void testSetName()
 	{
 		user.setName(JUST_A_STRING);
-		assertEquals(user.getName(), JUST_A_STRING);
+		assertEquals(JUST_A_STRING, user.getName());
 	}
 
 	@Test
 	public void testSetEmail()
 	{
 		user.setEmail(JUST_A_STRING);
-		assertEquals(user.getEmail(), JUST_A_STRING);
+		assertEquals(JUST_A_STRING.toLowerCase(Locale.ENGLISH), user.getEmail());
 	}
 
 	@Test
 	public void testSetPassword()
 	{
 		user.setPassword(JUST_A_STRING);
-		assertEquals(user.getPassword(), JUST_A_STRING);
+		assertEquals(JUST_A_STRING, user.getPassword());
 	}
 
 	@Test

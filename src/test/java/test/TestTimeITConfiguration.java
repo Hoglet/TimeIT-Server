@@ -35,6 +35,14 @@ public class TestTimeITConfiguration
 	}
 
 	@Test
+	public final void testSetMailserver()
+	{
+		timeITConfiguration.setMailserver(JUST_A_STRING);
+		String actual = timeITConfiguration.getMailserver();
+		Assert.assertEquals(JUST_A_STRING, actual);
+	}
+
+	@Test
 	public final void testSetDatabase()
 	{
 		DatabaseConfiguration database = new DatabaseConfiguration();

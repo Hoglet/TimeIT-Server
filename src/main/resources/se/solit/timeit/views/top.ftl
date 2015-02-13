@@ -6,6 +6,7 @@
 </div>
 <![endif]-->
 <div id="toolbar">
+<#if currentUser?? >
 <div id="menu">
 <a href="/" class="${getClasses("home")}">Home</a>
 ${reportLink}
@@ -22,6 +23,7 @@ ${reportLink}
 	</#if>
 	</a>
 </div>
+</#if>
 </div>
 <div id="content">
 		<p>
