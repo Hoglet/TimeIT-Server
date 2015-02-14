@@ -24,6 +24,7 @@ import se.solit.timeit.resources.TasksSyncResource;
 import se.solit.timeit.resources.TimeResource;
 import se.solit.timeit.resources.TimesSyncResource;
 import se.solit.timeit.resources.UserResource;
+import Utilities.Mailer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -71,7 +72,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new UserResource(emf));
-		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator"));
+		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "TimeIT auth"));
 		environment.jersey().register(new ReportResource(emf));
 		environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());

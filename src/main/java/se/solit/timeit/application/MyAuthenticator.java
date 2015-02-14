@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
+import Utilities.Crypto;
 
 import com.google.common.base.Optional;
 
@@ -26,7 +27,7 @@ public class MyAuthenticator implements Authenticator<BasicCredentials, User>
 	{
 		UserDAO userDAO = new UserDAO(emf);
 		User user = userDAO.getUser(credentials.getUsername());
-		if (user != null && user.getPassword().equals(credentials.getPassword()))
+		if (user != null && user.getPassword().equals(Crypto.encrypt(credentials.getPassword())))
 		{
 			return Optional.of(user);
 		}

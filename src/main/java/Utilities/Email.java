@@ -1,4 +1,4 @@
-package se.solit.timeit.application;
+package Utilities;
 
 import javax.mail.internet.InternetAddress;
 

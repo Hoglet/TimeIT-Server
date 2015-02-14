@@ -1,4 +1,4 @@
-package se.solit.timeit.application;
+package Utilities;
 
 import java.util.Properties;
 
@@ -9,6 +9,8 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import se.solit.timeit.application.MailerInterface;
 
 public class Mailer implements MailerInterface
 {

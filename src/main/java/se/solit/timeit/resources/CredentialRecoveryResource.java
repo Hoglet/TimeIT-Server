@@ -21,7 +21,6 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.solit.timeit.application.Email;
 import se.solit.timeit.application.MailerInterface;
 import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -29,6 +28,7 @@ import se.solit.timeit.entities.LoginKey;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.ChangePasswordView;
 import se.solit.timeit.views.RecoverView;
+import Utilities.Email;
 
 import com.sun.jersey.api.core.HttpContext;
 

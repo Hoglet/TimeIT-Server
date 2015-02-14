@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<td>Password</td>
-				<td><input type="password" name="password"  value="${user.password}" /></td>
+				<td><input type="password" name="password"  value="" /></td>
 			</tr>
 			<tr>
 				<td>E-mail</td>

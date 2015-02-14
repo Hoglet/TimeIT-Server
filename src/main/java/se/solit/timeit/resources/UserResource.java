@@ -125,7 +125,10 @@ public class UserResource extends BaseResource
 		User user = userManager.getUser(username);
 		user.setName(name);
 		user.setEmail(email);
-		user.setPassword(password);
+		if (password.length() > 0)
+		{
+			user.setPassword(password);
+		}
 		Collection<Role> roles = new ArrayList<Role>();
 		for (String id : roleIDs)
 		{

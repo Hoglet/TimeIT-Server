@@ -11,6 +11,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import Utilities.Crypto;
+
 @Entity
 @Table(name = "users")
 public class User
@@ -45,7 +47,10 @@ public class User
 		}
 		this.name = paramName;
 		this.username = paramUsername;
-		this.password = paramPassword;
+		if (paramPassword != null)
+		{
+			this.password = Crypto.encrypt(paramPassword);
+		}
 		this.email = paramEmail;
 		this.roles = roles2;
 	}
@@ -149,7 +154,7 @@ public class User
 
 	public final void setPassword(final String password)
 	{
-		this.password = password;
+		this.password = Crypto.encrypt(password);
 	}
 
 	public final String getName()

@@ -222,6 +222,46 @@ public class TestUserResource
 	}
 
 	@Test
+	public final void testUserEdit_retainOldPassword()
+	{
+		Client client = resources.client();
+
+		String username = minion.getUsername();
+		String name = "Banarne";
+		String password = "Password";
+		String email = "emajl";
+		List<String> roles = new ArrayList<String>();
+		roles.add(Role.ADMIN);
+		Collection<Role> roles2 = new ArrayList<Role>();
+		roles2.add(new Role(Role.ADMIN));
+		User expected = new User(username, name, password, email, roles2);
+		Form form = new Form();
+		form.add("submitType", "save");
+		form.add("name", name);
+		form.add("password", "");
+		form.add("email", email);
+		form.put("roles", roles);
+
+		WebResource resource = client.resource("/user/" + username);
+		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		try
+		{
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+
+		User actual = userDAO.getUser(username);
+		Assert.assertEquals(expected.getName(), actual.getName());
+		Assert.assertEquals(minion.getPassword(), actual.getPassword());
+		Assert.assertEquals(expected.getEmail(), actual.getEmail());
+		Assert.assertEquals("Active roles:", 1, actual.getRoles().size());
+
+	}
+
+	@Test
 	public final void testUserEdit_personalEditingSave()
 	{
 		Client client = resources.client();

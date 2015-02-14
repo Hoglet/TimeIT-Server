@@ -22,12 +22,13 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import se.solit.timeit.application.Email;
 import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.LoginKey;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.CredentialRecoveryResource;
+import Utilities.Email;
+import Utilities.Crypto;
 
 import com.codahale.metrics.MetricRegistry;
 import com.sun.jersey.api.client.Client;
@@ -183,7 +184,7 @@ public class TestCredentialRecoveryResource
 			Assert.assertEquals("Client response status: 303", e.getMessage());
 		}
 		User daUser = userDAO.getUser(user.getUsername());
-		Assert.assertEquals(password, daUser.getPassword());
+		Assert.assertEquals(Crypto.encrypt(password), daUser.getPassword());
 
 	}
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
+import Utilities.Crypto;
 
 public class TestUser
 {
@@ -59,7 +60,7 @@ public class TestUser
 	public void testSetPassword()
 	{
 		user.setPassword(JUST_A_STRING);
-		assertEquals(JUST_A_STRING, user.getPassword());
+		assertEquals(Crypto.encrypt(JUST_A_STRING), user.getPassword());
 	}
 
 	@Test

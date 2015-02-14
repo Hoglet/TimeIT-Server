@@ -25,7 +25,7 @@ public class TestTime
 {
 	private static final UUID		timeID			= UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
 	private static final DateTime	creationTime	= new DateTime(1000 * 1000);
-	private static final User		owner			= new User("123", "", "", "", null);
+	private static final User		owner			= new User("123", "", "password", "", null);
 	private static final Task		task1			= new Task(UUID.randomUUID(), "task1", null, false, creationTime,
 															false, owner);
 	private static final Task		task2			= new Task(UUID.randomUUID(), "task2", null, false, creationTime,
