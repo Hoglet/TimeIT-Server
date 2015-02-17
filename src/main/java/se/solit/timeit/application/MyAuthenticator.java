@@ -8,7 +8,7 @@ import javax.persistence.EntityManagerFactory;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
-import Utilities.Crypto;
+import se.solit.timeit.utilities.Crypto;
 
 import com.google.common.base.Optional;
 

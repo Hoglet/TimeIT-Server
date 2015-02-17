@@ -18,7 +18,7 @@ public class LoginKey
 
 	@Id
 	@Column(nullable = false)
-	private UUID	id;
+	private String	id;
 	private User	user;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
@@ -30,14 +30,14 @@ public class LoginKey
 
 	public LoginKey(User user)
 	{
-		id = UUID.randomUUID();
+		id = UUID.randomUUID().toString();
 		this.user = user;
 		lastChange = DateTime.now();
 	}
 
 	public UUID getId()
 	{
-		return id;
+		return UUID.fromString(id);
 	}
 
 	public User getUser()

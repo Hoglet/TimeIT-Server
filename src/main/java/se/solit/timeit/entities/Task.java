@@ -29,7 +29,7 @@ public class Task
 {
 	@Id
 	@Column(nullable = false)
-	private UUID		id;
+	private String		id;
 	private String		name;
 	@JsonSerialize(using = TaskSerializer.class)
 	private Task		parent;
@@ -61,7 +61,7 @@ public class Task
 		{
 			throw new NullPointerException("id is not allowed to be null");
 		}
-		id = paramID;
+		id = paramID.toString();
 		name = paramName;
 		parent = paramParent;
 		lastChange = paramLastChange;
@@ -79,7 +79,7 @@ public class Task
 
 	public final UUID getID()
 	{
-		return id;
+		return UUID.fromString(id);
 	}
 
 	public final String getName()

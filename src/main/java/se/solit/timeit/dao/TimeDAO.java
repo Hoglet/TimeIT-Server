@@ -62,7 +62,7 @@ public class TimeDAO
 	{
 		Time item = null;
 		EntityManager em = entityManagerFactory.createEntityManager();
-		item = em.find(Time.class, id);
+		item = em.find(Time.class, id.toString());
 		em.close();
 		return item;
 	}

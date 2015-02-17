@@ -84,13 +84,18 @@ public class TaskDAO
 		}
 	}
 
-	public final Task getByID(final UUID id)
+	public Task getByID(String id)
 	{
 		Task task = null;
 		EntityManager em = emf.createEntityManager();
 		task = em.find(Task.class, id);
 		em.close();
 		return task;
+	}
+
+	public final Task getByID(final UUID id)
+	{
+		return getByID(id.toString());
 	}
 
 	public Collection<Task> getAllTasks(String username)
@@ -212,11 +217,6 @@ public class TaskDAO
 				"SELECT t FROM Task t WHERE t.parent = :parent AND t.deleted = false", Task.class);
 		getQuery.setParameter("parent", task2);
 		return getQuery.getResultList();
-	}
-
-	public Task getByID(String id)
-	{
-		return getByID(UUID.fromString(id));
 	}
 
 }

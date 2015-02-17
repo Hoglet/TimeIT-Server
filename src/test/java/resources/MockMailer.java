@@ -1,7 +1,7 @@
 package resources;
 
-import Utilities.Email;
 import se.solit.timeit.application.MailerInterface;
+import se.solit.timeit.utilities.Email;
 
 public class MockMailer implements MailerInterface
 {

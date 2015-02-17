@@ -11,7 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import Utilities.Crypto;
+import se.solit.timeit.utilities.Crypto;
 
 @Entity
 @Table(name = "users")

@@ -1,4 +1,4 @@
-package Utilities;
+package se.solit.timeit.utilities;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

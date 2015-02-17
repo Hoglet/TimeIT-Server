@@ -24,7 +24,7 @@ public class LoginKeyDAO
 	public LoginKey getByID(UUID uuid)
 	{
 		EntityManager em = emf.createEntityManager();
-		LoginKey loginKey = em.find(LoginKey.class, uuid);
+		LoginKey loginKey = em.find(LoginKey.class, uuid.toString());
 		em.close();
 		return loginKey;
 	}
@@ -51,7 +51,7 @@ public class LoginKeyDAO
 		try
 		{
 			em.getTransaction().begin();
-			em.remove(em.getReference(LoginKey.class, loginKey.getId()));
+			em.remove(em.getReference(LoginKey.class, loginKey.getId().toString()));
 			em.getTransaction().commit();
 		}
 		finally

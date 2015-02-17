@@ -26,9 +26,9 @@ import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.LoginKey;
 import se.solit.timeit.entities.User;
+import se.solit.timeit.utilities.Email;
 import se.solit.timeit.views.ChangePasswordView;
 import se.solit.timeit.views.RecoverView;
-import Utilities.Email;
 
 import com.sun.jersey.api.core.HttpContext;
 

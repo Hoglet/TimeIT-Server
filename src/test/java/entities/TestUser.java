@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
-import Utilities.Crypto;
+import se.solit.timeit.utilities.Crypto;
 
 public class TestUser
 {

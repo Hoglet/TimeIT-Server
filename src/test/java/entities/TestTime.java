@@ -119,17 +119,13 @@ public class TestTime
 		DateTime start = new DateTime(0);
 		DateTime stop = new DateTime(1 * 1000);
 		DateTime now = DateTime.now();
-		Time x = new Time(null, start, stop, false, now, task1);
-		Time y = new Time(null, start, stop, false, now, task1);
+
+		Time x = new Time(timeID, start, stop, false, now, task1);
+		Time y = new Time(timeID, start, stop, false, now, task1);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Time(timeID, start, stop, false, now, task1);
-		y = new Time(timeID, start, stop, false, now, task1);
-		assertTrue(x.equals(y) && y.equals(x));
-		assertTrue(x.hashCode() == y.hashCode());
-
-		y = new Time(null, start, stop, false, now, task1);
+		y = new Time(UUID.randomUUID(), start, stop, false, now, task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());

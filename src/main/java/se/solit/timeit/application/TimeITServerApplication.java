@@ -24,7 +24,7 @@ import se.solit.timeit.resources.TasksSyncResource;
 import se.solit.timeit.resources.TimeResource;
 import se.solit.timeit.resources.TimesSyncResource;
 import se.solit.timeit.resources.UserResource;
-import Utilities.Mailer;
+import se.solit.timeit.utilities.Mailer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 

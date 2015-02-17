@@ -43,22 +43,6 @@ public class Database
 	private void upgradeDB(EntityManagerFactory emf)
 	{
 		UserDAO userDAO = new UserDAO(emf);
-
-		encryptPasswords(userDAO);
-	}
-
-	private void encryptPasswords(UserDAO userDAO)
-	{
-		Collection<User> users = userDAO.getUsers();
-		for (User user : users)
-		{
-			String password = user.getPassword();
-			if (password.length() != 64)
-			{
-				user.setPassword(password);
-				userDAO.update(user);
-			}
-		}
 	}
 
 	private void cleanData(EntityManagerFactory emf)

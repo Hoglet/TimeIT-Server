@@ -5,6 +5,7 @@ mailserver: localhost
 database:
   # the name of your JDBC driver
   driverClass: org.h2.Driver
+  #driverClass: org.postgresql.Driver
 
   # the username
   user:
@@ -13,3 +14,4 @@ database:
 
   # the JDBC URL
   url: jdbc:h2:~/.timeit_database
+  #url: jdbc:postgresql://localhost:5432/timeitdb

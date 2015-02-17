@@ -27,8 +27,8 @@ import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.LoginKey;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.CredentialRecoveryResource;
-import Utilities.Email;
-import Utilities.Crypto;
+import se.solit.timeit.utilities.Crypto;
+import se.solit.timeit.utilities.Email;
 
 import com.codahale.metrics.MetricRegistry;
 import com.sun.jersey.api.client.Client;

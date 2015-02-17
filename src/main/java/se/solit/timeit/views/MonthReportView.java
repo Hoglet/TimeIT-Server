@@ -50,7 +50,8 @@ public class MonthReportView extends ReportView
 	{
 		DateTime start = pointInTime.withDayOfMonth(day).withTimeAtStartOfDay();
 		DateTime stop = start.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
-		return timeDAO.getTimes(user, start, stop);
+		TimeDescriptorList result = timeDAO.getTimes(user, start, stop);
+		return result;
 	}
 
 	public TimeDescriptorList getAllTimes()

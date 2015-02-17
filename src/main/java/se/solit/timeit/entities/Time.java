@@ -26,7 +26,7 @@ public class Time
 
 	@Id
 	@Column(nullable = false)
-	private UUID				id;
+	private String				id;
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
@@ -51,7 +51,7 @@ public class Time
 	public Time(final UUID paramUuid, final DateTime paramStart, final DateTime paramStop, final boolean paramDeleted,
 			final DateTime paramChanged, final Task paramTask)
 	{
-		id = paramUuid;
+		id = paramUuid.toString();
 		start = paramStart.getMillis() / MILLISECONDS_PER_SECOND;
 		stop = paramStop.getMillis() / MILLISECONDS_PER_SECOND;
 		deleted = paramDeleted;
@@ -90,7 +90,7 @@ public class Time
 
 	public final UUID getID()
 	{
-		return id;
+		return UUID.fromString(id);
 	}
 
 	public final DateTime getStart()
@@ -123,7 +123,7 @@ public class Time
 		int result = 1;
 		result = prime * result + changed.hashCode();
 		result = prime * result + (deleted ? 1231 : 1237);
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + id.hashCode();
 		result = prime * result + Long.valueOf(start).hashCode();
 		result = prime * result + Long.valueOf(stop).hashCode();
 		result = prime * result + task.getID().hashCode();
@@ -155,14 +155,7 @@ public class Time
 		{
 			return false;
 		}
-		if (id == null)
-		{
-			if (other.id != null)
-			{
-				return false;
-			}
-		}
-		else if (!id.equals(other.id))
+		if (!id.equals(other.id))
 		{
 			return false;
 		}

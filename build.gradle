@@ -12,7 +12,7 @@ project.ext
 {
 	dropwizardVersion='0.7.+'
 	h2Version = '1.4+'
-	derbyversion = '10.11+'
+	postgresversion = '9.4+'
 }
 
 mainClassName = 'se.solit.timeit.application.TimeITServerApplication'
@@ -93,6 +93,6 @@ dependencies
 	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
 	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
-	compile group: 'org.apache.derby', name: 'derby', version: derbyversion
+	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 }
