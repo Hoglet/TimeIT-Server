@@ -13,6 +13,8 @@ project.ext
 	dropwizardVersion='0.7.+'
 	h2Version = '1.4+'
 	postgresversion = '9.4+'
+	mariadbversion = '1.1.8'
+	jnaversion = '3.0.9'
 }
 
 mainClassName = 'se.solit.timeit.application.TimeITServerApplication'
@@ -94,5 +96,7 @@ dependencies
 	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
 	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
+	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
+	compile group: 'com.sun.jna', name: 'jna', version: jnaversion
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 }
