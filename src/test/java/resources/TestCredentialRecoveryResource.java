@@ -20,7 +20,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -41,7 +40,7 @@ public class TestCredentialRecoveryResource
 
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 
-	private final static HttpSession		mockSession	= Mockito.mock(HttpSession.class);
+	private final static HttpSession		mockSession	= new MockSession();
 
 	private static MockMailer				mockMailer	= new MockMailer();
 
@@ -61,9 +60,9 @@ public class TestCredentialRecoveryResource
 																		new ContextInjectableProvider<HttpHeaders>(
 																				HttpHeaders.class, null)).build();
 
-	String									mailaddress	= "mepa@mail.org";
+	static String							mailaddress	= "mepa@mail.org";
 
-	private final static User				user		= new User("username", "tester", "password", "tester@mail.org",
+	private final static User				user		= new User("username", "tester", "password", mailaddress,
 																null);
 	private static LoginKeyDAO				loginKeyDAO;
 
@@ -133,6 +132,25 @@ public class TestCredentialRecoveryResource
 		Query query = em.createQuery("SELECT l FROM LoginKey l");
 		LoginKey result = (LoginKey) query.getSingleResult();
 		Assert.assertTrue(capturedEmail.message.contains("/recover/" + result.getId().toString()));
+	}
+
+	@Test
+	public final void testRecoverPost_fail1() throws MessagingException
+	{
+		Client client = resources.client();
+		WebResource resource = client.resource("/recover/");
+
+		try
+		{
+			Form form = new Form();
+			form.add("address", "wrong@address.org");
+			resource.accept("text/html").post(String.class, form);
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 303", e.getMessage());
+		}
+		Assert.assertEquals("No user connected to wrong@address.org", mockSession.getAttribute("message"));
 	}
 
 	@Test
