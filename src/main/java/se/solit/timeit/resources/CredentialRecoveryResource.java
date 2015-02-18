@@ -35,12 +35,12 @@ import com.sun.jersey.api.core.HttpContext;
 @Path("/recover")
 public class CredentialRecoveryResource extends BaseResource
 {
-	private static final int	DAY_LIMIT	= 3;
+	private static final int			DAY_LIMIT	= 3;
 	private final EntityManagerFactory	emf;
 	private final MailerInterface		mailer;
 	private final UserDAO				userDAO;
 	private final LoginKeyDAO			loginKeyDAO;
-	private static final Logger			LOGGER	= LoggerFactory.getLogger(CredentialRecoveryResource.class);
+	private static final Logger			LOGGER		= LoggerFactory.getLogger(CredentialRecoveryResource.class);
 
 	public CredentialRecoveryResource(EntityManagerFactory emf, MailerInterface mailer)
 	{
@@ -67,27 +67,36 @@ public class CredentialRecoveryResource extends BaseResource
 		try
 		{
 			User user = userDAO.getByEMail(mailaddress);
+			if (user == null)
+			{
+				LOGGER.error("Request credential failed, no user with that mail address");
+				setMessage(session, "No user connected to " + mailaddress);
+			}
+			else
+			{
 
-			String subject = "Request for new password";
-			InternetAddress recipient = new InternetAddress(mailaddress);
+				String subject = "Request for new password";
+				InternetAddress recipient = new InternetAddress(mailaddress);
 
-			LoginKey loginKey = new LoginKey(user);
-			loginKeyDAO.add(loginKey);
+				LoginKey loginKey = new LoginKey(user);
+				loginKeyDAO.add(loginKey);
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("Goto link : ");
-			sb.append(context.getUriInfo().getBaseUri());
-			sb.append("recover/" + loginKey.getId());
-			sb.append("\n");
-			String message = sb.toString();
+				StringBuilder sb = new StringBuilder();
+				sb.append("Goto link : ");
+				sb.append(context.getUriInfo().getBaseUri());
+				sb.append("recover/" + loginKey.getId());
+				sb.append("\n");
+				String message = sb.toString();
 
-			Email email = new Email(recipient, subject, message);
-			mailer.sendMail(email);
+				Email email = new Email(recipient, subject, message);
+				mailer.sendMail(email);
+			}
 		}
 		catch (Exception e)
 		{
 			LOGGER.error("Request credential failed", e);
-			setMessage(session, "No user connected to " + mailaddress);
+			String str = e.getMessage();
+			setMessage(session, "Failed to send message. Error message: \"" + e.getMessage() + "\"");
 			throw redirect("/recover");
 		}
 		throw redirect("/");

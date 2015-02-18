@@ -13,7 +13,7 @@
     using the system</p>
 
     <p>
-    Lost you pasword? Request a new password on the <a href="/recover">recovery</a> page.
+    Lost you password? Request a new password on the <a href="/recover">recovery</a> page.
     </p>
 
 	</div>
