@@ -95,7 +95,6 @@ public class CredentialRecoveryResource extends BaseResource
 		catch (Exception e)
 		{
 			LOGGER.error("Request credential failed", e);
-			String str = e.getMessage();
 			setMessage(session, "Failed to send message. Error message: \"" + e.getMessage() + "\"");
 			throw redirect("/recover");
 		}

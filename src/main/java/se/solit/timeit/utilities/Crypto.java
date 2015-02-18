@@ -1,5 +1,6 @@
 package se.solit.timeit.utilities;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -32,14 +33,22 @@ public class Crypto
 			throw new IllegalArgumentException("String to encrypt cannot be null or zero length");
 		}
 
-		digester.update(str.getBytes());
+		try
+		{
+			digester.update(str.getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			LOGGER.error("Digester", e);
+		}
+
 		byte[] hash = digester.digest();
-		StringBuffer hexString = new StringBuffer();
+		StringBuilder hexString = new StringBuilder();
 		for (int i = 0; i < hash.length; i++)
 		{
 			if ((0xff & hash[i]) < 0x10)
 			{
-				hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+				hexString.append("0" + Integer.toHexString(0xFF & hash[i]));
 			}
 			else
 			{

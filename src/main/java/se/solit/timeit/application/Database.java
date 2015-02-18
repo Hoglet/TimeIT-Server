@@ -36,13 +36,7 @@ public class Database
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("Default", props);
 		populateTables(emf);
 		cleanData(emf);
-		upgradeDB(emf);
 		return emf;
-	}
-
-	private void upgradeDB(EntityManagerFactory emf)
-	{
-		UserDAO userDAO = new UserDAO(emf);
 	}
 
 	private void cleanData(EntityManagerFactory emf)
