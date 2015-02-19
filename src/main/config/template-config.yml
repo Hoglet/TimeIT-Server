@@ -8,9 +8,9 @@ database:
   #driverClass: org.postgresql.Driver
   #driverClass: org.mariadb.jdbc.Driver
   # the username
-  user: timeit
+  user:
   # the password
-  password: password
+  password:
 
   # the JDBC URL
   url: jdbc:h2:~/.timeit_database

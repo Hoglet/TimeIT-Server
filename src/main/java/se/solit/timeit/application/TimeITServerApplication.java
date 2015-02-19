@@ -8,8 +8,11 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 
+import java.util.EnumSet;
+
 import javax.mail.internet.AddressException;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.DispatcherType;
 
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.slf4j.Logger;
@@ -45,6 +48,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 	{
 		bootstrap.addBundle(new ViewBundle());
 		bootstrap.addBundle(new AssetsBundle("/assets", "/assets"));
+
 	}
 
 	@Override
@@ -76,6 +80,9 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(new ReportResource(emf));
 		environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
+		environment.servlets().addFilter("CacheControl", new CacheControlFilter())
+				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "*.css");
+
 	}
 
 	// SONAR:OFF

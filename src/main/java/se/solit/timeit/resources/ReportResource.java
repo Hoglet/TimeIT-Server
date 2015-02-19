@@ -1,8 +1,11 @@
 package se.solit.timeit.resources;
 
 import io.dropwizard.auth.Auth;
+import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
@@ -40,6 +43,7 @@ public class ReportResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}")
+	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
 	public View getYearReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @Context HttpContext context, @Session HttpSession session)
 	{
@@ -61,6 +65,7 @@ public class ReportResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/{username}/{year}/{month}")
+	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
 	public View getMonthReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @PathParam("month") final int month, @Context HttpContext context,
 			@Session HttpSession session)

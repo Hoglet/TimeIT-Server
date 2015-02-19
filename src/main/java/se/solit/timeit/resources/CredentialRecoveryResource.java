@@ -1,10 +1,12 @@
 package se.solit.timeit.resources;
 
+import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityManagerFactory;
@@ -52,6 +54,7 @@ public class CredentialRecoveryResource extends BaseResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
+	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
 	public View recoverPage(@Context HttpContext context,
 			@Session HttpSession session)
 	{
