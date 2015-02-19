@@ -16,13 +16,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class LoginKey
 {
 
+	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 	@Id
 	@Column(nullable = false)
-	private String	id;
-	private User	user;
+	private String				id;
+	private User				user;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	DateTime		lastChange;
+	long						lastChange;
 
 	public LoginKey()
 	{
@@ -32,7 +33,12 @@ public class LoginKey
 	{
 		id = UUID.randomUUID().toString();
 		this.user = user;
-		lastChange = DateTime.now();
+		lastChange = now();
+	}
+
+	private long now()
+	{
+		return DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public UUID getId()

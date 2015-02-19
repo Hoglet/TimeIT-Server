@@ -27,22 +27,23 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Task
 {
+	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 	@Id
 	@Column(nullable = false)
-	private String		id;
-	private String		name;
+	private String				id;
+	private String				name;
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task		parent;
-	private boolean		completed;
+	private Task				parent;
+	private boolean				completed;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private DateTime	lastChange;
-	private boolean		deleted;
+	private long				lastChange;
+	private boolean				deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner", nullable = false)
 	@JsonSerialize(using = UserSerializer.class)
-	private User		owner;
+	private User				owner;
 
 	protected Task()
 	{
@@ -64,17 +65,21 @@ public class Task
 		id = paramID.toString();
 		name = paramName;
 		parent = paramParent;
-		lastChange = paramLastChange;
 		completed = paramCompleted;
 		deleted = paramDeleted;
 		setOwner(paramOwner);
-		lastChange = paramLastChange;
+		lastChange = paramLastChange.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final void setDeleted(final boolean deleted2)
 	{
-		lastChange = DateTime.now();
+		lastChange = now();
 		this.deleted = deleted2;
+	}
+
+	private long now()
+	{
+		return DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final UUID getID()
@@ -94,7 +99,7 @@ public class Task
 
 	public final DateTime getLastChange()
 	{
-		return lastChange;
+		return new DateTime(lastChange * MILLISECONDS_PER_SECOND);
 	}
 
 	public final boolean getDeleted()
@@ -137,8 +142,7 @@ public class Task
 		{
 			return false;
 		}
-		long diff = Math.abs(lastChange.getMillis() - other.lastChange.getMillis());
-		if (diff > 1000)
+		if (lastChange != other.lastChange)
 		{
 			return false;
 		}
@@ -179,7 +183,7 @@ public class Task
 		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + id.hashCode();
-		result = prime * result + lastChange.hashCode();
+		result = prime * result + Long.valueOf(lastChange).hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + owner.getUsername().hashCode();
 		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
@@ -191,19 +195,19 @@ public class Task
 
 	public final void setName(final String name2)
 	{
-		lastChange = DateTime.now();
+		lastChange = now();
 		name = name2;
 	}
 
 	public final void setParent(final Task parent2)
 	{
-		lastChange = DateTime.now();
+		lastChange = now();
 		parent = parent2;
 	}
 
 	public final void setCompleted(final boolean completed2)
 	{
-		lastChange = DateTime.now();
+		lastChange = now();
 		completed = completed2;
 	}
 
@@ -218,7 +222,7 @@ public class Task
 		{
 			throw new NullPointerException("Owner is not allowed to be null");
 		}
-		lastChange = DateTime.now();
+		lastChange = now();
 		owner = owner2;
 	}
 

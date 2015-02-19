@@ -90,7 +90,7 @@ public class TestTaskResource
 	@Before
 	public void setUp()
 	{
-		task = new Task(taskID, "admin stuff", null, false, DateTime.now(), false, user);
+		task = new Task(taskID, "admin stuff", null, false, DateTime.now().minusSeconds(2), false, user);
 		taskDAO.add(task);
 	}
 
@@ -294,7 +294,7 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		UUID parentID = UUID.randomUUID();
-		Task parent = new Task(parentID, "Parent", null, false, DateTime.now(), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, DateTime.now().minusSeconds(3), false, user);
 		taskDAO.add(parent);
 		UUID id = taskID;
 		String name = "Banarne";

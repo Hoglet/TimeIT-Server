@@ -42,7 +42,7 @@ public class Time
 	private boolean				deleted;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private DateTime			changed;
+	private long				changed;
 
 	protected Time()
 	{
@@ -56,35 +56,35 @@ public class Time
 		stop = paramStop.getMillis() / MILLISECONDS_PER_SECOND;
 		deleted = paramDeleted;
 		task = paramTask;
-		changed = paramChanged;
+		changed = paramChanged.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final DateTime getChanged()
 	{
-		return changed;
+		return new DateTime(changed * MILLISECONDS_PER_SECOND);
 	}
 
 	public final void setTask(final Task task2)
 	{
-		changed = DateTime.now();
+		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 		this.task = task2;
 	}
 
 	public final void setStart(final DateTime start2)
 	{
-		changed = DateTime.now();
+		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 		this.start = start2.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final void setStop(final DateTime stop2)
 	{
-		changed = DateTime.now();
+		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 		this.stop = stop2.getMillis() / MILLISECONDS_PER_SECOND;
 	}
 
 	public final void setDeleted(final boolean deleted2)
 	{
-		changed = DateTime.now();
+		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
 		this.deleted = deleted2;
 	}
 
@@ -121,7 +121,7 @@ public class Time
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + changed.hashCode();
+		result = prime * result + Long.valueOf(changed).hashCode();
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + id.hashCode();
 		result = prime * result + Long.valueOf(start).hashCode();
@@ -146,8 +146,7 @@ public class Time
 			return false;
 		}
 		Time other = (Time) obj;
-		long diff = Math.abs(changed.getMillis() - other.getChanged().getMillis());
-		if (diff > 1000)
+		if (changed != other.changed)
 		{
 			return false;
 		}

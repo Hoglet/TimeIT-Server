@@ -14,6 +14,7 @@ import se.solit.timeit.entities.LoginKey;
 public class LoginKeyDAO
 {
 
+	private static final long			MILLIS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	emf;
 
 	public LoginKeyDAO(EntityManagerFactory emf)
@@ -66,7 +67,7 @@ public class LoginKeyDAO
 		em.getTransaction().begin();
 		Query query = em.createQuery("DELETE FROM LoginKey k WHERE k.lastChange < :point");
 		DateTime pointInTime = DateTime.now().minus(duration);
-		query.setParameter("point", pointInTime);
+		query.setParameter("point", pointInTime.getMillis() / MILLIS_PER_SECOND);
 		query.executeUpdate();
 		em.getTransaction().commit();
 		em.close();

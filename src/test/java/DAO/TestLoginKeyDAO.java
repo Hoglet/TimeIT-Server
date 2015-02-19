@@ -21,9 +21,11 @@ import se.solit.timeit.entities.User;
 public class TestLoginKeyDAO
 {
 
-	public static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
+	public static EntityManagerFactory	emf						= Persistence.createEntityManagerFactory("test");
 	private static LoginKeyDAO			keydao;
-	private final static User			user	= new User("username", "Name", "password", "email", null);
+	private final static User			user					= new User("username", "Name", "password", "email",
+																		null);
+	private static final long			MILLISECONDS_PER_SECOND	= 1000;
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -73,7 +75,7 @@ public class TestLoginKeyDAO
 
 		Field field = loginKey.getClass().getDeclaredField("lastChange");
 		field.setAccessible(true);
-		field.set(loginKey, DateTime.now().minusDays(3));
+		field.set(loginKey, DateTime.now().minusDays(3).getMillis() / MILLISECONDS_PER_SECOND);
 
 		keydao.add(loginKey);
 		keydao.removeOld(Duration.standardDays(1));

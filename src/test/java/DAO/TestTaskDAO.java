@@ -78,7 +78,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdate() throws SQLException
 	{
-		Task task = new Task(parentID, "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(parentID, "Task1", null, false, DateTime.now().minusSeconds(3), false, user);
 		taskdao.add(task);
 		Task task2 = taskdao.getByID(task.getID());
 		task2.setName("Tjohopp");
@@ -182,7 +182,7 @@ public class TestTaskDAO
 	@Test
 	public final void testUpdateOrAdd_change() throws SQLException
 	{
-		Task task = new Task(parentID, "Task1", null, false, DateTime.now(), false, user);
+		Task task = new Task(parentID, "Task1", null, false, DateTime.now().minusSeconds(3), false, user);
 		Task[] tasks = new Task[] { task };
 		taskdao.add(task);
 		task.setName("TWo");
