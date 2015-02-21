@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,8 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TasksSyncResource
 {
-	private static final Logger	LOGGER	= LoggerFactory.getLogger(TasksSyncResource.class);
+	private static final Logger	LOGGER					= LoggerFactory.getLogger(TasksSyncResource.class);
+	private static final long	MILLISECOND_PER_SECOND	= 1000;
 	private final TaskDAO		taskDAO;
 	private final SyncHelper	syncHelper;
 
@@ -61,4 +63,24 @@ public class TasksSyncResource
 		}
 		return taskDAO.getAllTasks(username);
 	}
+
+	@PUT
+	@Path("/{user}/{time}")
+	public final Collection<Task> tasksSync(@Auth User authorizedUser, @PathParam("user") final String username,
+			@PathParam("time") final long time,
+			final Task[] paramTasks)
+	{
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		syncHelper.verifyTaskOwnership(authorizedUser, paramTasks);
+		try
+		{
+			taskDAO.updateOrAdd(paramTasks);
+		}
+		catch (SQLException e)
+		{
+			LOGGER.error("Error syncing tasks for user " + authorizedUser.getUsername(), e);
+		}
+		return taskDAO.getAllTasks(username, new DateTime(time * MILLISECOND_PER_SECOND));
+	}
+
 }

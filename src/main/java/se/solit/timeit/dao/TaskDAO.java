@@ -10,10 +10,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.joda.time.DateTime;
+
 import se.solit.timeit.entities.Task;
 
 public class TaskDAO
 {
+	private static final long			MILLISECONDS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	emf;
 
 	public TaskDAO(final EntityManagerFactory entityManagerFactory)
@@ -100,9 +103,15 @@ public class TaskDAO
 
 	public Collection<Task> getAllTasks(String username)
 	{
+		return getAllTasks(username, new DateTime(0));
+	}
+
+	public Collection<Task> getAllTasks(String username, DateTime since)
+	{
 		EntityManager em = emf.createEntityManager();
-		List<Task> tasks = iGetTasks(username, em, false);
-		tasks.addAll(iGetTasks(username, em, true));
+		long pointInTime = since.getMillis() / MILLISECONDS_PER_SECOND;
+		List<Task> tasks = iGetTasks(username, em, false, pointInTime);
+		tasks.addAll(iGetTasks(username, em, true, pointInTime));
 		em.close();
 		return tasks;
 	}
@@ -110,18 +119,20 @@ public class TaskDAO
 	public final List<Task> getTasks(final String username) throws SQLException
 	{
 		EntityManager em = emf.createEntityManager();
-		List<Task> tasks = iGetTasks(username, em, false);
+		List<Task> tasks = iGetTasks(username, em, false, 0);
 		em.close();
 		return tasks;
 	}
 
-	static List<Task> iGetTasks(final String username, EntityManager em, boolean deleted)
+	static List<Task> iGetTasks(final String username, EntityManager em, boolean deleted, long since)
 	{
-		TypedQuery<Task> getQuery = em.createQuery(
-				"SELECT t FROM Task t WHERE t.owner.username = :username AND t.deleted = :deleted",
-				Task.class);
+		TypedQuery<Task> getQuery = em
+				.createQuery(
+						"SELECT t FROM Task t WHERE t.owner.username = :username AND t.deleted = :deleted AND t.lastChange>=:change",
+						Task.class);
 		getQuery.setParameter("username", username);
 		getQuery.setParameter("deleted", deleted);
+		getQuery.setParameter("change", since);
 		return getQuery.getResultList();
 	}
 

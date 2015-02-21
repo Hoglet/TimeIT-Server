@@ -223,4 +223,115 @@ public class TestTasksSyncResource
 		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
 	}
 
+	/**/
+	@Test
+	public void testTasksSyncRanged()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		DateTime changeTime = new DateTime(100 * 1000);
+		Task newTask = new Task(parentID, "newTask", null, false, changeTime, false, user);
+		tasksToSend.add(newTask);
+		WebResource resource = resources.client().resource("/sync/tasks/testman/100");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		List<Task> resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
+
+		resource = resources.client().resource("/sync/tasks/testman/101");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 0, resultingTasks.size());
+
+	}
+
+	@Test
+	public void testTasksSyncRanged_deleted()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task newTask = new Task(parentID, "newTask", null, false, DateTime.now(), true, user);
+		tasksToSend.add(newTask);
+		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		List<Task> resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 1, resultingTasks.size());
+	}
+
+	@Test
+	public void testTasksSyncRanged_invalidDataAttack()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		User otherUser = new User("innocent", "bystander", "unkown", "", null);
+		Task newTask = new Task(parentID, "newTask", null, false, DateTime.now(), false, otherUser);
+		tasksToSend.add(newTask);
+		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		try
+		{
+			resource.accept("application/json").type("application/json").put(returnType, tasksToSend);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testTasksSyncRanged_accessingOtherUser()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task newTask = new Task(parentID, "newTask", null, false, DateTime.now(), false, user);
+		tasksToSend.add(newTask);
+		WebResource resource = resources.client().resource("/sync/tasks/otherman/0");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		try
+		{
+			resource.accept("application/json").type("application/json").put(returnType, tasksToSend);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testTasksSyncRanged_advanced1()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task parent = new Task(parentID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
+		tasksToSend.add(child);
+		tasksToSend.add(parent);
+
+		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		List<Task> resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
+	}
+
+	@Test
+	public void testTasksSyncRanged_advanced2()
+	{
+		List<Task> tasksToSend = new ArrayList<Task>();
+		Task parent = new Task(parentID, "parent", null, false, DateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
+		tasksToSend.add(parent);
+		tasksToSend.add(child);
+
+		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+
+		List<Task> resultingTasks = resource.accept("application/json").type("application/json")
+				.put(returnType, tasksToSend);
+		Assert.assertEquals("Number of tasks returned", 2, resultingTasks.size());
+	}
+
 }
