@@ -72,7 +72,7 @@ public class TestTimesSyncResource
 	@BeforeClass
 	public static void beforeClass()
 	{
-		now = DateTime.now();
+		now = new DateTime(100 * 1000);
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
 		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
@@ -149,6 +149,47 @@ public class TestTimesSyncResource
 		Assert.assertEquals("Number of times returned", 1, resultingTimes.size());
 		Time resultingTime = resultingTimes.get(0);
 		Assert.assertTrue(resultingTime.equals(newTime));
+	}
+
+	@Test
+	public void testTimesSyncRanged()
+	{
+		List<Time> timesToSend = new ArrayList<Time>();
+		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(100 * 1000), false, new DateTime(
+				100 * 1000), task);
+		timesToSend.add(newTime);
+		resource = resources.client().resource("/sync/times/testman/101");
+		resource.accept("application/json");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		List<Time> resultingTimes = resource.type("application/json").put(returnType, timesToSend);
+		Assert.assertEquals("Number of times returned", 0, resultingTimes.size());
+
+		resource = resources.client().resource("/sync/times/testman/100");
+		resource.accept("application/json");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		resultingTimes = resource.type("application/json").put(returnType, timesToSend);
+		Assert.assertEquals("Number of times returned", 1, resultingTimes.size());
+
+	}
+
+	@Test
+	public void testTimesSyncRanged_attackOtherUser()
+	{
+		List<Time> timesToSend = new ArrayList<Time>();
+		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+		timesToSend.add(newTime);
+		resource = resources.client().resource("/sync/times/otherman/100");
+		resource.accept("application/json");
+		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
+		try
+		{
+			resource.type("application/json").put(returnType, timesToSend);
+			Assert.fail("Should have thrown exception");
+		}
+		catch (Exception e)
+		{
+			Assert.assertEquals("Client response status: 401", e.getMessage());
+		}
 	}
 
 	@Test

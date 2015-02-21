@@ -116,6 +116,20 @@ public class TestTimeDAO
 		Assert.assertEquals(0, times.size());
 		Time time = new Time(timeID, new DateTime(0), new DateTime(1000 * 1000), false, now, task);
 		timedao.add(time);
+		times = timedao.getTimes(user.getUsername());
+		Assert.assertEquals(1, times.size());
+	}
+
+	@Test
+	public final void testGetTimesRanged() throws SQLException
+	{
+		Time time = new Time(timeID, new DateTime(0), new DateTime(1000 * 1000), false, now, task);
+		timedao.add(time);
+		Collection<Time> times = timedao.getTimes(user.getUsername(), now.minusSeconds(1));
+		Assert.assertEquals(1, times.size());
+		times = timedao.getTimes(user.getUsername(), now.plusSeconds(1));
+		Assert.assertEquals(0, times.size());
+
 	}
 
 	@Test

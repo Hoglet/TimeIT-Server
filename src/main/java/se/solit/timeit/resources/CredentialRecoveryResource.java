@@ -37,16 +37,14 @@ import com.sun.jersey.api.core.HttpContext;
 @Path("/recover")
 public class CredentialRecoveryResource extends BaseResource
 {
-	private static final int			DAY_LIMIT	= 3;
-	private final EntityManagerFactory	emf;
-	private final MailerInterface		mailer;
-	private final UserDAO				userDAO;
-	private final LoginKeyDAO			loginKeyDAO;
-	private static final Logger			LOGGER		= LoggerFactory.getLogger(CredentialRecoveryResource.class);
+	private static final int		DAY_LIMIT	= 3;
+	private final MailerInterface	mailer;
+	private final UserDAO			userDAO;
+	private final LoginKeyDAO		loginKeyDAO;
+	private static final Logger		LOGGER		= LoggerFactory.getLogger(CredentialRecoveryResource.class);
 
 	public CredentialRecoveryResource(EntityManagerFactory emf, MailerInterface mailer)
 	{
-		this.emf = emf;
 		this.mailer = mailer;
 		userDAO = new UserDAO(emf);
 		loginKeyDAO = new LoginKeyDAO(emf);

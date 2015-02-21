@@ -1,6 +1,7 @@
 package se.solit.timeit.dao;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,19 +68,26 @@ public class TimeDAO
 		return item;
 	}
 
-	public final List<Time> getTimes(final String username) throws SQLException
+	public final Collection<Time> getTimes(final String username)
+	{
+		return getTimes(username, new DateTime(0));
+	}
+
+	public Collection<Time> getTimes(String username, DateTime time)
 	{
 		EntityManager em = entityManagerFactory.createEntityManager();
-		List<Time> items = iGetTimes(username, em);
+		List<Time> items = iGetTimes(username, em, time.getMillis() / MILLISECONDS_PER_SECOND);
 		em.close();
 		return items;
 	}
 
-	static List<Time> iGetTimes(final String username, EntityManager em)
+	static List<Time> iGetTimes(final String username, EntityManager em, long time)
 	{
-		TypedQuery<Time> getTimesQuery = em.createQuery("SELECT t FROM Time t WHERE t.task.owner.username = :username",
+		TypedQuery<Time> getTimesQuery = em.createQuery(
+				"SELECT t FROM Time t WHERE t.task.owner.username = :username AND t.changed>=:change",
 				Time.class);
 		getTimesQuery.setParameter("username", username);
+		getTimesQuery.setParameter("change", time);
 		return getTimesQuery.getResultList();
 	}
 
@@ -203,4 +211,5 @@ public class TimeDAO
 		getTimesQuery.setParameter(STOP, stop.getMillis() / MILLISECONDS_PER_SECOND);
 		return getTimesQuery.getResultList();
 	}
+
 }

@@ -4,7 +4,6 @@ import io.dropwizard.auth.Auth;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -15,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,9 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TimesSyncResource
 {
-	private static final Logger	LOGGER	= LoggerFactory.getLogger(TimesSyncResource.class);
+	private static final Logger	LOGGER					= LoggerFactory.getLogger(TimesSyncResource.class);
+
+	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 
 	private final TimeDAO		timeDAO;
 
@@ -44,14 +46,26 @@ public class TimesSyncResource
 	public final Collection<Time> timesGet(@Auth User authorizedUser, @PathParam("user") final String username)
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
+		return timeDAO.getTimes(username);
+	}
+
+	@PUT
+	@Path("/{user}/{time}")
+	public final Collection<Time> timesSync(@Auth User authorizedUser, @PathParam("user") final String username,
+			@PathParam("time") final long time,
+			final Time[] paramTimes)
+	{
+		syncHelper.verifyHasAccess(authorizedUser, username);
+		syncHelper.verifyTimesOwnership(authorizedUser, paramTimes);
 		Collection<Time> result = null;
 		try
 		{
-			result = timeDAO.getTimes(username);
+			timeDAO.updateOrAdd(paramTimes);
+			result = timeDAO.getTimes(username, new DateTime(time * MILLISECONDS_PER_SECOND));
 		}
 		catch (SQLException e)
 		{
-			LOGGER.error("Failed to get times for user " + authorizedUser.getUsername(), e);
+			LOGGER.error("Failed to sync times for user " + authorizedUser.getUsername(), e);
 		}
 		return result;
 	}
@@ -63,7 +77,7 @@ public class TimesSyncResource
 	{
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTimesOwnership(authorizedUser, paramTimes);
-		List<Time> result = null;
+		Collection<Time> result = null;
 		try
 		{
 			timeDAO.updateOrAdd(paramTimes);
@@ -75,4 +89,5 @@ public class TimesSyncResource
 		}
 		return result;
 	}
+
 }
