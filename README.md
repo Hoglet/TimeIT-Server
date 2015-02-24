@@ -15,14 +15,12 @@ The web interface is naturally more limited than the clients. There is no
 automatic time tracking and no idle detection.
 
 ## Building and running
-1) Download the source into a folder of choice
-2) Open a terminal in source folder
-3a) Run following command in unix systems:
-   ./gradlew run
-3b) Run following command in windows:
-   gradlew run
-
-4) Start a browser and point it to http://localhost:8080/
+1. Download the source into a folder of choice
+2. Open a terminal in source folder
+3. Run following command:
+   1. Unix: ./gradlew run
+   2. Windows: gradlew run
+4. Start a browser and point it to http://localhost:8080/
    Initial username and password: admin
 
 ## Choosing an alternate database backend
