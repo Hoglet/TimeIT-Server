@@ -290,6 +290,15 @@ div#message
 	background-color: lightgreen;
 }
 
+
+@media all and (max-width: 600px)
+{
+	#content
+	{
+		padding: 0;
+	}
+
+}
 @media all and (min-resolution:130dpi) and (max-width:1000px),
 @media all and (min-resolution:200dpi) and (max-width:2000px)
 {
@@ -301,6 +310,11 @@ button
 body
 {
 	font-size: 250%;
+}
+
+#content
+{
+	padding: 0;
 }
 
 div#timeit-webui,
