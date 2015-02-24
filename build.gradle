@@ -96,7 +96,7 @@ dependencies
 	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
 	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
-//	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
-//	compile group: 'com.sun.jna', name: 'jna', version: jnaversion
+	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
+	compile group: 'com.sun.jna', name: 'jna', version: jnaversion
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 }
