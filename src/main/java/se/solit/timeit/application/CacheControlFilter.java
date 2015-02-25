@@ -15,6 +15,8 @@ import org.joda.time.DateTime;
 public class CacheControlFilter implements Filter
 {
 
+	private static final int	CACHE_MAX_AGE	= 500000;
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException
@@ -23,8 +25,8 @@ public class CacheControlFilter implements Filter
 		HttpServletResponse resp = (HttpServletResponse) response;
 
 		// Add whatever headers you want here
-		resp.setHeader("Cache-Control", "public, max-age=500000");
-		resp.setHeader("Expires", DateTime.now().plusSeconds(500000) + "");
+		resp.setHeader("Cache-Control", "public, max-age=" + CACHE_MAX_AGE);
+		resp.setHeader("Expires", DateTime.now().plusSeconds(CACHE_MAX_AGE) + "");
 
 		chain.doFilter(request, response);
 	}
@@ -32,11 +34,13 @@ public class CacheControlFilter implements Filter
 	@Override
 	public void destroy()
 	{
+		/* Only needs to exist */
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException
 	{
+		/* Only needs to exist */
 	}
 
 }
