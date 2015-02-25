@@ -44,7 +44,7 @@ table.timeTable td.lastColumn
 
 table.timeTable td.taskName
 {
-	min-width: 10em ;
+	min-width: 7em ;
 }
 body.report #month,
 body.report #year,
