@@ -28,11 +28,13 @@ public class Crypto
 
 	public static String encrypt(String str)
 	{
-		if (str == null || str.length() == 0)
-		{
-			throw new IllegalArgumentException("String to encrypt cannot be null or zero length");
-		}
+		validateInput(str);
+		byte[] hash = createHash(str);
+		return toHexString(hash);
+	}
 
+	private static byte[] createHash(String str)
+	{
 		try
 		{
 			digester.update(str.getBytes("UTF-8"));
@@ -42,7 +44,19 @@ public class Crypto
 			LOGGER.error("Digester", e);
 		}
 
-		byte[] hash = digester.digest();
+		return digester.digest();
+	}
+
+	private static void validateInput(String str)
+	{
+		if (str == null || str.length() == 0)
+		{
+			throw new IllegalArgumentException("String to encrypt cannot be null or zero length");
+		}
+	}
+
+	private static String toHexString(byte[] hash)
+	{
 		StringBuilder hexString = new StringBuilder();
 		for (int i = 0; i < hash.length; i++)
 		{
