@@ -10,7 +10,8 @@ import se.solit.timeit.entities.Task;
 public class TimeDescriptor
 {
 
-	private static final int		TWO	= 2;
+	private static final int		ALMOSTMINUTE	= 59999;
+	private static final int		TWO				= 2;
 	private Duration				duration;
 	private final Task				task;
 	private Duration				durationWithChildren;
@@ -51,7 +52,12 @@ public class TimeDescriptor
 
 	public String getDurationString()
 	{
-		return minutesAndSeconds.print(duration.toPeriod());
+		String result = "";
+		if (duration.isLongerThan(new Duration(ALMOSTMINUTE)))
+		{
+			result = minutesAndSeconds.print(duration.toPeriod());
+		}
+		return result;
 	}
 
 	public void setDuration(Duration newDuration)
@@ -66,7 +72,12 @@ public class TimeDescriptor
 
 	public String getDurationWithChildrenString()
 	{
-		return minutesAndSeconds.print(durationWithChildren.toPeriod());
+		String result = "";
+		if (!durationWithChildren.equals(duration))
+		{
+			result = minutesAndSeconds.print(durationWithChildren.toPeriod());
+		}
+		return result;
 	}
 
 	public void setDurationWithChildren(Duration newDurationWithChildren)

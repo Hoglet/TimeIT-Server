@@ -16,7 +16,8 @@
 	<h2>Totals</h2>
 	<hr>
 	<table class="timeTable" cellspacing=0>
-		<tr><th></th><th class="duration">Duration</th><th>&nbsp;&nbsp;</th><th class="durationWithChildren">(With children)</th><tr>
+		<tr><th><th colspan="3">Duration</th></tr>
+		<tr><th></th><th class="durationWithChildren">Total</th><th>&nbsp;&nbsp;</th><th class="duration">Singular</th><tr>
         	<#list allTimes as item>
         	<#assign task=item.getTask()>
         		<tr>

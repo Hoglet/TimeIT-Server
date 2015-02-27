@@ -34,7 +34,7 @@ public class TestTimeDescriptor
 		parent = new Task(parentID, "parent", null, false, changeTime, false, owner);
 		child = new Task(childID, "child", parent, false, changeTime, false, owner);
 		duration = new Duration(120000);
-		duration2 = new Duration(120000);
+		duration2 = new Duration(60000);
 		timeDescriptor1 = new TimeDescriptor(parent, duration, duration2);
 		timeDescriptor2 = new TimeDescriptor(child, duration, duration2);
 		timeDescriptor3 = new TimeDescriptor(child, duration, duration2);
@@ -88,7 +88,7 @@ public class TestTimeDescriptor
 	@Test
 	public void testGetDurationWithChildrenString()
 	{
-		assertEquals("00:02", timeDescriptor1.getDurationWithChildrenString());
+		assertEquals("00:01", timeDescriptor1.getDurationWithChildrenString());
 	}
 
 	@Test
