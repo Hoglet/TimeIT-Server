@@ -9,7 +9,7 @@
 	${tabs(2)}
 	<div id="DayReport" class="report">
 		<div id="dateBar">
-		${previousYearLink}<div id="year">${year}</div>${nextYearLink}${previousMonthLink}<div id="month">${month}</div>${nextMonthLink} ${previousDayLink}<div id="day"> ${dayOfmonth} (${day})</div>${nextDayLink}
+		<div style="display: inline-block">${previousYearLink}<div id="year">${year}</div>${nextYearLink}</div><div style="display: inline-block">${previousMonthLink}<div id="month">${month}</div>${nextMonthLink}</div> <div style="display: inline-block">${previousDayLink}<div id="day">${dayOfmonth}&nbsp;(${day})</div>${nextDayLink}</div>
 		</div>
 	<p>
 	<p>

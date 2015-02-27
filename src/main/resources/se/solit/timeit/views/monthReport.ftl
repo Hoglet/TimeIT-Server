@@ -9,7 +9,7 @@
 	${tabs(1)}
 	<div id="MonthReport" class="report">
 		<div id="dateBar">
-		${previousMonthLink}<div id="month">${month}</div>${nextMonthLink} ${previousYearLink}<div id="year">${year}</div>${nextYearLink}
+		<div style="display: inline-block">${previousYearLink}<div id="year">${year}</div>${nextYearLink}</div> <div style="display: inline-block">${previousMonthLink}<div id="month">${month}</div>${nextMonthLink}</div>
 		</div>
 	<p>
 	<p>
