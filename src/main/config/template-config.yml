@@ -16,3 +16,21 @@ database:
   url: jdbc:h2:~/.timeit_database
   #url: jdbc:postgresql://localhost:5432/timeitdb
   #url: jdbc:mariadb://localhost:3306/timeitdb
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+    - type: https
+      port: 8443
+      keyStorePath: ./server.keystore
+      keyStorePassword: password
+      validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 8081
+    - type: https
+      port: 8444
+      keyStorePath: ./server.keystore
+      keyStorePassword: password
+      validateCerts: false
