@@ -70,12 +70,17 @@ public class TimeDescriptor
 		return durationWithChildren;
 	}
 
+	public String getDurationWithChildrenStringAlways()
+	{
+		return minutesAndSeconds.print(durationWithChildren.toPeriod());
+	}
+
 	public String getDurationWithChildrenString()
 	{
 		String result = "";
 		if (!durationWithChildren.equals(duration))
 		{
-			result = minutesAndSeconds.print(durationWithChildren.toPeriod());
+			result = getDurationWithChildrenStringAlways();
 		}
 		return result;
 	}

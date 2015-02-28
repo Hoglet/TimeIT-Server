@@ -49,7 +49,7 @@
        		 			${item.getTask().getName()}
         				</td>
         				<td class="duration">
-        				${item.getDurationWithChildrenString()}
+        				${item.getDurationWithChildrenStringAlways()}
         				</td>
         				</tr>
 					</#list>
@@ -64,7 +64,7 @@
         			${item.getTask().getName()}
         			</td>
         			<td class="duration">
-        			${item.getDurationWithChildrenString()}
+        			${item.getDurationWithChildrenStringAlways()}
 	        		</td>
         			</tr>
 				</#list>
@@ -79,7 +79,7 @@
         			${item.getTask().getName()}
         			</td>
         			<td class="duration">
-        			${item.getDurationWithChildrenString()}
+        			${item.getDurationWithChildrenStringAlways()}
         			</td>
         			</tr>
 				</#list>
