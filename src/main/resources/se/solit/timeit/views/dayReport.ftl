@@ -25,12 +25,12 @@
         		${item.getIndentString()}<a href="/report/${user}/${year}/${monthOfYear}/${dayOfmonth}/${task.getID()}"><span class="${getTaskClass(task)}">${task.getName()}</div>
         		</a>
         		</td>
-        		<td class="duration">
-                ${item.getDurationString()}
-        		</td>
-        		<td></td>
         		<td class="durationWithChildren">
                 ${item.getDurationWithChildrenString()}
+        		</td>
+        		<td></td>
+        		<td class="duration">
+                ${item.getDurationString()}
         		</td>
         		</tr>
 			</#list>
