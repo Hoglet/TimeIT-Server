@@ -56,7 +56,7 @@ public class IndexView extends BaseView
 	{
 		DateTime start = DateTime.now().withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
 		// SONAR:OFF
-		DateTime stop = start.plusMonths(1).minusDays(1).withTime(23, 59, 59, 0);
+		DateTime stop = start.withMonthOfYear(12).withDayOfMonth(31).withTime(23, 59, 59, 0);
 		// SONAR:ON
 		return rootItems(timedao.getTimes(user, start, stop));
 	}

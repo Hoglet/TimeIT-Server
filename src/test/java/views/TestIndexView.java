@@ -49,6 +49,31 @@ public class TestIndexView
 		timeDAO.add(time);
 		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
 		timeDAO.add(time);
+
+		if (now.getDayOfMonth() != 4)
+		{
+			start = now.withDayOfMonth(4);
+		}
+		else
+		{
+			start = now.withDayOfMonth(3);
+		}
+		stop = start.plusMinutes(10);
+		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
+		timeDAO.add(time);
+
+		if (now.getMonthOfYear() != 4)
+		{
+			start = now.withMonthOfYear(4);
+		}
+		else
+		{
+			start = now.withMonthOfYear(3);
+		}
+		stop = start.plusMinutes(10);
+		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
+		timeDAO.add(time);
+
 		session = Mockito.mock(HttpSession.class);
 	}
 
@@ -73,9 +98,26 @@ public class TestIndexView
 	public final void testGetTimes() throws SQLException
 	{
 		IndexView view = new IndexView(user, emf, null, session);
-		String expected = "Parent";
+		String expectedTask = "Parent";
 		Assert.assertEquals(1, view.getTodaysTimes().size());
 		String result = view.getTodaysTimes().get(0).getTask().getName();
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals("TodaysTimes: ", expectedTask, result);
+		result = view.getTodaysTimes().get(0).getDurationWithChildrenStringAlways();
+		String expectedTime = "00:20";
+		Assert.assertEquals("TodaysTimes: ", expectedTime, result);
+
+		result = view.getMonthsTimes().get(0).getTask().getName();
+		Assert.assertEquals("MonthsTimes: ", expectedTask, result);
+		result = view.getMonthsTimes().get(0).getDurationWithChildrenStringAlways();
+		expectedTime = "00:30";
+		Assert.assertEquals("MonthsTimes: ", expectedTime, result);
+
+		result = view.getYearsTimes().get(0).getTask().getName();
+		Assert.assertEquals("YearsTimes: ", expectedTask, result);
+		result = view.getYearsTimes().get(0).getDurationWithChildrenStringAlways();
+		expectedTime = "00:40";
+		Assert.assertEquals("YearsTimes: ", expectedTime, result);
+
 	}
+
 }
