@@ -83,9 +83,10 @@ public class TimeDAO
 
 	static List<Time> iGetTimes(final String username, EntityManager em, long time)
 	{
-		TypedQuery<Time> getTimesQuery = em.createQuery(
-				"SELECT t FROM Time t WHERE t.task.owner.username = :username AND t.changed>=:change",
-				Time.class);
+		TypedQuery<Time> getTimesQuery = em
+				.createQuery(
+						"SELECT t FROM Time t WHERE t.task.owner.username = :username AND t.changed>=:change",
+						Time.class);
 		getTimesQuery.setParameter("username", username);
 		getTimesQuery.setParameter("change", time);
 		return getTimesQuery.getResultList();
@@ -128,7 +129,7 @@ public class TimeDAO
 	{
 		TypedQuery<Object[]> getTimesQuery = em
 				.createQuery(
-						"SELECT t.task, SUM(:stop-t.start) FROM Time t WHERE t.task.owner = :user AND t.start>=:start AND t.start<=:stop AND t.stop>:stop GROUP BY t.task",
+						"SELECT t.task, SUM(:stop-t.start) FROM Time t WHERE t.deleted=false AND t.task.owner = :user AND t.start>=:start AND t.start<=:stop AND t.stop>:stop GROUP BY t.task",
 						Object[].class);
 		getTimesQuery.setParameter(USER, user);
 		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
@@ -140,7 +141,7 @@ public class TimeDAO
 	{
 		TypedQuery<Object[]> getTimesQuery = em
 				.createQuery(
-						"SELECT t.task, SUM(t.stop-:start) FROM Time t WHERE t.task.owner = :user AND t.start<:start AND t.stop>=:start AND t.stop<=:stop GROUP BY t.task",
+						"SELECT t.task, SUM(t.stop-:start) FROM Time t WHERE t.deleted=false AND t.task.owner = :user AND t.start<:start AND t.stop>=:start AND t.stop<=:stop GROUP BY t.task",
 						Object[].class);
 		getTimesQuery.setParameter(USER, user);
 		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
@@ -152,7 +153,7 @@ public class TimeDAO
 	{
 		TypedQuery<Object[]> getTimesQuery = em
 				.createQuery(
-						"SELECT t.task, SUM(t.stop-t.start) FROM Time t WHERE t.task.owner = :user AND t.start>=:start AND t.stop<=:stop GROUP BY t.task",
+						"SELECT t.task, SUM(t.stop-t.start) FROM Time t WHERE t.deleted=false AND t.task.owner = :user AND t.start>=:start AND t.stop<=:stop GROUP BY t.task",
 						Object[].class);
 		getTimesQuery.setParameter(USER, user);
 		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);
@@ -204,7 +205,7 @@ public class TimeDAO
 		EntityManager em = entityManagerFactory.createEntityManager();
 		TypedQuery<Time> getTimesQuery = em
 				.createQuery(
-						"SELECT t FROM Time t WHERE t.task=:task AND ((t.start>=:start AND t.start<=:stop) OR (t.stop>=:start AND t.stop<=:stop))",
+						"SELECT t FROM Time t WHERE t.deleted=false AND t.task=:task AND ((t.start>=:start AND t.start<=:stop) OR (t.stop>=:start AND t.stop<=:stop))",
 						Time.class);
 		getTimesQuery.setParameter("task", task);
 		getTimesQuery.setParameter(START, start.getMillis() / MILLISECONDS_PER_SECOND);

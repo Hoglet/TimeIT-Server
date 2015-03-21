@@ -116,8 +116,10 @@ public class TestTimeDAO
 		Assert.assertEquals(0, times.size());
 		Time time = new Time(timeID, new DateTime(0), new DateTime(1000 * 1000), false, now, task);
 		timedao.add(time);
+		Time time2 = new Time(UUID.randomUUID(), new DateTime(1000 * 1000), new DateTime(10000 * 1000), true, now, task);
+		timedao.add(time2);
 		times = timedao.getTimes(user.getUsername());
-		Assert.assertEquals(1, times.size());
+		Assert.assertEquals(2, times.size());
 	}
 
 	@Test
@@ -125,8 +127,10 @@ public class TestTimeDAO
 	{
 		Time time = new Time(timeID, new DateTime(0), new DateTime(1000 * 1000), false, now, task);
 		timedao.add(time);
+		Time time2 = new Time(UUID.randomUUID(), new DateTime(1000 * 1000), new DateTime(10000 * 1000), true, now, task);
+		timedao.add(time2);
 		Collection<Time> times = timedao.getTimes(user.getUsername(), now.minusSeconds(1));
-		Assert.assertEquals(1, times.size());
+		Assert.assertEquals(2, times.size());
 		times = timedao.getTimes(user.getUsername(), now.plusSeconds(1));
 		Assert.assertEquals(0, times.size());
 
@@ -183,6 +187,9 @@ public class TestTimeDAO
 		DateTime start = now.withHourOfDay(10);
 		Time time = new Time(timeID, start, start.plus(60000), false, now, task);
 		timedao.add(time);
+		Time deletedTime = new Time(UUID.randomUUID(), start, start.plus(1000), true, now, task);
+		timedao.add(deletedTime);
+
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
@@ -201,6 +208,8 @@ public class TestTimeDAO
 		DateTime stop = now.withTime(0, 10, 0, 0);
 		Time time = new Time(timeID, start, stop, false, now, task);
 		timedao.add(time);
+		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task2);
+		timedao.add(deletedTime);
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
@@ -220,6 +229,8 @@ public class TestTimeDAO
 		DateTime stop = now.plusDays(1).withTime(0, 10, 0, 0);
 		Time time = new Time(timeID, start, stop, false, now, task);
 		timedao.add(time);
+		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task);
+		timedao.add(deletedTime);
 		DateTime startOfDay = now.withTimeAtStartOfDay();
 		DateTime endOfDay = now.withTime(23, 59, 59, 0);
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
