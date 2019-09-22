@@ -18,9 +18,10 @@ automatic time tracking and no idle detection.
 1. Download the source into a folder of choice
 2. Open a terminal in source folder
 3. Run following command:
-   1. Unix: ./gradlew run
-   2. Windows: gradlew run
-4. Start a browser and point it to http://localhost:8080/
+   1. Unix: ./gradlew jar
+   2. Windows: gradlew jar
+4. java -jar ./build/libs/server-1.0.jar
+5. Start a browser and point it to http://localhost:8080/
    Initial username and password: admin
 
 ## Choosing an alternate database backend
@@ -40,6 +41,5 @@ To generate a project for eclipse you can then run:
 ./gradlew eclipse
 
 ## Known problems
-* Running from a created jar does not work. Only through gradle
 * No multi language support. Only English available
 * One timezone, the servers timezone.
