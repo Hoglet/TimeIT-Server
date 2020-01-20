@@ -4,6 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -64,6 +65,7 @@ public class TestReportResource
 	@BeforeClass
 	public static void beforeClass()
 	{
+		Locale.setDefault(new Locale("en", "UK"));
 		UserDAO userDAO = new UserDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		otheruser = new User("minion", "Do er", "password", "email", null);

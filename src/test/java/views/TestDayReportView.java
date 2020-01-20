@@ -2,6 +2,7 @@ package views;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -40,7 +41,7 @@ public class TestDayReportView
 		dayToTest = 11;
 		pointInMonth = new DateTime(2014, 1, dayToTest, 0, 0);
 		now = DateTime.now();
-
+		Locale.setDefault(new Locale("en", "UK"));
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
 		UUID taskID = UUID.randomUUID();
@@ -87,7 +88,7 @@ public class TestDayReportView
 	public final void testGetMonth() throws SQLException
 	{
 		DayReportView view = new DayReportView(emf, pointInMonth, user, user, null, session);
-		Assert.assertEquals("January", view.getMonth());
+		Assert.assertEquals("january", view.getMonth().toLowerCase());
 	}
 
 	@Test
