@@ -1,13 +1,15 @@
 package DAO;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -105,11 +107,14 @@ public class TestUserDAO
 		User user = new User("Test Tester", "tester", "password", "email", null);
 		userdao.add(user);
 		TaskDAO taskdao = new TaskDAO(emf);
-		DateTime now = DateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
 		Task task = new Task(UUID.randomUUID(), "parent", null, false, now, false, user);
 		taskdao.add(task);
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, new DateTime(0), new DateTime(100 * 1000), false, now, task);
+		
+		ZonedDateTime start = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC"));
+		ZonedDateTime stop  = Instant.ofEpochSecond(100).atZone(ZoneId.of("UTC"));
+		Time time = new Time(timeID, start, stop, false, now, task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 		userdao.delete(user);

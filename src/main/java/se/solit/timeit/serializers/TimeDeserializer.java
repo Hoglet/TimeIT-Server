@@ -1,9 +1,10 @@
 package se.solit.timeit.serializers;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
@@ -19,24 +20,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TimeDeserializer extends JsonDeserializer<Time>
 {
 
-	private static final long	MILLISECONDS_PER_SECOND	= 1000;
-
 	@Override
 	public Time deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException
 	{
 		ObjectCodec oc = jp.getCodec();
 		JsonNode node = oc.readTree(jp);
 		ObjectMapper mapper = new ObjectMapper();
-
+		ZoneId zone = ZonedDateTime.now().getZone();
+		
 		UUID id = UUID.fromString(node.get("id").textValue());
-		long millis = node.get("start").longValue() * MILLISECONDS_PER_SECOND;
-		DateTime start = new DateTime(millis);
-		millis = node.get("stop").longValue() * MILLISECONDS_PER_SECOND;
-		DateTime stop = new DateTime(millis);
+		
+		Instant startInstant = Instant.ofEpochSecond(node.get("start").longValue());
+		ZonedDateTime start = startInstant.atZone(zone);
+		
+		Instant stopInstant = Instant.ofEpochSecond(node.get("stop").longValue());
+		ZonedDateTime stop = stopInstant.atZone(zone);
 
 		boolean deleted = node.get("deleted").asBoolean();
-		millis = node.get("changed").longValue() * MILLISECONDS_PER_SECOND;
-		DateTime lastChanged = new DateTime(millis);
+		
+		Instant changedInstant = Instant.ofEpochSecond(node.get("changed").longValue());
+		ZonedDateTime lastChanged = changedInstant.atZone(zone);
 
 		JsonNode jn = node.get("task");
 		Task task = mapper.readValue(jn.traverse(oc), Task.class);

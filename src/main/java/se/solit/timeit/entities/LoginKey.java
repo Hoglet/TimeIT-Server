@@ -1,12 +1,11 @@
 package se.solit.timeit.entities;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 
@@ -15,8 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Entity
 public class LoginKey
 {
-
-	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 	@Id
 	@Column(nullable = false)
 	private String				id;
@@ -38,7 +35,7 @@ public class LoginKey
 
 	private long now()
 	{
-		return DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
+		return Instant.now().getEpochSecond();
 	}
 
 	public UUID getId()

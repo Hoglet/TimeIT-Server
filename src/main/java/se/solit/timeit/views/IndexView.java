@@ -1,12 +1,12 @@
 package se.solit.timeit.views;
 
 import java.sql.SQLException;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TaskDescriptorList;
@@ -36,27 +36,27 @@ public class IndexView extends BaseView
 
 	public TimeDescriptorList getTodaysTimes()
 	{
-		DateTime start = DateTime.now().withTimeAtStartOfDay();
+		ZonedDateTime start = ZonedDateTime.now().with(LocalTime.MIN);
 		// SONAR:OFF
-		DateTime stop = DateTime.now().withTime(23, 59, 59, 0);
+		ZonedDateTime stop = ZonedDateTime.now().with(LocalTime.MAX);
 		// SONAR:ON
 		return rootItems(timedao.getTimes(user, start, stop));
 	}
 
 	public TimeDescriptorList getMonthsTimes()
 	{
-		DateTime start = DateTime.now().withDayOfMonth(1).withTimeAtStartOfDay();
+		ZonedDateTime start = ZonedDateTime.now().withDayOfMonth(1).with(LocalTime.MIN);
 		// SONAR:OFF
-		DateTime stop = start.plusMonths(1).minusDays(1).withTime(23, 59, 59, 0);
+		ZonedDateTime stop = start.plusMonths(1).minusDays(1).with(LocalTime.MAX);
 		// SONAR:ON
 		return rootItems(timedao.getTimes(user, start, stop));
 	}
 
 	public TimeDescriptorList getYearsTimes()
 	{
-		DateTime start = DateTime.now().withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
+		ZonedDateTime start = ZonedDateTime.now().withMonth(1).withDayOfMonth(1).with(LocalTime.MIN);
 		// SONAR:OFF
-		DateTime stop = start.withMonthOfYear(12).withDayOfMonth(31).withTime(23, 59, 59, 0);
+		ZonedDateTime stop = start.withMonth(12).withDayOfMonth(31).with(LocalTime.MAX);
 		// SONAR:ON
 		return rootItems(timedao.getTimes(user, start, stop));
 	}

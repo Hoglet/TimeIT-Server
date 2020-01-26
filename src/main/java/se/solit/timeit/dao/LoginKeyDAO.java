@@ -1,20 +1,20 @@
 package se.solit.timeit.dao;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 import se.solit.timeit.entities.LoginKey;
 
 public class LoginKeyDAO
 {
 
-	private static final long			MILLIS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	emf;
 
 	public LoginKeyDAO(EntityManagerFactory emf)
@@ -66,8 +66,8 @@ public class LoginKeyDAO
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		Query query = em.createQuery("DELETE FROM LoginKey k WHERE k.lastChange < :point");
-		DateTime pointInTime = DateTime.now().minus(duration);
-		query.setParameter("point", pointInTime.getMillis() / MILLIS_PER_SECOND);
+		ZonedDateTime pointInTime = ZonedDateTime.now().minus(duration);
+		query.setParameter("point", Instant.from(pointInTime).getEpochSecond());
 		query.executeUpdate();
 		em.getTransaction().commit();
 		em.close();

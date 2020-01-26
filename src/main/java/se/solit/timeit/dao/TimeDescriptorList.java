@@ -1,9 +1,8 @@
 package se.solit.timeit.dao;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import org.joda.time.Duration;
 
 import se.solit.timeit.entities.Task;
 

@@ -4,6 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,6 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -40,35 +40,26 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestTaskResource
 {
-	private static final UUID				taskID			= UUID.randomUUID();
-
-	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
-
-	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
-																	"Authenticator");
-
-	private static TaskDAO					taskDAO;
-
-	private static User						user;
-
-	private Task							task;
-	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
+	private static final UUID                taskID          = UUID.randomUUID();
+	private static EntityManagerFactory      emf             = Persistence.createEntityManagerFactory("test");
+	private static BasicAuthProvider<User>   myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator");
+	private static TaskDAO                   taskDAO;
+	private static User                      user;
+	private Task                             task;
+	private final static HttpSession         mockSession     = Mockito.mock(HttpSession.class);
 
 	@ClassRule
-	public static final ResourceTestRule	resources		= ResourceTestRule
-																	.builder()
-																	.addResource(new TaskResource(emf))
-																	.addProvider(
-																			new SessionInjectableProvider<HttpSession>(
-																					HttpSession.class,
-																					mockSession))
-																	.addProvider(
-																			new ViewMessageBodyWriter(
-																					new MetricRegistry()))
-																	.addProvider(
-																			new ContextInjectableProvider<HttpHeaders>(
-																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator).build();
+	public static final ResourceTestRule     resources = ResourceTestRule.builder()
+	                                                                     .addResource( new TaskResource(emf))
+	                                                                     .addProvider( new SessionInjectableProvider<HttpSession>(
+	                                                                                         HttpSession.class,
+	                                                                                         mockSession))
+	                                                                     .addProvider( new ViewMessageBodyWriter(
+	                                                                                         new MetricRegistry()))
+	                                                                     .addProvider(
+	                                                                                  new ContextInjectableProvider<HttpHeaders>(
+	                                                                                         HttpHeaders.class, null))
+	                                                                     .addResource(myAuthenticator).build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -90,7 +81,7 @@ public class TestTaskResource
 	@Before
 	public void setUp()
 	{
-		task = new Task(taskID, "admin stuff", null, false, DateTime.now().minusSeconds(2), false, user);
+		task = new Task(taskID, "admin stuff", null, false, ZonedDateTime.now().minusSeconds(2), false, user);
 		taskDAO.add(task);
 	}
 
@@ -182,7 +173,7 @@ public class TestTaskResource
 
 		UUID id = UUID.randomUUID();
 		String name = "Banarne";
-		Task expected = new Task(id, name, null, false, DateTime.now(), false, user);
+		Task expected = new Task(id, name, null, false, ZonedDateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", null);
@@ -236,7 +227,7 @@ public class TestTaskResource
 
 		UUID id = UUID.randomUUID();
 		String name = "Banarne";
-		Task expected = new Task(id, name, task, false, DateTime.now(), false, user);
+		Task expected = new Task(id, name, task, false, ZonedDateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", task.getID());
@@ -265,7 +256,7 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String name = "Banarne";
-		Task expected = new Task(taskID, name, null, false, DateTime.now(), false, user);
+		Task expected = new Task(taskID, name, null, false, ZonedDateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", taskID.toString());
 		form.add("parent", null);
@@ -294,11 +285,11 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		UUID parentID = UUID.randomUUID();
-		Task parent = new Task(parentID, "Parent", null, false, DateTime.now().minusSeconds(3), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, ZonedDateTime.now().minusSeconds(3), false, user);
 		taskDAO.add(parent);
 		UUID id = taskID;
 		String name = "Banarne";
-		Task expected = new Task(id, name, parent, false, DateTime.now(), false, user);
+		Task expected = new Task(id, name, parent, false, ZonedDateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", parent.getID());
@@ -353,7 +344,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task task = new Task(UUID.fromString(id), name, null, false, DateTime.now(), false, user);
+		Task task = new Task(UUID.fromString(id), name, null, false, ZonedDateTime.now(), false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", null);
@@ -376,7 +367,7 @@ public class TestTaskResource
 	public final void testDelete()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());
@@ -397,7 +388,7 @@ public class TestTaskResource
 	public final void testDelete_auth()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());
@@ -419,7 +410,7 @@ public class TestTaskResource
 	public final void testDelete_otherUser()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, DateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());

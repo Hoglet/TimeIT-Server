@@ -1,12 +1,12 @@
 package DAO;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -21,11 +21,9 @@ import se.solit.timeit.entities.User;
 public class TestLoginKeyDAO
 {
 
-	public static EntityManagerFactory	emf						= Persistence.createEntityManagerFactory("test");
-	private static LoginKeyDAO			keydao;
-	private final static User			user					= new User("username", "Name", "password", "email",
-																		null);
-	private static final long			MILLISECONDS_PER_SECOND	= 1000;
+	public  static EntityManagerFactory  emf   = Persistence.createEntityManagerFactory("test");
+	private final static User            user  = new User("username", "Name", "password", "email", null);
+	private static LoginKeyDAO           keydao;
 
 	@BeforeClass
 	public static void setUp() throws Exception
@@ -75,10 +73,10 @@ public class TestLoginKeyDAO
 
 		Field field = loginKey.getClass().getDeclaredField("lastChange");
 		field.setAccessible(true);
-		field.set(loginKey, DateTime.now().minusDays(3).getMillis() / MILLISECONDS_PER_SECOND);
+		field.set(loginKey, ZonedDateTime.now().minusDays(3).toInstant().getEpochSecond());
 
 		keydao.add(loginKey);
-		keydao.removeOld(Duration.standardDays(1));
+		keydao.removeOld(Duration.ofDays(1));
 		LoginKey actual = keydao.getByID(loginKey.getId());
 		Assert.assertEquals(null, actual);
 	}

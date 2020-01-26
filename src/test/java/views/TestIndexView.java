@@ -1,13 +1,13 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,12 +24,12 @@ import se.solit.timeit.views.IndexView;
 
 public class TestIndexView
 {
-	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
-	private static User					user;
-	private static UUID					parentID	= UUID.fromString("b141b8ff-fa8e-47ff-8631-d86fe97cbc2b");
-	private static UUID					childID		= UUID.fromString("c624ba2d-2027-4858-9696-3efc4e4106ad");
-	private static HttpSession			session;
-	private final static DateTime		now			= DateTime.now();
+	private static EntityManagerFactory  emf       = Persistence.createEntityManagerFactory("test");
+	private static User                  user;
+	private static UUID                  parentID  = UUID.fromString("b141b8ff-fa8e-47ff-8631-d86fe97cbc2b");
+	private static UUID                  childID   = UUID.fromString("c624ba2d-2027-4858-9696-3efc4e4106ad");
+	private static HttpSession           session;
+	private final static ZonedDateTime   now       = ZonedDateTime.now();
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -37,13 +37,13 @@ public class TestIndexView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		Task parent = new Task(parentID, "Parent", null, false, DateTime.now(), false, user);
-		Task child = new Task(childID, "child", parent, false, DateTime.now(), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, ZonedDateTime.now(), false, user);
+		Task child = new Task(childID, "child", parent, false, ZonedDateTime.now(), false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);
-		DateTime start = now.withHourOfDay(10);
-		DateTime stop = start.plusMinutes(10);
+		ZonedDateTime start = now.withHour(10);
+		ZonedDateTime stop = start.plusMinutes(10);
 		Time time = new Time(UUID.randomUUID(), start, stop, false, now, parent);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);
@@ -62,13 +62,13 @@ public class TestIndexView
 		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
 		timeDAO.add(time);
 
-		if (now.getMonthOfYear() != 4)
+		if (now.getMonthValue() != 4)
 		{
-			start = now.withMonthOfYear(4);
+			start = now.withMonth(4);
 		}
 		else
 		{
-			start = now.withMonthOfYear(3);
+			start = now.withMonth(3);
 		}
 		stop = start.plusMinutes(10);
 		time = new Time(UUID.randomUUID(), start, stop, false, now, child);

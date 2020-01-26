@@ -2,10 +2,14 @@ package se.solit.timeit.views;
 
 import io.dropwizard.jersey.sessions.Session;
 
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.TimeDescriptorList;
@@ -15,30 +19,32 @@ import com.sun.jersey.api.core.HttpContext;
 
 public class MonthReportView extends ReportView
 {
-	private final TimeDAO	timeDAO;
-	private final DateTime	beginingOfMonth;
-	private final DateTime	endOfMonth;
+	private final TimeDAO       timeDAO;
+	private final ZonedDateTime beginingOfMonth;
+	private final ZonedDateTime endOfMonth;
 
-	public MonthReportView(EntityManagerFactory emf, DateTime pointInMonth, User user, User reportedUser,
+	public MonthReportView(EntityManagerFactory emf, ZonedDateTime pointInMonth, User user, User reportedUser,
 			HttpContext context, @Session HttpSession session)
 	{
 		super("monthReport.ftl", user, pointInMonth, reportedUser, context, session, emf);
 		timeDAO = new TimeDAO(emf);
-		beginingOfMonth = pointInTime.withDayOfMonth(1).withTimeAtStartOfDay();
+		beginingOfMonth = pointInTime.withDayOfMonth(1).with(LocalTime.MIN);
 		endOfMonth = beginingOfMonth.plusMonths(1).minusDays(1)
-				.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+				.with(LocalTime.MAX);
 		extractTimeDescriptors(beginingOfMonth, endOfMonth);
 		extractTasks();
 	}
 
 	public String getMonth()
 	{
-		return pointInTime.toString("MMMMMMMMMM");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
+		return pointInTime.format(formatter);
 	}
 
 	public String getDay(int d)
 	{
-		return pointInTime.withDayOfMonth(d).toString("EEE");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE");
+		return pointInTime.withDayOfMonth(d).format(formatter);
 	}
 
 	public int getDaysInMonth()
@@ -48,8 +54,8 @@ public class MonthReportView extends ReportView
 
 	public TimeDescriptorList getTimes(int day)
 	{
-		DateTime start = pointInTime.withDayOfMonth(day).withTimeAtStartOfDay();
-		DateTime stop = start.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+		ZonedDateTime start = pointInTime.withDayOfMonth(day).with(LocalTime.MIN);
+		ZonedDateTime stop = start.with(LocalTime.MAX);
 		return timeDAO.getTimes(user, start, stop);
 	}
 
@@ -60,39 +66,41 @@ public class MonthReportView extends ReportView
 
 	public String getPreviousMonthLink()
 	{
-		DateTime nextPointInTime = pointInTime.minusMonths(1);
+		ZonedDateTime nextPointInTime = pointInTime.minusMonths(1);
 		return createUrl(nextPointInTime, false);
 	}
 
 	public String getPreviousYearLink()
 	{
-		DateTime nextPointInTime = pointInTime.minusYears(1);
+		ZonedDateTime nextPointInTime = pointInTime.minusYears(1);
 		return createUrl(nextPointInTime, false);
 	}
 
 	public String getNextMonthLink()
 	{
-		DateTime nextPointInTime = pointInTime.plusMonths(1);
-		if (nextPointInTime.isAfterNow())
+		Instant nextPointInTime = Instant.from(pointInTime.plusMonths(1));
+		if (nextPointInTime.isAfter(Instant.now()))
 		{
 			return "<button type='button' disabled='disabled'>&gt;&gt;</button>";
 		}
 		else
 		{
-			return createUrl(nextPointInTime, true);
+			ZoneId zone = ZonedDateTime.now().getZone();
+			return createUrl( nextPointInTime.atZone(zone), true);
 		}
 	}
 
 	public String getNextYearLink()
 	{
-		DateTime nextPointInTime = pointInTime.plusYears(1);
-		if (nextPointInTime.isAfterNow())
+		Instant nextPointInTime = Instant.from(pointInTime.plusYears(1));
+		if (nextPointInTime.isAfter(Instant.now()))
 		{
 			return "<button type='button' disabled='disabled'>&gt;&gt;</button>";
 		}
 		else
 		{
-			return createUrl(nextPointInTime, true);
+			ZoneId zone = ZonedDateTime.now().getZone();
+			return createUrl(nextPointInTime.atZone(zone), true);
 		}
 	}
 
@@ -104,11 +112,11 @@ public class MonthReportView extends ReportView
 		stringBuilder.append("/");
 		stringBuilder.append(String.valueOf(pointInTime.getYear()));
 		stringBuilder.append("/");
-		stringBuilder.append(String.valueOf(pointInTime.getMonthOfYear()));
+		stringBuilder.append(String.valueOf(pointInTime.getMonthValue()));
 		return stringBuilder.toString();
 	}
 
-	private String createUrl(DateTime nextPointInTime, boolean forward)
+	private String createUrl(ZonedDateTime nextPointInTime, boolean forward)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<a href='/report/");
@@ -116,7 +124,7 @@ public class MonthReportView extends ReportView
 		stringBuilder.append("/");
 		stringBuilder.append(String.valueOf(nextPointInTime.getYear()));
 		stringBuilder.append("/");
-		stringBuilder.append(String.valueOf(nextPointInTime.getMonthOfYear()));
+		stringBuilder.append(String.valueOf(nextPointInTime.getMonthValue()));
 		stringBuilder.append("'>");
 		String link = stringBuilder.toString();
 		if (forward)

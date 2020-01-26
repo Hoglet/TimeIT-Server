@@ -1,13 +1,14 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,13 +26,14 @@ import se.solit.timeit.views.YearReportView;
 
 public class TestYearReportView
 {
-	private static EntityManagerFactory	emf		= Persistence.createEntityManagerFactory("test");
-	private static User					user;
-	private static DateTime				pointInMonth;
-	private static int					monthToTest;
-	private static int					dayToTest;
-	private static DateTime				now;
-	private final HttpSession			session	= Mockito.mock(HttpSession.class);
+	private static EntityManagerFactory  emf     = Persistence.createEntityManagerFactory("test");
+	private final HttpSession            session = Mockito.mock(HttpSession.class);
+
+	private static User           user;
+	private static ZonedDateTime  pointInMonth;
+	private static int            monthToTest;
+	private static int            dayToTest;
+	private static ZonedDateTime  now;
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -39,19 +41,19 @@ public class TestYearReportView
 		user = new User("minion", "Do Er", "password", "email", null);
 		dayToTest = 11;
 		monthToTest = 1;
-		pointInMonth = new DateTime(2014, monthToTest, dayToTest, 0, 0);
-		now = DateTime.now();
+		pointInMonth = ZonedDateTime.of(2014, monthToTest, dayToTest, 0, 0, 0, 0, ZoneId.of("UTC"));
+		now = ZonedDateTime.now();
 
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		Task task = new Task(taskID, "Name", null, false, DateTime.now(), false, user);
+		Task task = new Task(taskID, "Name", null, false, ZonedDateTime.now(), false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
-		DateTime start = pointInMonth.withHourOfDay(10);
-		DateTime stop = start.plusMinutes(10);
+		ZonedDateTime start = pointInMonth.withHour(10);
+		ZonedDateTime stop = start.plusMinutes(10);
 		Time time = new Time(timeID, start, stop, false, stop, task);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);

@@ -5,6 +5,7 @@ import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +20,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +108,7 @@ public class CredentialRecoveryResource extends BaseResource
 	public View changePassword(@Context HttpContext context,
 			@Session HttpSession session, @PathParam("keyid") String keyid) throws URISyntaxException
 	{
-		loginKeyDAO.removeOld(Duration.standardDays(DAY_LIMIT));
+		loginKeyDAO.removeOld(Duration.ofDays(DAY_LIMIT));
 		LoginKey loginKey = loginKeyDAO.getByID(UUID.fromString(keyid));
 		if (loginKey == null)
 		{

@@ -5,6 +5,8 @@ import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
@@ -16,8 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
@@ -47,12 +47,13 @@ public class ReportResource
 	public View getYearReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @Context HttpContext context, @Session HttpSession session)
 	{
+		ZoneId zone = ZonedDateTime.now().getZone();
 		YearReportView result = null;
 		if (user.getUsername().equals(username))
 		{
 			User userToShow = userDAO.getUser(username);
 
-			DateTime pointInTime = new DateTime(year, 1, 1, 1, 1);
+			ZonedDateTime pointInTime = ZonedDateTime.of(year, 1, 1, 1, 1, 0, 0, zone);
 			result = new YearReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
@@ -70,12 +71,13 @@ public class ReportResource
 			@PathParam("year") final int year, @PathParam("month") final int month, @Context HttpContext context,
 			@Session HttpSession session)
 	{
+		ZoneId zone = ZonedDateTime.now().getZone();
 		MonthReportView result = null;
 		if (user.getUsername().equals(username))
 		{
 			User userToShow = userDAO.getUser(username);
 
-			DateTime pointInTime = new DateTime(year, month, 1, 1, 1);
+			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, 1, 1, 1, 0, 0, zone);
 			result = new MonthReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
@@ -92,12 +94,13 @@ public class ReportResource
 			@PathParam("year") final int year, @PathParam("month") final int month, @PathParam("day") final int day,
 			@Context HttpContext context, @Session HttpSession session)
 	{
+		ZoneId zone = ZonedDateTime.now().getZone();
 		DayReportView result = null;
 		if (user.getUsername().equals(username))
 		{
 			User userToShow = userDAO.getUser(username);
 
-			DateTime pointInTime = new DateTime(year, month, day, 1, 1);
+			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, day, 1, 1, 0, 0, zone);
 			result = new DayReportView(emf, pointInTime, user, userToShow, context, session);
 		}
 		else
@@ -120,8 +123,8 @@ public class ReportResource
 		if (user.getUsername().equals(username))
 		{
 			User userToShow = userDAO.getUser(username);
-
-			DateTime pointInTime = new DateTime(year, month, day, 1, 1);
+			ZoneId zone = ZonedDateTime.now().getZone();
+			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, day, 1, 1, 0, 0, zone);
 			result = new TaskDetailReportView(emf, pointInTime, user, userToShow, taskid, context, session);
 		}
 		else

@@ -1,13 +1,15 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,13 +26,13 @@ import se.solit.timeit.views.TimeView;
 
 public class TestEditTimeView
 {
-	private static EntityManagerFactory	emf			= Persistence.createEntityManagerFactory("test");
-	private static User					user;
-	private static Time					time;
-	private static UUID					timeID		= UUID.randomUUID();
-	private static UUID					parentID	= UUID.fromString("e00b8d6f-3f89-4748-98ca-25ef6225d06a");
-	private static UUID					childID		= UUID.fromString("4afe7048-fefe-4c5f-b32f-d4a771175b70");
-	private final HttpSession			session		= Mockito.mock(HttpSession.class);
+	private static EntityManagerFactory  emf       = Persistence.createEntityManagerFactory("test");
+	private static User                  user;
+	private static Time                  time;
+	private static UUID                  timeID    = UUID.randomUUID();
+	private static UUID                  parentID  = UUID.fromString("e00b8d6f-3f89-4748-98ca-25ef6225d06a");
+	private static UUID                  childID   = UUID.fromString("4afe7048-fefe-4c5f-b32f-d4a771175b70");
+	private final HttpSession            session   = Mockito.mock(HttpSession.class);
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -38,14 +40,21 @@ public class TestEditTimeView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		DateTime now = DateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
 		Task parent = new Task(parentID, "parent", null, false, now, false, user);
 		Task child = new Task(childID, "child", parent, false, now, false, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(parent);
 		taskDAO.add(child);
 
-		time = new Time(timeID, new DateTime(0), new DateTime(1000), false, now, parent);
+		Instant epoch = Instant.ofEpochSecond(0);
+		Instant stop  = Instant.ofEpochSecond(1);
+		
+		ZonedDateTime s1 = epoch.atZone(ZoneId.of("UTC"));
+		ZonedDateTime s2 = stop.atZone(ZoneId.of("UTC"));
+				
+		
+		time = new Time(timeID, s1, s2, false, now, parent);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 	}

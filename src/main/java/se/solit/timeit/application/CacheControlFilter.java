@@ -1,6 +1,7 @@
 package se.solit.timeit.application;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,7 +11,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
 
 public class CacheControlFilter implements Filter
 {
@@ -26,7 +26,7 @@ public class CacheControlFilter implements Filter
 
 		// Add whatever headers you want here
 		resp.setHeader("Cache-Control", "public, max-age=" + CACHE_MAX_AGE);
-		resp.setHeader("Expires", DateTime.now().plusSeconds(CACHE_MAX_AGE) + "");
+		resp.setHeader("Expires", ZonedDateTime.now().plusSeconds(CACHE_MAX_AGE) + "");
 
 		chain.doFilter(request, response);
 	}

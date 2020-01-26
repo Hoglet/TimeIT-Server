@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 import io.dropwizard.jackson.Jackson;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,19 +25,25 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class TestTime
 {
-	private static final UUID		timeID			= UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-	private static final DateTime	creationTime	= new DateTime(1000 * 1000);
-	private static final User		owner			= new User("123", "", "password", "", null);
-	private static final Task		task1			= new Task(UUID.randomUUID(), "task1", null, false, creationTime,
+	private static final UUID           timeID       = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
+	private static final ZoneId         zone         = ZonedDateTime.now().getZone();
+	private static final ZonedDateTime  creationTime = Instant.ofEpochSecond(1000).atZone(zone);
+	private static final ZonedDateTime  epoch        = Instant.ofEpochSecond(0).atZone(zone);
+	private static final ZonedDateTime  start        = Instant.ofEpochSecond(10).atZone(zone);
+	private static final ZonedDateTime  stop         = Instant.ofEpochSecond(100).atZone(zone);
+	private static final ZonedDateTime  changeTime   = Instant.ofEpochSecond(100).atZone(zone);
+
+	private static final User           owner        = new User("123", "", "password", "", null);
+	private static final Task           task1        = new Task(UUID.randomUUID(), "task1", null, false, creationTime,
 															false, owner);
-	private static final Task		task2			= new Task(UUID.randomUUID(), "task2", null, false, creationTime,
+	private static final Task           task2        = new Task(UUID.randomUUID(), "task2", null, false, creationTime,
 															false, owner);
-	private Time					time;
+	private Time                        time;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time(timeID, new DateTime(0), new DateTime(1 * 1000), false, creationTime, task1);
+		time = new Time(timeID, epoch, epoch.plusSeconds(1), false, creationTime, task1);
 	}
 
 	@Test
@@ -44,10 +52,9 @@ public class TestTime
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-		Task task = new Task(id, "Task1", null, false, new DateTime(100 * 1000), false, user);
+		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
 
-		Time time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false,
-				new DateTime(100 * 1000), task);
+		Time time = new Time(timeID, start, stop, false, changeTime, task);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);
 		Assert.assertEquals(fixture("fixtures/time.json"), jsonString);
@@ -59,10 +66,9 @@ public class TestTime
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-		Task task = new Task(id, "Task1", null, false, new DateTime(100 * 1000), false, user);
+		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
 
-		Time time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false,
-				new DateTime(100 * 1000), task);
+		Time time = new Time(timeID, start, stop, false, changeTime, task);
 		Time result = MAPPER.readValue(fixture("fixtures/time2.json"), Time.class);
 		Assert.assertEquals(time.getDeleted(), result.getDeleted());
 		Assert.assertEquals(time.getID(), result.getID());
@@ -89,7 +95,7 @@ public class TestTime
 	@Test
 	public final void testSetStart()
 	{
-		DateTime now = DateTime.now().withMillis(0);
+		ZonedDateTime now = ZonedDateTime.now().withNano(0);
 		time.setStart(now);
 		assertEquals(now, time.getStart());
 		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
@@ -98,7 +104,7 @@ public class TestTime
 	@Test
 	public final void testSetStop()
 	{
-		DateTime now = DateTime.now().withMillis(0);
+		ZonedDateTime now = ZonedDateTime.now().withNano(0);
 		time.setStop(now);
 		assertEquals(now, time.getStop());
 		assertTrue("ChangeTime should be after creation: ", time.getChanged().isAfter(creationTime));
@@ -116,9 +122,9 @@ public class TestTime
 	@Test
 	public final void testEqualsObject()
 	{
-		DateTime start = new DateTime(0);
-		DateTime stop = new DateTime(1 * 1000);
-		DateTime now = DateTime.now();
+		ZonedDateTime start = epoch;
+		ZonedDateTime stop = start.plusSeconds(1);
+		ZonedDateTime now = ZonedDateTime.now();
 
 		Time x = new Time(timeID, start, stop, false, now, task1);
 		Time y = new Time(timeID, start, stop, false, now, task1);
@@ -145,7 +151,7 @@ public class TestTime
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, start, stop, false, new DateTime(42), task1);
+		y = new Time(timeID, start, stop, false, Instant.ofEpochSecond(42).atZone(zone), task1);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());

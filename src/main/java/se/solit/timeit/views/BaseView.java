@@ -2,14 +2,13 @@ package se.solit.timeit.views;
 
 import io.dropwizard.views.View;
 
+import java.time.ZonedDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
@@ -62,7 +61,7 @@ public class BaseView extends View
 
 	public String getReportLink()
 	{
-		DateTime now = DateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<a class=\"");
 		stringBuilder.append(getClasses("report"));
@@ -72,7 +71,7 @@ public class BaseView extends View
 		stringBuilder.append("/");
 		stringBuilder.append(String.valueOf(now.getYear()));
 		stringBuilder.append("/");
-		stringBuilder.append(String.valueOf(now.getMonthOfYear()));
+		stringBuilder.append(String.valueOf(now.getMonthValue()));
 		stringBuilder.append("'>Reports</a>");
 		return stringBuilder.toString();
 	}

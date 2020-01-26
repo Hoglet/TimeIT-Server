@@ -1,5 +1,8 @@
 package se.solit.timeit.entities;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -9,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskDeserializer;
@@ -27,7 +28,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Task
 {
-	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 	@Id
 	@Column(nullable = false)
 	private String				id;
@@ -50,13 +50,13 @@ public class Task
 	}
 
 	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final DateTime paramLastChanged, final boolean paramDeleted, final User paramOwner)
+			final ZonedDateTime paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
 	}
 
 	private void init(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final DateTime paramLastChange, final boolean paramDeleted, final User paramOwner)
+			final ZonedDateTime paramLastChange, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
 		{
@@ -68,7 +68,7 @@ public class Task
 		completed = paramCompleted;
 		deleted = paramDeleted;
 		setOwner(paramOwner);
-		lastChange = paramLastChange.getMillis() / MILLISECONDS_PER_SECOND;
+		lastChange = Instant.from(paramLastChange).getEpochSecond();
 	}
 
 	public final void setDeleted(final boolean deleted2)
@@ -79,7 +79,7 @@ public class Task
 
 	private long now()
 	{
-		return DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
+		return Instant.now().getEpochSecond();
 	}
 
 	public final UUID getID()
@@ -97,9 +97,10 @@ public class Task
 		return parent;
 	}
 
-	public final DateTime getLastChange()
+	public final ZonedDateTime getLastChange()
 	{
-		return new DateTime(lastChange * MILLISECONDS_PER_SECOND);
+		ZoneId zone = ZonedDateTime.now().getZone();
+		return Instant.ofEpochSecond(lastChange).atZone(zone);
 	}
 
 	public final boolean getDeleted()

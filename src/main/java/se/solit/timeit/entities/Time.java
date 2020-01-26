@@ -1,5 +1,8 @@
 package se.solit.timeit.entities;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -7,8 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskSerializer;
@@ -21,9 +22,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonDeserialize(using = TimeDeserializer.class)
 public class Time
 {
-
-	private static final int	MILLISECONDS_PER_SECOND	= 1000;
-
 	@Id
 	@Column(nullable = false)
 	private String				id;
@@ -44,47 +42,50 @@ public class Time
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	private long				changed;
 
+	private ZoneId zone;
+
 	protected Time()
 	{
 	}
 
-	public Time(final UUID paramUuid, final DateTime paramStart, final DateTime paramStop, final boolean paramDeleted,
-			final DateTime paramChanged, final Task paramTask)
+	public Time(final UUID paramUuid, final ZonedDateTime paramStart, final ZonedDateTime paramStop, final boolean paramDeleted,
+			final ZonedDateTime paramChanged, final Task paramTask)
 	{
 		id = paramUuid.toString();
-		start = paramStart.getMillis() / MILLISECONDS_PER_SECOND;
-		stop = paramStop.getMillis() / MILLISECONDS_PER_SECOND;
+		start = Instant.from(paramStart).getEpochSecond();
+		stop = Instant.from(paramStop).getEpochSecond();
 		deleted = paramDeleted;
 		task = paramTask;
-		changed = paramChanged.getMillis() / MILLISECONDS_PER_SECOND;
+		changed = Instant.from(paramChanged).getEpochSecond();
+		zone = ZonedDateTime.now().getZone();
 	}
 
-	public final DateTime getChanged()
+	public final ZonedDateTime getChanged()
 	{
-		return new DateTime(changed * MILLISECONDS_PER_SECOND);
+		return Instant.ofEpochSecond(changed).atZone(zone);
 	}
 
 	public final void setTask(final Task task2)
 	{
-		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
+		changed =  Instant.now().getEpochSecond();
 		this.task = task2;
 	}
 
-	public final void setStart(final DateTime start2)
+	public final void setStart(final ZonedDateTime start2)
 	{
-		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
-		this.start = start2.getMillis() / MILLISECONDS_PER_SECOND;
+		changed =  Instant.now().getEpochSecond();
+		this.start = Instant.from(start2).getEpochSecond();
 	}
 
-	public final void setStop(final DateTime stop2)
+	public final void setStop(final ZonedDateTime stop2)
 	{
-		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
-		this.stop = stop2.getMillis() / MILLISECONDS_PER_SECOND;
+		changed = Instant.now().getEpochSecond();
+		this.stop = Instant.from(stop2).getEpochSecond();
 	}
 
 	public final void setDeleted(final boolean deleted2)
 	{
-		changed = DateTime.now().getMillis() / MILLISECONDS_PER_SECOND;
+		changed = Instant.now().getEpochSecond();
 		this.deleted = deleted2;
 	}
 
@@ -93,14 +94,14 @@ public class Time
 		return UUID.fromString(id);
 	}
 
-	public final DateTime getStart()
+	public final ZonedDateTime getStart()
 	{
-		return new DateTime(start * MILLISECONDS_PER_SECOND);
+		return Instant.ofEpochSecond(start).atZone(zone);
 	}
 
-	public final DateTime getStop()
+	public final ZonedDateTime getStop()
 	{
-		return new DateTime(stop * MILLISECONDS_PER_SECOND);
+		return Instant.ofEpochSecond(stop).atZone(zone);
 	}
 
 	public final boolean getDeleted()

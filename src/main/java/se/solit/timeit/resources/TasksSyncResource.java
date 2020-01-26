@@ -3,6 +3,9 @@ package se.solit.timeit.resources;
 import io.dropwizard.auth.Auth;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
@@ -14,7 +17,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +29,7 @@ import se.solit.timeit.entities.User;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TasksSyncResource
 {
-	private static final Logger	LOGGER					= LoggerFactory.getLogger(TasksSyncResource.class);
-	private static final long	MILLISECOND_PER_SECOND	= 1000;
+	private static final Logger	LOGGER     = LoggerFactory.getLogger(TasksSyncResource.class);
 	private final TaskDAO		taskDAO;
 	private final SyncHelper	syncHelper;
 
@@ -70,6 +71,7 @@ public class TasksSyncResource
 			@PathParam("time") final long time,
 			final Task[] paramTasks)
 	{
+		ZoneId zone = ZonedDateTime.now().getZone();
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTaskOwnership(authorizedUser, paramTasks);
 		try
@@ -80,7 +82,7 @@ public class TasksSyncResource
 		{
 			LOGGER.error("Error syncing tasks for user " + authorizedUser.getUsername(), e);
 		}
-		return taskDAO.getAllTasks(username, new DateTime(time * MILLISECOND_PER_SECOND));
+		return taskDAO.getAllTasks(username, Instant.ofEpochSecond(time).atZone(zone));
 	}
 
 }

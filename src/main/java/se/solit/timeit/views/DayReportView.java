@@ -2,14 +2,17 @@ package se.solit.timeit.views;
 
 import io.dropwizard.jersey.sessions.Session;
 
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.Task;
@@ -24,20 +27,20 @@ public class DayReportView extends ReportView
 
 	private Map<Integer, List<Time>>	items;
 
-	public DayReportView(EntityManagerFactory emf, DateTime pointInTime, User user, User reportedUser,
+	public DayReportView(EntityManagerFactory emf, ZonedDateTime pointInTime, User user, User reportedUser,
 			HttpContext context, @Session HttpSession session)
 	{
 		super("dayReport.ftl", user, pointInTime, reportedUser, context, session, emf);
 
-		DateTime start = pointInTime.withTimeAtStartOfDay();
-		DateTime stop = start.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+		ZonedDateTime start = pointInTime.with(LocalTime.MIN);
+		ZonedDateTime stop = start.with(LocalTime.MAX);
 
 		extractTimeDescriptors(start, stop);
 		extractTasks();
 		extractItems(start, stop);
 	}
 
-	private void extractItems(DateTime start, DateTime stop)
+	private void extractItems(ZonedDateTime start, ZonedDateTime stop)
 	{
 		items = new HashMap<Integer, List<Time>>();
 		for (int t = 0; t < tasks.size(); t++)
@@ -49,17 +52,19 @@ public class DayReportView extends ReportView
 
 	public String getMonth()
 	{
-		return pointInTime.toString("MMMMMMMMMM");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
+		return pointInTime.format(formatter);
 	}
 
 	public int getMonthOfYear()
 	{
-		return pointInTime.getMonthOfYear();
+		return pointInTime.getMonthValue();
 	}
 
 	public String getDay()
 	{
-		return pointInTime.toString("EEE");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE");
+		return pointInTime.format(formatter);
 	}
 
 	public int getDayOfmonth()
@@ -112,8 +117,8 @@ public class DayReportView extends ReportView
 
 	private boolean timeIntersectingWithHour(Time time, int hour)
 	{
-		int startHour = time.getStart().getHourOfDay();
-		int stopHour = time.getStop().getHourOfDay();
+		int startHour = time.getStart().getHour();
+		int stopHour = time.getStop().getHour();
 		return (startHour == hour || stopHour == hour) ||
 				(startHour < hour && stopHour > hour);
 	}
@@ -125,33 +130,33 @@ public class DayReportView extends ReportView
 
 	public TimeDescriptorList getAllTimes()
 	{
-		DateTime start = pointInTime.withTimeAtStartOfDay();
-		DateTime stop = start.withTime(LAST_HOUR_OF_DAY, LAST_MINUTE_OF_HOUR, LAST_SECOND_OF_MINUTE, 0);
+		ZonedDateTime start = pointInTime.with(LocalTime.MIN);
+		ZonedDateTime stop = start.with(LocalTime.MAX);
 		return timeDAO.getTimes(user, start, stop);
 	}
 
 	public String getPreviousDayLink()
 	{
-		DateTime nextPointInTime = pointInTime.minusDays(1);
+		ZonedDateTime nextPointInTime = pointInTime.minusDays(1);
 		return createUrl(nextPointInTime, false);
 	}
 
 	public String getPreviousMonthLink()
 	{
-		DateTime nextPointInTime = pointInTime.minusMonths(1);
+		ZonedDateTime nextPointInTime = pointInTime.minusMonths(1);
 		return createUrl(nextPointInTime, false);
 	}
 
 	public String getPreviousYearLink()
 	{
-		DateTime nextPointInTime = pointInTime.minusYears(1);
+		ZonedDateTime nextPointInTime = pointInTime.minusYears(1);
 		return createUrl(nextPointInTime, false);
 	}
 
 	public String getNextDayLink()
 	{
-		DateTime nextPointInTime = pointInTime.plusDays(1);
-		if (nextPointInTime.isAfterNow())
+		ZonedDateTime nextPointInTime = pointInTime.plusDays(1);
+		if (Instant.from(nextPointInTime).isAfter(Instant.now()))
 		{
 			return DISABLED_FORWARD_BUTTON;
 		}
@@ -163,8 +168,8 @@ public class DayReportView extends ReportView
 
 	public String getNextMonthLink()
 	{
-		DateTime nextPointInTime = pointInTime.plusMonths(1);
-		if (nextPointInTime.isAfterNow())
+		ZonedDateTime nextPointInTime = pointInTime.plusMonths(1);
+		if (Instant.from(nextPointInTime).isAfter(Instant.now()))
 		{
 			return DISABLED_FORWARD_BUTTON;
 		}
@@ -176,14 +181,15 @@ public class DayReportView extends ReportView
 
 	public String getNextYearLink()
 	{
-		DateTime nextPointInTime = pointInTime.plusYears(1);
-		if (nextPointInTime.isAfterNow())
+		Instant nextPointInTime = Instant.from(pointInTime.plusYears(1));
+		if ( nextPointInTime.isAfter(Instant.now()))
 		{
 			return DISABLED_FORWARD_BUTTON;
 		}
 		else
 		{
-			return createUrl(nextPointInTime, true);
+			ZoneId zone = ZonedDateTime.now().getZone();
+			return createUrl(nextPointInTime.atZone(zone), true);
 		}
 	}
 
@@ -192,7 +198,7 @@ public class DayReportView extends ReportView
 		return reportedUser.getUsername();
 	}
 
-	private String createUrl(DateTime nextPointInTime, boolean forward)
+	private String createUrl(ZonedDateTime nextPointInTime, boolean forward)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<a href='/report/");
@@ -200,7 +206,7 @@ public class DayReportView extends ReportView
 		stringBuilder.append("/");
 		stringBuilder.append(String.valueOf(nextPointInTime.getYear()));
 		stringBuilder.append("/");
-		stringBuilder.append(String.valueOf(nextPointInTime.getMonthOfYear()));
+		stringBuilder.append(String.valueOf(nextPointInTime.getMonthValue()));
 		stringBuilder.append("/");
 		stringBuilder.append(String.valueOf(nextPointInTime.getDayOfMonth()));
 		stringBuilder.append("'>");

@@ -3,9 +3,9 @@ package DAO;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,19 +17,19 @@ import se.solit.timeit.entities.User;
 public class TestTaskDescriptorlist
 {
 
-	private static TaskDescriptorList	list;
-	private static User					owner			= new User("owner", "Owner", "password", "email", null);
-	private static DateTime				changeTime		= DateTime.now();
-	private static UUID					parentID		= UUID.randomUUID();
-	private static UUID					childID			= UUID.randomUUID();
-	private static Task					parent;
-	private static Task					child;
-	private static UUID					parent2ID		= UUID.randomUUID();
-	private static Task					parent2;
-	private static UUID					child2ID		= UUID.randomUUID();
-	private static Task					child2;
-	private static TaskDescriptor		tdToFind;
-	private final UUID					grandchildID	= UUID.randomUUID();
+	private static TaskDescriptorList  list;
+	private static User                owner       = new User("owner", "Owner", "password", "email", null);
+	private static ZonedDateTime       changeTime  = ZonedDateTime.now();
+	private static UUID                parentID    = UUID.randomUUID();
+	private static UUID                childID     = UUID.randomUUID();
+	private static Task                parent;
+	private static Task                child;
+	private static UUID                parent2ID   = UUID.randomUUID();
+	private static Task                parent2;
+	private static UUID                child2ID    = UUID.randomUUID();
+	private static Task                child2;
+	private static TaskDescriptor      tdToFind;
+	private final UUID                 grandchildID = UUID.randomUUID();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception

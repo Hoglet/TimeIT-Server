@@ -15,9 +15,9 @@
 
 	<div id="time" class="mainFrame">
 		<form method="POST" action='/time/add' name="Controller">
-		<#assign date=time.start.toString('yyyy-MM-dd')>
-		<#assign start=time.start.toString('HH:mm')>
-		<#assign stop=time.stop.toString('HH:mm')>
+		<#assign date=startDate>
+		<#assign start=startTime>
+		<#assign stop=stopTime>
 		<input type="hidden" name="timeid" value="${time.getID()}"/>
 		<table>
 			<tr>

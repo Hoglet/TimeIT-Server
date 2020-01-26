@@ -5,6 +5,10 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,7 +16,6 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -37,38 +40,36 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestTimeResource
 {
-	private static final UUID				timeID			= UUID.randomUUID();
-	private static final UUID				taskID			= UUID.randomUUID();
+	private static final UUID            timeID = UUID.randomUUID();
+	private static final UUID            taskID = UUID.randomUUID();
+	private static EntityManagerFactory  emf = Persistence.createEntityManagerFactory("test");
+	private static TimeDAO               timeDAO;
+	private static User                  user;
+	private final static HttpSession     mockSession  = Mockito.mock(HttpSession.class);
 
-	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
+	private static Time                  time;
+	private static Task                  task;
+	private static ZonedDateTime         now           = ZonedDateTime.now().withSecond(0).withNano(0);
+	private final  DateTimeFormatter     dateFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+	private final  DateTimeFormatter     timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
-																	"Authenticator");
-
-	private static TimeDAO					timeDAO;
-
-	private static User						user;
-	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
-
-	private static Time						time;
-	private static Task						task;
-	private static DateTime					now				= DateTime.now();
+	private static BasicAuthProvider<User>  myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),  "Authenticator");
 
 	@ClassRule
-	public static final ResourceTestRule	resources		= ResourceTestRule
-																	.builder()
-																	.addResource(new TimeResource(emf))
-																	.addProvider(
-																			new SessionInjectableProvider<HttpSession>(
-																					HttpSession.class,
-																					mockSession))
-																	.addProvider(
-																			new ViewMessageBodyWriter(
-																					new MetricRegistry()))
-																	.addProvider(
-																			new ContextInjectableProvider<HttpHeaders>(
-																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator).build();
+	public static final ResourceTestRule    resources  = ResourceTestRule.builder()
+	                                                                     .addResource(new TimeResource(emf))
+	                                                                     .addProvider(
+	                                                                           new SessionInjectableProvider<HttpSession>(
+	                                                                                 HttpSession.class,
+	                                                                                 mockSession)
+	                                                                                  )
+	                                                                     .addProvider(
+	                                                                           new ViewMessageBodyWriter(
+	                                                                                 new MetricRegistry()))
+	                                                                     .addProvider(
+	                                                                           new ContextInjectableProvider<HttpHeaders>(
+	                                                                                 HttpHeaders.class, null))
+	                                                                     .addResource(myAuthenticator).build();
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -80,7 +81,11 @@ public class TestTimeResource
 		userDAO.add(user);
 		task = new Task(taskID, "Task", null, false, now, false, user);
 		taskDAO.add(task);
-		time = new Time(timeID, new DateTime(0), new DateTime(1000), false, now, task);
+		
+		ZoneId zone = ZonedDateTime.now().getZone();
+		ZonedDateTime start = Instant.ofEpochSecond(0).atZone(zone);
+		ZonedDateTime stop = Instant.ofEpochSecond(1).atZone(zone);
+		time = new Time(timeID, start, stop, false, now, task);
 		timeDAO.add(time);
 	}
 
@@ -126,16 +131,16 @@ public class TestTimeResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		Mockito.when(mockSession.getAttribute("returnPoint")).thenReturn("/");
-		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
-		DateTime stop = new DateTime(start.plus(60000));
+		ZonedDateTime start = now;
+		ZonedDateTime stop = start.plusSeconds(60);
 
 		Time expected = new Time(timeID, start, stop, false, stop, task);
 
 		Form form = new Form();
-		form.add("timeid", timeID.toString());
-		form.add("date", start.toString("yyy-MM-dd"));
-		form.add("start", start.toString("HH:mm"));
-		form.add("stop", stop.toString("HH:mm"));
+		form.add("timeid", timeID.toString());		
+		form.add("date", start.format(dateFormatter));
+		form.add("start", start.format(timeFormatter));
+		form.add("stop", stop.format(timeFormatter));
 		try
 		{
 			resource.accept("text/html").post(String.class, form);
@@ -159,15 +164,14 @@ public class TestTimeResource
 		WebResource resource = client.resource("/time/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
 
-		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
-		DateTime stop = new DateTime(start.plus(60000));
+		ZonedDateTime start = now;
+		ZonedDateTime stop = start.plusSeconds(60);
 
 		Form form = new Form();
 		form.add("timeid", timeID.toString());
-		form.add("date", start.toString("yyy-MM-dd"));
-
-		form.add("start", start.toString("HH:mm"));
-		form.add("stop", stop.toString("HH:mm"));
+		form.add("date", start.format(dateFormatter));
+		form.add("start", start.format(timeFormatter));
+		form.add("stop", stop.format(timeFormatter));
 
 		try
 		{
@@ -216,17 +220,17 @@ public class TestTimeResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		UUID id = UUID.randomUUID();
-		DateTime start = now.withSecondOfMinute(0).withMillisOfSecond(0);
-		DateTime stop = new DateTime(start.plus(60000));
+		ZonedDateTime start = now;
+		ZonedDateTime stop = start.plusSeconds(60);
 
 		Time expected = new Time(id, start, stop, false, stop, task);
 
 		Form form = new Form();
 		form.add("timeid", id);
-		form.add("date", start.toString("yyy-MM-dd"));
+		form.add("date", start.format(dateFormatter));
 
-		form.add("start", start.toString("HH:mm"));
-		form.add("stop", stop.toString("HH:mm"));
+		form.add("start", start.format(timeFormatter));
+		form.add("stop", stop.format(timeFormatter));
 		form.add("taskid", task.getID());
 
 		try

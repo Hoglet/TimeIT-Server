@@ -1,9 +1,10 @@
 package se.solit.timeit.serializers;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
@@ -19,8 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TaskDeserializer extends JsonDeserializer<Task>
 {
 
-	private static final long	MILLISECONDS_PER_SECOND	= 1000;
-
 	@Override
 	public Task deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException
 	{
@@ -31,7 +30,8 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 		UUID id = UUID.fromString(node.get("id").textValue());
 		String name = "";
 		boolean completed = false;
-		DateTime lastChanged = DateTime.now();
+		ZonedDateTime lastChanged = ZonedDateTime.now();
+		ZoneId zone = ZonedDateTime.now().getZone();
 		boolean deleted = false;
 		User owner = new User();
 		Task parent = null;
@@ -39,8 +39,7 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 		{
 			name = node.get("name").textValue();
 
-			long millis = node.get("lastChange").longValue() * MILLISECONDS_PER_SECOND;
-			lastChanged = new DateTime(millis);
+			lastChanged = Instant.ofEpochSecond(node.get("lastChange").longValue()).atZone(zone);
 
 			deleted = node.get("deleted").asBoolean();
 			JsonNode jn = node.get("owner");

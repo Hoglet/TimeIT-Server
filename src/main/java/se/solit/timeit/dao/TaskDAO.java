@@ -1,6 +1,9 @@
 package se.solit.timeit.dao;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,13 +13,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.DateTime;
 
 import se.solit.timeit.entities.Task;
 
 public class TaskDAO
 {
-	private static final long			MILLISECONDS_PER_SECOND	= 1000;
 	private final EntityManagerFactory	emf;
 
 	public TaskDAO(final EntityManagerFactory entityManagerFactory)
@@ -103,13 +104,14 @@ public class TaskDAO
 
 	public Collection<Task> getAllTasks(String username)
 	{
-		return getAllTasks(username, new DateTime(0));
+		ZoneId zone = ZonedDateTime.now().getZone();
+		return getAllTasks(username, Instant.ofEpochSecond(0).atZone(zone));
 	}
 
-	public Collection<Task> getAllTasks(String username, DateTime since)
+	public Collection<Task> getAllTasks(String username, ZonedDateTime since)
 	{
 		EntityManager em = emf.createEntityManager();
-		long pointInTime = since.getMillis() / MILLISECONDS_PER_SECOND;
+		long pointInTime = Instant.from(since).getEpochSecond();
 		List<Task> tasks = iGetTasks(username, em, false, pointInTime);
 		tasks.addAll(iGetTasks(username, em, true, pointInTime));
 		em.close();

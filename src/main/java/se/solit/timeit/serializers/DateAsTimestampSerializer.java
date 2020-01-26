@@ -1,20 +1,18 @@
 package se.solit.timeit.serializers;
 
 import java.io.IOException;
-
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class DateAsTimestampSerializer extends JsonSerializer<DateTime>
+public class DateAsTimestampSerializer extends JsonSerializer<ZonedDateTime>
 {
-	private static final int	MILLISECONDS_PER_SECOND	= 1000;
 
 	@Override
-	public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException
+	public void serialize(ZonedDateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException
 	{
-		jgen.writeNumber(value.getMillis() / MILLISECONDS_PER_SECOND);
+		jgen.writeNumber(value.toInstant().getEpochSecond());
 	}
 }

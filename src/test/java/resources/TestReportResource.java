@@ -4,6 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -12,7 +13,6 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -34,33 +34,32 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class TestReportResource
 {
-	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory      emf              = Persistence.createEntityManagerFactory("test");
 
-	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
+	private static BasicAuthProvider<User>   myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
 
-	private static User						user;
-	private static String					taskID;
-	private static User						otheruser;
+	private static User                      user;
+	private static String                    taskID;
+	private static User                      otheruser;
 
-	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
+	private final static HttpSession         mockSession      = Mockito.mock(HttpSession.class);
 
 	@SuppressWarnings("deprecation")
 	@ClassRule
-	public static final ResourceTestRule	resources		= ResourceTestRule
-																	.builder()
-																	.addResource(new ReportResource(emf))
-																	.addProvider(
-																			new SessionInjectableProvider<HttpSession>(
-																					HttpSession.class,
-																					mockSession))
-																	.addProvider(
-																			new ViewMessageBodyWriter(
-																					new MetricRegistry()))
-																	.addProvider(
-																			new ContextInjectableProvider<HttpHeaders>(
-																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator).build();
+	public static final ResourceTestRule     resources  = ResourceTestRule.builder()
+	                                                                      .addResource(new ReportResource(emf))
+	                                                                      .addProvider(
+	                                                                                 new SessionInjectableProvider<HttpSession>(
+	                                                                                        HttpSession.class,
+	                                                                                        mockSession))
+	                                                                      .addProvider(
+	                                                                                 new ViewMessageBodyWriter(
+	                                                                                 new MetricRegistry()))
+	                                                                      .addProvider(
+	                                                                                 new ContextInjectableProvider<HttpHeaders>(
+	                                                                                            HttpHeaders.class, null))
+	                                                                      .addResource(myAuthenticator).build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -72,7 +71,7 @@ public class TestReportResource
 		userDAO.add(user);
 		userDAO.add(otheruser);
 		taskID = UUID.randomUUID().toString();
-		Task task = new Task(UUID.fromString(taskID), "TaskName", null, false, DateTime.now(), false, user);
+		Task task = new Task(UUID.fromString(taskID), "TaskName", null, false, ZonedDateTime.now(), false, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(task);
 	}

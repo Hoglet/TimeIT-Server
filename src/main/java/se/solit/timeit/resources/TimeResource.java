@@ -6,6 +6,10 @@ import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -18,9 +22,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class TimeResource extends BaseResource
 	@Path("/add")
 	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
-		DateTime now = DateTime.now();
+		ZonedDateTime now = ZonedDateTime.now();
 		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
 		return new TimeView(emf, time, user, context, session);
 	}
@@ -69,14 +70,15 @@ public class TimeResource extends BaseResource
 	{
 		try
 		{
-			DateTime now = DateTime.now();
-
+			ZonedDateTime now = ZonedDateTime.now();
+			ZoneId zone = ZonedDateTime.now().getZone();
+			
 			LocalDate d = LocalDate.parse(date);
 			LocalTime s1 = LocalTime.parse(paramStart);
 			LocalTime s2 = LocalTime.parse(paramStop);
 
-			DateTime start = d.toDateTime(s1);
-			DateTime stop = d.toDateTime(s2);
+			ZonedDateTime start = ZonedDateTime.of(d, s1, zone);
+			ZonedDateTime stop = ZonedDateTime.of(d, s2, zone);
 			Task task = taskDAO.getByID(taskID);
 			Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
 			timedao.add(time);
@@ -124,12 +126,13 @@ public class TimeResource extends BaseResource
 	{
 		try
 		{
+			ZoneId zone = ZonedDateTime.now().getZone();
 			LocalDate d = LocalDate.parse(date);
 			LocalTime s1 = LocalTime.parse(paramStart);
 			LocalTime s2 = LocalTime.parse(paramStop);
 
-			DateTime start = d.toDateTime(s1);
-			DateTime stop = d.toDateTime(s2);
+			ZonedDateTime start = ZonedDateTime.of(d, s1, zone);
+			ZonedDateTime stop = ZonedDateTime.of(d, s2, zone);
 			Time time = timedao.getByID(UUID.fromString(id));
 			time.setStart(start);
 			time.setStop(stop);

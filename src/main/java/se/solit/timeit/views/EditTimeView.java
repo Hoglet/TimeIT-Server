@@ -1,6 +1,7 @@
 package se.solit.timeit.views;
 
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
@@ -12,7 +13,10 @@ import com.sun.jersey.api.core.HttpContext;
 
 public class EditTimeView extends BaseView
 {
-	private final Time	time;
+	private final Time               time;
+
+	private final DateTimeFormatter  dateFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+	private final DateTimeFormatter  timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
 	public EditTimeView(EntityManagerFactory emf, Time time, User user, HttpContext context, HttpSession session)
 	{
@@ -23,6 +27,21 @@ public class EditTimeView extends BaseView
 	public Time getTime()
 	{
 		return time;
+	}
+
+	public String getStartDate()
+	{
+		return time.getStart().format(dateFormatter);
+	}
+
+	public String getStartTime()
+	{
+		return time.getStart().format(timeFormatter);
+	}
+
+	public String getStopTime()
+	{
+		return time.getStop().format(timeFormatter);
 	}
 
 	public String getTaskName() throws SQLException

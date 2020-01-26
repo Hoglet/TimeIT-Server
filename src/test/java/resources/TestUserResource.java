@@ -6,6 +6,9 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +20,6 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -46,32 +48,35 @@ import com.sun.jersey.api.representation.Form;
 
 public class TestUserResource
 {
-	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
+	private static EntityManagerFactory     emf             = Persistence.createEntityManagerFactory("test");
 
-	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
+	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
 
-	private static UserDAO					userDAO;
+	private static UserDAO                  userDAO;
 
-	private static User						admin;
-	private User							minion;
-	private final static HttpSession		mockSession		= Mockito.mock(HttpSession.class);
+	private static User                     admin;
+	private User                            minion;
+	private final static HttpSession        mockSession     = Mockito.mock(HttpSession.class);
 
 	@ClassRule
-	public static final ResourceTestRule	resources		= ResourceTestRule
-																	.builder()
-																	.addResource(new UserResource(emf))
-																	.addProvider(
-																			new SessionInjectableProvider<HttpSession>(
-																					HttpSession.class,
-																					mockSession))
-																	.addProvider(
-																			new ViewMessageBodyWriter(
-																					new MetricRegistry()))
-																	.addProvider(
-																			new ContextInjectableProvider<HttpHeaders>(
-																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator).build();
+	public static final ResourceTestRule  resources = ResourceTestRule.builder()
+	                                                                  .addResource(new UserResource(emf))
+	                                                                  .addProvider(
+	                                                                         new SessionInjectableProvider<HttpSession>(
+	                                                                                HttpSession.class,
+	                                                                                mockSession))
+	                                                                  .addProvider(
+	                                                                         new ViewMessageBodyWriter(
+	                                                                         new MetricRegistry()))
+	                                                                  .addProvider(
+	                                                                         new ContextInjectableProvider<HttpHeaders>(
+	                                                                              HttpHeaders.class, null))
+	                                                                  .addResource(myAuthenticator).build();
+
+	private ZoneId        zone  = ZonedDateTime.now().getZone();
+	private ZonedDateTime start = Instant.ofEpochSecond(0).atZone(zone);
+	private ZonedDateTime stop  = Instant.ofEpochSecond(100).atZone(zone);
 
 	@BeforeClass
 	public static void beforeClass()
@@ -452,12 +457,12 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, DateTime.now(), true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, ZonedDateTime.now(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, new DateTime(0), new DateTime(100 * 1000), false, DateTime.now(), task);
+		Time time = new Time(timeID, start, stop, false, ZonedDateTime.now(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 
@@ -490,12 +495,12 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, DateTime.now(), true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, ZonedDateTime.now(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, new DateTime(0), new DateTime(100 * 1000), false, DateTime.now(), task);
+		Time time = new Time(timeID, start, stop, false, ZonedDateTime.now(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 

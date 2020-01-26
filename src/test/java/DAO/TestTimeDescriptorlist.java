@@ -2,10 +2,10 @@ package DAO;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,21 +17,21 @@ import se.solit.timeit.entities.User;
 public class TestTimeDescriptorlist
 {
 
-	private static TimeDescriptorList	list;
-	private static User					owner			= new User("owner", "Owner", "password", "email", null);
-	private static DateTime				changeTime		= DateTime.now();
-	private static UUID					parentID		= UUID.randomUUID();
-	private static UUID					childID			= UUID.randomUUID();
-	private static Duration				duration;
-	private static Duration				durationWithChildren;
-	private static Task					parent;
-	private static Task					child;
-	private static UUID					parent2ID		= UUID.randomUUID();
-	private static Task					parent2;
-	private static UUID					child2ID		= UUID.randomUUID();
-	private static Task					child2;
-	private static TimeDescriptor		tdToFind;
-	private final UUID					grandchildID	= UUID.randomUUID();
+	private static TimeDescriptorList list;
+	private static User               owner        = new User("owner", "Owner", "password", "email", null);
+	private static ZonedDateTime      changeTime   = ZonedDateTime.now();
+	private static UUID               parentID     = UUID.randomUUID();
+	private static UUID               childID      = UUID.randomUUID();
+	private static Duration           duration;
+	private static Duration           durationWithChildren;
+	private static Task               parent;
+	private static Task               child;
+	private static UUID               parent2ID    = UUID.randomUUID();
+	private static Task               parent2;
+	private static UUID               child2ID     = UUID.randomUUID();
+	private static Task               child2;
+	private static TimeDescriptor     tdToFind;
+	private final UUID                grandchildID = UUID.randomUUID();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
@@ -40,8 +40,8 @@ public class TestTimeDescriptorlist
 		parent2 = new Task(parent2ID, "parent2", null, false, changeTime, false, owner);
 		child = new Task(childID, "child", parent, false, changeTime, false, owner);
 		child2 = new Task(child2ID, "child", parent2, false, changeTime, false, owner);
-		duration = new Duration(70000);
-		durationWithChildren = new Duration(140000);
+		duration = Duration.ofSeconds(70);
+		durationWithChildren = Duration.ofSeconds(140);
 		list = new TimeDescriptorList();
 		tdToFind = new TimeDescriptor(parent2, duration, durationWithChildren);
 		list.add(new TimeDescriptor(parent, duration, durationWithChildren));

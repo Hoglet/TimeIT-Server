@@ -4,6 +4,9 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +17,6 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.core.HttpHeaders;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -40,44 +42,51 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 public class TestTimesSyncResource
 {
 
-	private static final String				TESTMAN_ID		= "testman";
-	private static EntityManagerFactory		emf				= Persistence.createEntityManagerFactory("test");
-	private static UserDAO					userdao			= new UserDAO(emf);
-	private static TaskDAO					taskdao			= new TaskDAO(emf);
-	private static TimeDAO					timedao			= new TimeDAO(emf);
-	private static User						user;
-	private static Task						task;
-	private static GenericType<List<Time>>	returnType		= new GenericType<List<Time>>()
+	private static final String             TESTMAN_ID = "testman";
+	private static EntityManagerFactory     emf        = Persistence.createEntityManagerFactory("test");
+	private static UserDAO                  userdao    = new UserDAO(emf);
+	private static TaskDAO                  taskdao    = new TaskDAO(emf);
+	private static TimeDAO                  timedao    = new TimeDAO(emf);
+	private static User                     user;
+	private static Task                     task;
+	private static GenericType<List<Time>>  returnType = new GenericType<List<Time>>()
 															{
 															};
-	private static Time						time;
+	private static Time                     time;
 
-	private static BasicAuthProvider<User>	myAuthenticator	= new BasicAuthProvider<User>(new MyAuthenticator(emf),
+	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
-	private static DateTime					now;
-	private static UUID						timeID			= UUID.randomUUID();
+	private static ZonedDateTime            now;
+	private static ZoneId                   zone   = ZonedDateTime.now().getZone();
+	private        ZonedDateTime            start  = Instant.ofEpochSecond(11).atZone(zone);
+	private        ZonedDateTime            stop   = Instant.ofEpochSecond(101).atZone(zone);
+
+	private static UUID						timeID = UUID.randomUUID();
 
 	@ClassRule
-	public static final ResourceTestRule	resources		= ResourceTestRule
-																	.builder()
-																	.addProvider(
-																			new ContextInjectableProvider<HttpHeaders>(
-																					HttpHeaders.class, null))
-																	.addResource(myAuthenticator)
+	public static final ResourceTestRule	resources = ResourceTestRule.builder()
+	                                                                    .addProvider(
+	                                                                            new ContextInjectableProvider<HttpHeaders>(
+	                                                                                    HttpHeaders.class, null))
+	                                                                    .addResource(myAuthenticator)
+	                                                                    .addResource(new TimesSyncResource(emf)).build();
 
-																	.addResource(new TimesSyncResource(emf)).build();
-
-	private WebResource						resource;
+	private WebResource                     resource;
 
 	@BeforeClass
 	public static void beforeClass()
 	{
-		now = new DateTime(100 * 1000);
+		zone = ZonedDateTime.now().getZone();
+		now = Instant.ofEpochSecond(100).atZone(zone);
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
 		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
 		taskdao.add(task);
-		time = new Time(timeID, new DateTime(10 * 1000), new DateTime(100 * 1000), false, now, task);
+
+		ZonedDateTime  l_start = Instant.ofEpochSecond(10).atZone(zone);
+		ZonedDateTime  l_stop  = Instant.ofEpochSecond(100).atZone(zone);
+
+		time = new Time(timeID, l_start, l_stop, false, now, task);
 	}
 
 	@AfterClass
@@ -140,7 +149,8 @@ public class TestTimesSyncResource
 	public void testTimesSync()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+
+		Time newTime = new Time(timeID, start, stop, false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
@@ -155,8 +165,9 @@ public class TestTimesSyncResource
 	public void testTimesSyncRanged()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(100 * 1000), false, new DateTime(
-				100 * 1000), task);
+		ZonedDateTime  changed = Instant.ofEpochSecond(100).atZone(zone);
+
+		Time newTime = new Time(timeID, start, stop, false, changed, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman/101");
 		resource.accept("application/json");
@@ -176,7 +187,8 @@ public class TestTimesSyncResource
 	public void testTimesSyncRanged_attackOtherUser()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+
+		Time newTime = new Time(timeID, start, stop, false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman/100");
 		resource.accept("application/json");
@@ -196,7 +208,8 @@ public class TestTimesSyncResource
 	public void testTimesSync_attackOtherUser()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, task);
+
+		Time newTime = new Time(timeID,  start, stop, false, now, task);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
@@ -220,7 +233,8 @@ public class TestTimesSyncResource
 		userdao.add(otherUser);
 		Task otherTask = new Task(UUID.randomUUID(), "d", null, false, now, false, otherUser);
 		taskdao.add(otherTask);
-		Time newTime = new Time(timeID, new DateTime(11 * 1000), new DateTime(101 * 1000), false, now, otherTask);
+
+		Time newTime = new Time(timeID, start, stop, false, now, otherTask);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");

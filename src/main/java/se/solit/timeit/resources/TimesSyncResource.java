@@ -3,6 +3,9 @@ package se.solit.timeit.resources;
 import io.dropwizard.auth.Auth;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
@@ -14,7 +17,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +30,6 @@ import se.solit.timeit.entities.User;
 public class TimesSyncResource
 {
 	private static final Logger	LOGGER					= LoggerFactory.getLogger(TimesSyncResource.class);
-
-	private static final long	MILLISECONDS_PER_SECOND	= 1000;
 
 	private final TimeDAO		timeDAO;
 
@@ -54,14 +54,15 @@ public class TimesSyncResource
 	public final Collection<Time> timesSync(@Auth User authorizedUser, @PathParam("user") final String username,
 			@PathParam("time") final long time,
 			final Time[] paramTimes)
-	{
+	{		
 		syncHelper.verifyHasAccess(authorizedUser, username);
 		syncHelper.verifyTimesOwnership(authorizedUser, paramTimes);
 		Collection<Time> result = null;
 		try
 		{
+			ZoneId zone = ZonedDateTime.now().getZone();
 			timeDAO.updateOrAdd(paramTimes);
-			result = timeDAO.getTimes(username, new DateTime(time * MILLISECONDS_PER_SECOND));
+			result = timeDAO.getTimes(username, Instant.ofEpochSecond(time).atZone(zone));
 		}
 		catch (SQLException e)
 		{
