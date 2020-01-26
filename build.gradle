@@ -1,12 +1,11 @@
 apply plugin: "java"
 apply plugin: "application"
 apply plugin: 'eclipse'
-apply plugin: "sonar-runner"
 apply plugin: "jacoco"
 apply plugin: 'project-report'
 
-sourceCompatibility='1.7'
-targetCompatibility='1.7'
+sourceCompatibility='1.8'
+targetCompatibility='1.8'
 version='1.0'
 project.ext
 {
@@ -53,6 +52,25 @@ test
 //      reportsDir = file("$buildDir/junit")
 }
 
+dependencies
+{
+	compile group: 'io.dropwizard', name: 'dropwizard-core', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
+	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
+	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
+	compile group: 'com.h2database', name: 'h2', version: h2Version
+	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
+	//compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
+	//compile group: 'com.sun.jna', name: 'jna', version: jnaversion
+	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
+}
+
+
 jar
 {
 	manifest
@@ -84,20 +102,3 @@ run
 }
 
 
-dependencies
-{
-	compile group: 'io.dropwizard', name: 'dropwizard-core', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
-	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
-	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
-	compile group: 'com.h2database', name: 'h2', version: h2Version
-	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
-	//compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
-	//compile group: 'com.sun.jna', name: 'jna', version: jnaversion
-	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
-}
