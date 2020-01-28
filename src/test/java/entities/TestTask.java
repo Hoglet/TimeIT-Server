@@ -8,8 +8,6 @@ import io.dropwizard.jackson.Jackson;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -29,8 +27,8 @@ public class TestTask
 	private static final User    other         = new User("U2", "Ser", "Password", "email", null);
 	private final UUID           taskID        = UUID.randomUUID();
 	private final UUID           parentID      = UUID.randomUUID();
-	private final ZonedDateTime  createTime    = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
-	private final ZonedDateTime  epoch         = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC"));
+	private final Instant        createTime    = Instant.ofEpochSecond(1000);
+	private final Instant        epoch         = Instant.ofEpochSecond(0);
 	private Task                 task;
 
 	@Before
@@ -105,9 +103,9 @@ public class TestTask
 	{
 		try
 		{
-			Task task = new Task(null, "", null, false, ZonedDateTime.now(), false, user);
+			Task task = new Task(null, "", null, false, false, user);
 			Assert.assertTrue("Should not allow null user", false);
-			task.setCompleted(true);
+			task.withCompleted(true);
 		}
 		catch (Exception e)
 		{
@@ -118,65 +116,64 @@ public class TestTask
 	@Test
 	public final void testSetName()
 	{
-		task.setName(JUST_A_STRING);
-		assertEquals(task.getName(), JUST_A_STRING);
-		assertTrue(createTime.isBefore(task.getLastChange()));
+		Task newTask = task.withName(JUST_A_STRING);
+		assertEquals(newTask.getName(), JUST_A_STRING);
+		assertTrue(createTime.compareTo(newTask.getLastChange()) < 0);
 	}
 
 	@Test
 	public final void testSetParent()
 	{
-		Task parent = new Task(parentID, "", null, false, ZonedDateTime.now(), false, user);
-		task.setParent(parent);
-		assertEquals(task.getParent(), parent);
-		assertTrue(createTime.isBefore(task.getLastChange()));
+		Task parent = new Task(parentID, "", null, false, false, user);
+		Task newTask = task.withParent(parent);
+		assertEquals(newTask.getParent(), parent);
+		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
 	@Test
 	public final void testSetCompleted()
 	{
-		task.setCompleted(true);
-		assertTrue(task.getCompleted());
-		assertTrue(createTime.isBefore(task.getLastChange()));
+		Task newTask = task.withCompleted(true);
+		assertTrue(newTask.getCompleted());
+		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
 	@Test
 	public final void testSetOwner()
 	{
-		task.setOwner(other);
-		assertTrue(task.getOwner().equals(other));
-		assertTrue(createTime.isBefore(task.getLastChange()));
+		Task newTask = task.withOwner(other);
+		assertTrue(newTask.getOwner().equals(other));
+		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
 	@Test
 	public final void testSetDeleted()
 	{
-		task.setDeleted(true);
-		assertEquals(true, task.getDeleted());
-		assertTrue(createTime.isBefore(task.getLastChange()));
+		Task newTask = task.withDeleted(true);
+		assertEquals(true, newTask.getDeleted());
+		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
 	@Test
 	public final void testEqualsObject()
 	{
-		ZonedDateTime now = ZonedDateTime.now();
-		Task x = new Task(taskID, JUST_A_STRING, null, false, now, false, user);
-		Task y = new Task(taskID, JUST_A_STRING, null, false, now, false, user);
-		Task parent = new Task(parentID, "parent", null, false, now, false, user);
+		Task x = new Task(taskID, JUST_A_STRING, null, false, false, user);
+		Task y = new Task(taskID, JUST_A_STRING, null, false, false, user);
+		Task parent = new Task(parentID, "parent", null, false, false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, null, null, false, now, false, user);
+		y = new Task(taskID, null, null, false, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, parent, false, now, false, user);
+		y = new Task(taskID, JUST_A_STRING, parent, false, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, true, now, false, user);
+		y = new Task(taskID, JUST_A_STRING, null, true, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
@@ -186,39 +183,39 @@ public class TestTask
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, false, now, true, user);
+		y = new Task(taskID, JUST_A_STRING, null, false, true, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(UUID.randomUUID(), JUST_A_STRING, null, false, now, false, user);
+		y = new Task(UUID.randomUUID(), JUST_A_STRING, null, false, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, "", null, false, now, false, user);
+		y = new Task(taskID, "", null, false, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		x = new Task(taskID, JUST_A_STRING, parent, false, now, false, user);
-		y = new Task(taskID, JUST_A_STRING, parent, false, now, false, user);
+		x = new Task(taskID, JUST_A_STRING, parent, false, false, user);
+		y = new Task(taskID, JUST_A_STRING, parent, false, false, user);
 		assertTrue(x.equals(y));
 		assertTrue(y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, false, now, false, other);
+		y = new Task(taskID, JUST_A_STRING, null, false, false, other);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		x = new Task(taskID, null, null, false, now, false, user);
-		y = new Task(taskID, null, null, false, now, false, user);
+		x = new Task(taskID, null, null, false, false, user);
+		y = new Task(taskID, null, null, false, false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Task(taskID, JUST_A_STRING, null, false, now, false, user);
-		y = new Task(taskID, JUST_A_STRING, null, false, now, false, user);
+		x = new Task(taskID, JUST_A_STRING, null, false, false, user);
+		y = new Task(taskID, JUST_A_STRING, null, false, false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 

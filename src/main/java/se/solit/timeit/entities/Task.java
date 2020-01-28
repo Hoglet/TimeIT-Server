@@ -1,10 +1,9 @@
 package se.solit.timeit.entities;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import javax.annotation.concurrent.Immutable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,37 +25,46 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @XmlRootElement(name = "Task")
 @JsonDeserialize(using = TaskDeserializer.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Immutable
 public class Task
 {
 	@Id
 	@Column(nullable = false)
-	private String				id;
-	private String				name;
+	private final String      id;
+	private final String      name;
+	
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task				parent;
-	private boolean				completed;
+	private final Task        parent;
+	private final boolean     completed;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private long				lastChange;
-	private boolean				deleted;
+	private final long        lastChange;
+	private final boolean     deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "owner", nullable = false)
 	@JsonSerialize(using = UserSerializer.class)
-	private User				owner;
+	private final User        owner;
 
 	protected Task()
 	{
+		this.completed = false;
+		this.id = "";
+		this.name = "";
+		this.lastChange = 0;
+		this.owner = null;
+		this.deleted = false;
+		this.parent = null;
 	}
 
 	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final ZonedDateTime paramLastChanged, final boolean paramDeleted, final User paramOwner)
+	        final boolean paramDeleted, final User paramOwner)
 	{
-		init(paramID, paramName, paramParent, paramCompleted, paramLastChanged, paramDeleted, paramOwner);
+		this(paramID, paramName, paramParent, paramCompleted, Instant.now(), paramDeleted, paramOwner);
 	}
 
-	private void init(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-			final ZonedDateTime paramLastChange, final boolean paramDeleted, final User paramOwner)
+	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
+	        final Instant paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
 		{
@@ -67,19 +75,19 @@ public class Task
 		parent = paramParent;
 		completed = paramCompleted;
 		deleted = paramDeleted;
-		setOwner(paramOwner);
-		lastChange = Instant.from(paramLastChange).getEpochSecond();
+		if (paramOwner == null)
+		{
+			throw new NullPointerException("Owner is not allowed to be null");
+		}
+		owner = paramOwner;
+		lastChange = paramLastChanged.getEpochSecond();
 	}
 
-	public final void setDeleted(final boolean deleted2)
-	{
-		lastChange = now();
-		this.deleted = deleted2;
-	}
 
-	private long now()
+	public final Task withDeleted(final boolean deleted2)
 	{
-		return Instant.now().getEpochSecond();
+		UUID id2 = UUID.fromString(id);
+		return new Task(id2 , name, parent, completed, Instant.now(), deleted2, owner);
 	}
 
 	public final UUID getID()
@@ -97,10 +105,9 @@ public class Task
 		return parent;
 	}
 
-	public final ZonedDateTime getLastChange()
+	public final Instant getLastChange()
 	{
-		ZoneId zone = ZonedDateTime.now().getZone();
-		return Instant.ofEpochSecond(lastChange).atZone(zone);
+		return Instant.ofEpochSecond(lastChange);
 	}
 
 	public final boolean getDeleted()
@@ -194,22 +201,23 @@ public class Task
 	// SONAR:ON
 	// CHECKSTYLE:ON
 
-	public final void setName(final String name2)
+
+	public final Task withName(final String name2)
 	{
-		lastChange = now();
-		name = name2;
+		UUID id2 = UUID.fromString(id);
+		return new Task(id2 , name2, parent, completed, Instant.now(), deleted, owner);
 	}
 
-	public final void setParent(final Task parent2)
+	public final Task withParent(final Task parent2)
 	{
-		lastChange = now();
-		parent = parent2;
+		UUID id2 = UUID.fromString(id);
+		return new Task(id2 , name, parent2, completed, Instant.now(), deleted, owner);
 	}
 
-	public final void setCompleted(final boolean completed2)
+	public final Task withCompleted(final boolean completed2)
 	{
-		lastChange = now();
-		completed = completed2;
+		UUID id2 = UUID.fromString(id);
+		return new Task(id2 , name, parent, completed2, Instant.now(), deleted, owner);
 	}
 
 	public final User getOwner()
@@ -217,14 +225,14 @@ public class Task
 		return owner;
 	}
 
-	public final void setOwner(final User owner2)
+	public final Task withOwner(final User owner2)
 	{
 		if (owner2 == null)
 		{
 			throw new NullPointerException("Owner is not allowed to be null");
 		}
-		lastChange = now();
-		owner = owner2;
+		UUID id2 = UUID.fromString(id);
+		return new Task(id2 , name, parent, completed, Instant.now(), deleted, owner2);
 	}
 
 }

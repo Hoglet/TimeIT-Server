@@ -33,7 +33,7 @@ public class TestUser
 	{
 		try
 		{
-			user = new User(null, "", "", "", null);
+			user = new User(null, "", "abc", "", null);
 			Assert.fail("Should not allow null user");
 		}
 		catch (Exception e)
@@ -45,22 +45,34 @@ public class TestUser
 	@Test
 	public void testSetName()
 	{
-		user.setName(JUST_A_STRING);
-		assertEquals(JUST_A_STRING, user.getName());
+		User newUser = user.withName(JUST_A_STRING);
+		assertEquals(JUST_A_STRING, newUser.getName());
+		assertEquals(user.getEmail(), newUser.getEmail());
+		assertEquals(user.getRoles(), newUser.getRoles());
+		assertEquals(user.getUsername(), newUser.getUsername());
+		assertEquals(user.getPassword(),newUser.getPassword());
 	}
 
 	@Test
 	public void testSetEmail()
 	{
-		user.setEmail(JUST_A_STRING);
-		assertEquals(JUST_A_STRING.toLowerCase(Locale.ENGLISH), user.getEmail());
+		User newUser = user.withEmail(JUST_A_STRING);
+		assertEquals(JUST_A_STRING.toLowerCase(Locale.ENGLISH), newUser.getEmail());
+		assertEquals(user.getName(), newUser.getName());
+		assertEquals(user.getRoles(), newUser.getRoles());
+		assertEquals(user.getUsername(), newUser.getUsername());
+		assertEquals(user.getPassword(), newUser.getPassword());
 	}
 
 	@Test
 	public void testSetPassword()
 	{
-		user.setPassword(JUST_A_STRING);
-		assertEquals(Crypto.encrypt(JUST_A_STRING), user.getPassword());
+		User newUser = user.withPassword(JUST_A_STRING);
+		assertEquals(Crypto.encrypt(JUST_A_STRING), newUser.getPassword());
+		assertEquals(user.getEmail(), newUser.getEmail());
+		assertEquals(user.getName(), newUser.getName());
+		assertEquals(user.getRoles(), newUser.getRoles());
+		assertEquals(user.getUsername(), newUser.getUsername());
 	}
 
 	@Test
@@ -70,11 +82,16 @@ public class TestUser
 		assertEquals(user.hasRole(Role.ADMIN), false);
 		Role adminRole = new Role(Role.ADMIN);
 		roles.add(new Role(Role.ADMIN));
-		user.setRoles(roles);
-		Collection<Role> resultingRoles = user.getRoles();
+		User newUser = user.withRoles(roles);
+		Collection<Role> resultingRoles = newUser.getRoles();
 		assertEquals(resultingRoles.size(), 1);
-		assertEquals(user.hasRole(adminRole), true);
-		assertEquals(user.hasRole(""), false);
+		assertEquals(newUser.hasRole(adminRole), true);
+		assertEquals(newUser.hasRole(""), false);
+		
+		assertEquals(user.getEmail(), newUser.getEmail());
+		assertEquals(user.getName(), newUser.getName());
+		assertEquals(user.getUsername(), newUser.getUsername());
+		assertEquals(user.getPassword(), newUser.getPassword());
 	}
 
 	@Test
@@ -104,11 +121,6 @@ public class TestUser
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new User("testman", "Test Tester", null, "email", roles);
-		assertFalse(x.equals(y));
-		assertFalse(y.equals(x));
-		assertFalse(x.hashCode() == y.hashCode());
-
 		y = new User("testman", "Test Tester", "Password", null, roles);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
@@ -127,11 +139,6 @@ public class TestUser
 
 		x = new User("testman", null, "Password", "email", roles);
 		y = new User("testman", null, "Password", "email", roles);
-		assertTrue(x.equals(y) && y.equals(x));
-		assertTrue(x.hashCode() == y.hashCode());
-
-		x = new User("testman", "Test Tester", null, "email", roles);
-		y = new User("testman", "Test Tester", null, "email", roles);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 

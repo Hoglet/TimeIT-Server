@@ -2,8 +2,6 @@ package views;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -42,18 +40,16 @@ public class TestTimeView
 		user = new User("minion", "Do Er", "password", "email", null);
 		userdao.add(user);
 		
-		ZonedDateTime now   = ZonedDateTime.now();
-		ZoneId zone = ZonedDateTime.now().getZone();
-		ZonedDateTime start = Instant.ofEpochSecond(0).atZone(zone);
-		ZonedDateTime stop  = Instant.ofEpochSecond(1).atZone(zone);
+		Instant start = Instant.ofEpochSecond(0);
+		Instant stop  = Instant.ofEpochSecond(1);
 
-		Task    parent  = new Task(parentID, "parent", null, false, now, false, user);
-		Task    child   = new Task(childID, "child", parent, false, now, false, user);
+		Task    parent  = new Task(parentID, "parent", null, false, false, user);
+		Task    child   = new Task(childID, "child", parent, false, false, user);
 		taskDAO.add(parent);
 		taskDAO.add(child);
 
 
-		time = new Time(timeID, start, stop, false, now, parent);
+		time = new Time(timeID, start, stop, false, Instant.now(), parent);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 	}

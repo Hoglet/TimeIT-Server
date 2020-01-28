@@ -1,6 +1,7 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -37,41 +38,41 @@ public class TestIndexView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		Task parent = new Task(parentID, "Parent", null, false, ZonedDateTime.now(), false, user);
-		Task child = new Task(childID, "child", parent, false, ZonedDateTime.now(), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, false, user);
+		Task child = new Task(childID, "child", parent, false, false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);
-		ZonedDateTime start = now.withHour(10);
-		ZonedDateTime stop = start.plusMinutes(10);
-		Time time = new Time(UUID.randomUUID(), start, stop, false, now, parent);
+		Instant start = now.withHour(10).toInstant();
+		Instant stop = start.plusSeconds(10 * 60);
+		Time time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), parent);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);
-		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
 		timeDAO.add(time);
 
 		if (now.getDayOfMonth() != 4)
 		{
-			start = now.withDayOfMonth(4);
+			start = now.withDayOfMonth(4).toInstant();
 		}
 		else
 		{
-			start = now.withDayOfMonth(3);
+			start = now.withDayOfMonth(3).toInstant();
 		}
-		stop = start.plusMinutes(10);
-		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
+		stop = start.plusSeconds(10 * 60);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
 		timeDAO.add(time);
 
 		if (now.getMonthValue() != 4)
 		{
-			start = now.withMonth(4);
+			start = now.withMonth(4).toInstant();
 		}
 		else
 		{
-			start = now.withMonth(3);
+			start = now.withMonth(3).toInstant();
 		}
-		stop = start.plusMinutes(10);
-		time = new Time(UUID.randomUUID(), start, stop, false, now, child);
+		stop = start.plusSeconds(10 * 60);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
 		timeDAO.add(time);
 
 		session = Mockito.mock(HttpSession.class);

@@ -49,7 +49,8 @@ public class TestTimeResource
 
 	private static Time                  time;
 	private static Task                  task;
-	private static ZonedDateTime         now           = ZonedDateTime.now().withSecond(0).withNano(0);
+	private static Instant               now           = Instant.now();
+	private static ZoneId                zone          = ZonedDateTime.now().getZone();
 	private final  DateTimeFormatter     dateFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
 	private final  DateTimeFormatter     timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -79,12 +80,11 @@ public class TestTimeResource
 		TaskDAO taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		task = new Task(taskID, "Task", null, false, now, false, user);
+		task = new Task(taskID, "Task", null, false, false, user);
 		taskDAO.add(task);
 		
-		ZoneId zone = ZonedDateTime.now().getZone();
-		ZonedDateTime start = Instant.ofEpochSecond(0).atZone(zone);
-		ZonedDateTime stop = Instant.ofEpochSecond(1).atZone(zone);
+		Instant start = Instant.ofEpochSecond(0);
+		Instant stop = Instant.ofEpochSecond(1);
 		time = new Time(timeID, start, stop, false, now, task);
 		timeDAO.add(time);
 	}
@@ -131,10 +131,10 @@ public class TestTimeResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		Mockito.when(mockSession.getAttribute("returnPoint")).thenReturn("/");
-		ZonedDateTime start = now;
+		ZonedDateTime start = now.atZone(zone).withSecond(0);
 		ZonedDateTime stop = start.plusSeconds(60);
 
-		Time expected = new Time(timeID, start, stop, false, stop, task);
+		Time expected = new Time(timeID, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task);
 
 		Form form = new Form();
 		form.add("timeid", timeID.toString());		
@@ -164,7 +164,7 @@ public class TestTimeResource
 		WebResource resource = client.resource("/time/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
 
-		ZonedDateTime start = now;
+		ZonedDateTime start = now.atZone(zone);
 		ZonedDateTime stop = start.plusSeconds(60);
 
 		Form form = new Form();
@@ -220,10 +220,10 @@ public class TestTimeResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		UUID id = UUID.randomUUID();
-		ZonedDateTime start = now;
+		ZonedDateTime start = now.atZone(zone).withSecond(0).withNano(0);
 		ZonedDateTime stop = start.plusSeconds(60);
 
-		Time expected = new Time(id, start, stop, false, stop, task);
+		Time expected = new Time(id, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task);
 
 		Form form = new Form();
 		form.add("timeid", id);

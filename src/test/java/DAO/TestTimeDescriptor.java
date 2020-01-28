@@ -3,7 +3,6 @@ package DAO;
 import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -17,7 +16,6 @@ import se.solit.timeit.entities.User;
 public class TestTimeDescriptor
 {
 	private static User            owner       = new User("owner", "Owner", "password", "email", null);
-	private static ZonedDateTime   changeTime  = ZonedDateTime.now();
 	private static UUID            parentID    = UUID.randomUUID();
 	private static UUID            childID     = UUID.randomUUID();
 	private static TimeDescriptor  timeDescriptor1;
@@ -31,8 +29,8 @@ public class TestTimeDescriptor
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		parent = new Task(parentID, "parent", null, false, changeTime, false, owner);
-		child = new Task(childID, "child", parent, false, changeTime, false, owner);
+		parent = new Task(parentID, "parent", null, false, false, owner);
+		child = new Task(childID, "child", parent, false, false, owner);
 		duration = Duration.ofSeconds(120);
 		duration2 = Duration.ofSeconds(60);
 		timeDescriptor1 = new TimeDescriptor(parent, duration, duration2);

@@ -5,9 +5,7 @@ import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
 import java.util.UUID;
-
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
@@ -46,7 +44,7 @@ public class TaskResource extends BaseResource
 	@Path("/add")
 	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
-		Task task = new Task(UUID.randomUUID(), "", null, false, ZonedDateTime.now(), false, user);
+		Task task = new Task(UUID.randomUUID(), "", null, false, false, user);
 		return new TaskView(emf, task, user, Action.ADD, context, session);
 	}
 
@@ -63,8 +61,7 @@ public class TaskResource extends BaseResource
 		{
 			parent = taskdao.getByID(UUID.fromString(parentID));
 		}
-		ZonedDateTime now = ZonedDateTime.now();
-		Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
+		Task task = new Task(UUID.fromString(id), name, parent, false, false, user);
 		taskdao.add(task);
 		String headline = "Task added successfully";
 		setMessage(session, headline);
@@ -102,12 +99,11 @@ public class TaskResource extends BaseResource
 			{
 				parent = taskdao.getByID(parentID);
 			}
-			ZonedDateTime now = ZonedDateTime.now();
 			Task existingTask = taskdao.getByID(id);
 			String headline;
 			if (existingTask.getOwner().equals(user))
 			{
-				Task task = new Task(UUID.fromString(id), name, parent, false, now, false, user);
+				Task task = new Task(UUID.fromString(id), name, parent, false, false, user);
 				taskdao.update(task);
 				headline = "Task updated";
 			}

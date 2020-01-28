@@ -4,7 +4,6 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
-import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -71,7 +70,7 @@ public class TestReportResource
 		userDAO.add(user);
 		userDAO.add(otheruser);
 		taskID = UUID.randomUUID().toString();
-		Task task = new Task(UUID.fromString(taskID), "TaskName", null, false, ZonedDateTime.now(), false, user);
+		Task task = new Task(UUID.fromString(taskID), "TaskName", null, false, false, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(task);
 	}

@@ -1,6 +1,7 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -46,11 +47,11 @@ public class TestReportView
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		task = new Task(taskID, "Name", null, false, ZonedDateTime.now(), false, user);
+		task = new Task(taskID, "Name", null, false, false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
-		ZonedDateTime start = pointInMonth.withHour(10);
-		ZonedDateTime stop = start.plusMinutes(10);
+		Instant start = pointInMonth.withHour(10).toInstant();
+		Instant stop = start.plusSeconds(10 * 60);
 		Time time = new Time(timeID, start, stop, false, stop, task);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);
@@ -73,7 +74,7 @@ public class TestReportView
 		view.extractTimeDescriptors(start, stop);
 		view.extractTasks();
 		Assert.assertEquals("Item Item0", view.getTaskClass(task));
-		Task unknownTask = new Task(UUID.randomUUID(), "Who", null, false, pointInMonth, false, user);
+		Task unknownTask = new Task(UUID.randomUUID(), "Who", null, false, false, user);
 		Assert.assertEquals("Item ", view.getTaskClass(unknownTask));
 	}
 

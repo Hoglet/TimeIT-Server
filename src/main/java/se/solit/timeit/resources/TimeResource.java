@@ -6,6 +6,7 @@ import io.dropwizard.views.View;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -55,7 +56,7 @@ public class TimeResource extends BaseResource
 	@Path("/add")
 	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
-		ZonedDateTime now = ZonedDateTime.now();
+		Instant now = Instant.now();
 		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
 		return new TimeView(emf, time, user, context, session);
 	}
@@ -70,15 +71,15 @@ public class TimeResource extends BaseResource
 	{
 		try
 		{
-			ZonedDateTime now = ZonedDateTime.now();
+			Instant now = Instant.now();
 			ZoneId zone = ZonedDateTime.now().getZone();
 			
 			LocalDate d = LocalDate.parse(date);
 			LocalTime s1 = LocalTime.parse(paramStart);
 			LocalTime s2 = LocalTime.parse(paramStop);
 
-			ZonedDateTime start = ZonedDateTime.of(d, s1, zone);
-			ZonedDateTime stop = ZonedDateTime.of(d, s2, zone);
+			Instant start = ZonedDateTime.of(d, s1, zone).toInstant();
+			Instant stop = ZonedDateTime.of(d, s2, zone).toInstant();
 			Task task = taskDAO.getByID(taskID);
 			Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
 			timedao.add(time);
@@ -131,12 +132,11 @@ public class TimeResource extends BaseResource
 			LocalTime s1 = LocalTime.parse(paramStart);
 			LocalTime s2 = LocalTime.parse(paramStop);
 
-			ZonedDateTime start = ZonedDateTime.of(d, s1, zone);
-			ZonedDateTime stop = ZonedDateTime.of(d, s2, zone);
+			Instant start = ZonedDateTime.of(d, s1, zone).toInstant();
+			Instant stop = ZonedDateTime.of(d, s2, zone).toInstant();
 			Time time = timedao.getByID(UUID.fromString(id));
-			time.setStart(start);
-			time.setStop(stop);
-			timedao.update(time);
+			Time newTime = time.withStart(start).withStop(stop);
+			timedao.update(newTime);
 			String headline = "Time updated successfully";
 			setMessage(session, headline);
 		}

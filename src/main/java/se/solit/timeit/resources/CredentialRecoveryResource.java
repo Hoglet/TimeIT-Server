@@ -126,8 +126,8 @@ public class CredentialRecoveryResource extends BaseResource
 	{
 		LoginKey loginKey = loginKeyDAO.getByID(UUID.fromString(keyid));
 		User user = loginKey.getUser();
-		user.setPassword(newPassword);
-		userDAO.update(user);
+		User changedUser = user.withPassword(newPassword);
+		userDAO.update(changedUser);
 		loginKeyDAO.delete(loginKey);
 		throw redirect("/");
 	}

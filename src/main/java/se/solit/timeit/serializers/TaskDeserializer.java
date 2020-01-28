@@ -2,8 +2,6 @@ package se.solit.timeit.serializers;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import se.solit.timeit.entities.Task;
@@ -30,8 +28,7 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 		UUID id = UUID.fromString(node.get("id").textValue());
 		String name = "";
 		boolean completed = false;
-		ZonedDateTime lastChanged = ZonedDateTime.now();
-		ZoneId zone = ZonedDateTime.now().getZone();
+		Instant lastChanged = Instant.now();
 		boolean deleted = false;
 		User owner = new User();
 		Task parent = null;
@@ -39,7 +36,7 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 		{
 			name = node.get("name").textValue();
 
-			lastChanged = Instant.ofEpochSecond(node.get("lastChange").longValue()).atZone(zone);
+			lastChanged = Instant.ofEpochSecond(node.get("lastChange").longValue());
 
 			deleted = node.get("deleted").asBoolean();
 			JsonNode jn = node.get("owner");

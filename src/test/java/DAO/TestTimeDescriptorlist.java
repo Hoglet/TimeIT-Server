@@ -3,7 +3,6 @@ package DAO;
 import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
@@ -19,7 +18,6 @@ public class TestTimeDescriptorlist
 
 	private static TimeDescriptorList list;
 	private static User               owner        = new User("owner", "Owner", "password", "email", null);
-	private static ZonedDateTime      changeTime   = ZonedDateTime.now();
 	private static UUID               parentID     = UUID.randomUUID();
 	private static UUID               childID      = UUID.randomUUID();
 	private static Duration           duration;
@@ -36,10 +34,10 @@ public class TestTimeDescriptorlist
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		parent = new Task(parentID, "parent", null, false, changeTime, false, owner);
-		parent2 = new Task(parent2ID, "parent2", null, false, changeTime, false, owner);
-		child = new Task(childID, "child", parent, false, changeTime, false, owner);
-		child2 = new Task(child2ID, "child", parent2, false, changeTime, false, owner);
+		parent = new Task(parentID, "parent", null, false, false, owner);
+		parent2 = new Task(parent2ID, "parent2", null, false, false, owner);
+		child = new Task(childID, "child", parent, false, false, owner);
+		child2 = new Task(child2ID, "child", parent2, false, false, owner);
 		duration = Duration.ofSeconds(70);
 		durationWithChildren = Duration.ofSeconds(140);
 		list = new TimeDescriptorList();
@@ -57,7 +55,7 @@ public class TestTimeDescriptorlist
 		TimeDescriptor found = list.find(parent2);
 		assertEquals(tdToFind, found);
 
-		Task oddTask = new Task(UUID.randomUUID(), "Oddy", null, false, changeTime, false, owner);
+		Task oddTask = new Task(UUID.randomUUID(), "Oddy", null, false, false, owner);
 		found = list.find(oddTask);
 		assertEquals(null, found);
 
@@ -66,7 +64,7 @@ public class TestTimeDescriptorlist
 	@Test
 	public void testSortedAddTimeDescriptor()
 	{
-		Task grandChild = new Task(grandchildID, "grandChild", child, false, changeTime, false, owner);
+		Task grandChild = new Task(grandchildID, "grandChild", child, false, false, owner);
 		TimeDescriptor td_toAdd = new TimeDescriptor(grandChild, duration, durationWithChildren);
 		list.add(td_toAdd);
 		StringBuilder sb = new StringBuilder();

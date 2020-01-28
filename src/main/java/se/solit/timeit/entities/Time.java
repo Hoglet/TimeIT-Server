@@ -1,11 +1,11 @@
 package se.solit.timeit.entities;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import javax.annotation.concurrent.Immutable;
 import javax.persistence.Column;
+//import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,74 +19,57 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
+@Immutable
 @JsonDeserialize(using = TimeDeserializer.class)
 public class Time
 {
 	@Id
 	@Column(nullable = false)
-	private String				id;
+	private final String        id;
 
 	@ManyToOne(targetEntity = Task.class)
 	@JoinColumn(name = "task", nullable = false)
 	@JsonSerialize(using = TaskSerializer.class)
-	private Task				task;
+	private final Task          task;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private long				start;
+	//@Convert (converter = InstantConverter.class)
+	private final long          start;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private long				stop;
+	//@Convert (converter = InstantConverter.class)
+	private final long          stop;
 
-	private boolean				deleted;
+	private final boolean		deleted;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
-	private long				changed;
-
-	private ZoneId zone;
+	//@Convert (converter = InstantConverter.class)
+	private final long         changed;
 
 	protected Time()
 	{
+		this.id = "";
+		this.changed = 0;
+		this.start = 0;
+		this.stop = 0;
+		this.deleted = false;
+		this.task = new Task();
 	}
 
-	public Time(final UUID paramUuid, final ZonedDateTime paramStart, final ZonedDateTime paramStop, final boolean paramDeleted,
-			final ZonedDateTime paramChanged, final Task paramTask)
+	public Time(final UUID paramUuid, final Instant paramStart, final Instant paramStop, final boolean paramDeleted,
+			final Instant paramChanged, final Task paramTask)
 	{
 		id = paramUuid.toString();
-		start = Instant.from(paramStart).getEpochSecond();
-		stop = Instant.from(paramStop).getEpochSecond();
+		start = paramStart.getEpochSecond();
+		stop = paramStop.getEpochSecond();
 		deleted = paramDeleted;
 		task = paramTask;
-		changed = Instant.from(paramChanged).getEpochSecond();
-		zone = ZonedDateTime.now().getZone();
+		changed = paramChanged.getEpochSecond();
 	}
 
-	public final ZonedDateTime getChanged()
+	public final Instant getChanged()
 	{
-		return Instant.ofEpochSecond(changed).atZone(zone);
-	}
-
-	public final void setTask(final Task task2)
-	{
-		changed =  Instant.now().getEpochSecond();
-		this.task = task2;
-	}
-
-	public final void setStart(final ZonedDateTime start2)
-	{
-		changed =  Instant.now().getEpochSecond();
-		this.start = Instant.from(start2).getEpochSecond();
-	}
-
-	public final void setStop(final ZonedDateTime stop2)
-	{
-		changed = Instant.now().getEpochSecond();
-		this.stop = Instant.from(stop2).getEpochSecond();
-	}
-
-	public final void setDeleted(final boolean deleted2)
-	{
-		changed = Instant.now().getEpochSecond();
-		this.deleted = deleted2;
+		return Instant.ofEpochSecond(changed);
 	}
 
 	public final UUID getID()
@@ -94,14 +77,14 @@ public class Time
 		return UUID.fromString(id);
 	}
 
-	public final ZonedDateTime getStart()
+	public final Instant getStart()
 	{
-		return Instant.ofEpochSecond(start).atZone(zone);
+		return Instant.ofEpochSecond(start);
 	}
 
-	public final ZonedDateTime getStop()
+	public final Instant getStop()
 	{
-		return Instant.ofEpochSecond(stop).atZone(zone);
+		return Instant.ofEpochSecond(stop);
 	}
 
 	public final boolean getDeleted()
@@ -172,6 +155,22 @@ public class Time
 			return false;
 		}
 		return true;
+	}
+
+	public Time withStart(Instant start2)
+	{
+		UUID uuid = UUID.fromString(id);
+		Instant stop2 = Instant.ofEpochSecond(stop);
+		Instant changed2 = Instant.ofEpochSecond(changed);
+		return new Time( uuid, start2, stop2, deleted, changed2, task);
+	}
+
+	public Time withStop(Instant stop2)
+	{
+		UUID uuid = UUID.fromString(id);
+		Instant start2 = Instant.ofEpochSecond(start);
+		Instant changed2 = Instant.ofEpochSecond(changed);
+		return new Time( uuid, start2, stop2, deleted, changed2, task);
 	}
 
 	// SONAR:ON

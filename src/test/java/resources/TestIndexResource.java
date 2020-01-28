@@ -4,9 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
@@ -57,7 +55,7 @@ public class TestIndexResource
 		TaskDAO taskDAO = new TaskDAO(emf);
 		User user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		Task task = new Task(UUID.randomUUID(), "admin stuff", null, false, ZonedDateTime.now(), false, user);
+		Task task = new Task(UUID.randomUUID(), "admin stuff", null, false, false, user);
 		taskDAO.add(task);
 	}
 

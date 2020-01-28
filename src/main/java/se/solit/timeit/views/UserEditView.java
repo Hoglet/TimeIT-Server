@@ -1,5 +1,6 @@
 package se.solit.timeit.views;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
@@ -34,16 +35,16 @@ public class UserEditView extends BaseView
 	public Collection<Role> getRoles()
 	{
 		User u = userDAO.getUser(username);
-		Collection<Role> roles = roleDAO.getRoles();
-
-		for (Role role : roles)
+		
+		Collection<Role> result = new ArrayList<Role>();
+		for (Role role : roleDAO.getRoles())
 		{
 			if (u.hasRole(role))
 			{
-				role.setCheckedState(true);
+				role = role.withCheckedState(true);
 			}
-
+			result.add(role);
 		}
-		return roles;
+		return result;
 	}
 }

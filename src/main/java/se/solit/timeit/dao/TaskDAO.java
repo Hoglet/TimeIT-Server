@@ -51,8 +51,8 @@ public class TaskDAO
 		Task junction = findChildParent(existingTask, task);
 		if (junction != null)
 		{
-			junction.setParent(existingTask.getParent());
-			em.merge(junction);
+			Task modifiedTask = junction.withParent(existingTask.getParent());
+			em.merge(modifiedTask);
 		}
 	}
 
@@ -205,15 +205,18 @@ public class TaskDAO
 	public void delete(Task task2)
 	{
 		EntityManager em = emf.createEntityManager();
-		task2.setDeleted(true);
+		Task updatedTask = task2.withDeleted(true);
 		try
 		{
 			em.getTransaction().begin();
-			em.merge(task2);
-			List<Task> tasks = getNotDeletedChildren(task2, em);
+			em.merge(updatedTask);
+			List<Task> tasks = getNotDeletedChildren(updatedTask, em);
 			for (Task task : tasks)
 			{
-				task.setParent(null);
+				
+				Task newParent = task2.getParent();
+				Task movedTask = task.withParent(newParent);	
+				em.merge(movedTask);
 			}
 			em.getTransaction().commit();
 		}

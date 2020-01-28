@@ -3,6 +3,7 @@ package se.solit.timeit.entities;
 import java.util.Collection;
 import java.util.Locale;
 
+import javax.annotation.concurrent.Immutable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,31 +16,40 @@ import se.solit.timeit.utilities.Crypto;
 
 @Entity
 @Table(name = "users")
+@Immutable
 public class User
 {
 	@Id
 	@Column(nullable = false, name = "username")
 	@OneToMany(cascade = CascadeType.REMOVE)
-	private String				username;
+	private String             username;
 
 	@Column(name = "name")
-	private String				name;
+	private final String             name;
 
 	@Column(name = "email")
-	private String				email;
+	private final String             email;
 
 	@Column(name = "password")
-	private String				password;
+	private final String             password;
 
 	@ManyToMany
-	private Collection<Role>	roles;
+	private final Collection<Role>   roles;
 
 	public User()
 	{
+		this(true, "", null, "", null, null);
 	}
 
-	public User(final String paramUsername, final String paramName, final String paramPassword,
-			final String paramEmail, Collection<Role> roles2)
+	public User(final String paramUsername, final String paramName, final String paramPassword, final String paramEmail,
+	        Collection<Role> roles2)
+	{
+		this(true, paramUsername, paramName, Crypto.encrypt(paramPassword), paramEmail, roles2);
+		
+	}
+
+	private User(boolean b, final String paramUsername, final String paramName, final String paramPassword,
+	        final String paramEmail, Collection<Role> roles2)
 	{
 		if (paramUsername == null)
 		{
@@ -47,14 +57,11 @@ public class User
 		}
 		this.name = paramName;
 		this.username = paramUsername;
-		if (paramPassword != null)
-		{
-			this.password = Crypto.encrypt(paramPassword);
-		}
+		this.password = paramPassword;
 		this.email = paramEmail;
 		this.roles = roles2;
 	}
-
+	
 	// CHECKSTYLE:OFF
 	// SONAR:OFF
 	@Override
@@ -142,19 +149,20 @@ public class User
 	// SONAR:ON
 	// CHECKSTYLE:ON
 
-	public final void setName(final String name)
+	public final User withName(final String name)
 	{
-		this.name = name;
+		return new User(true,username, name, password, email, roles);
 	}
 
-	public final void setEmail(final String email)
+	public final User withEmail(final String email)
 	{
-		this.email = email.toLowerCase(Locale.ENGLISH);
+		String newEmail = email.toLowerCase(Locale.ENGLISH);
+		return new User(true,username, name, password, newEmail, roles);
 	}
 
-	public final void setPassword(final String password)
+	public final User withPassword(final String password)
 	{
-		this.password = Crypto.encrypt(password);
+		return new User(username, name, password, email, roles);
 	}
 
 	public final String getName()
@@ -177,9 +185,9 @@ public class User
 		return password;
 	}
 
-	public void setRoles(Collection<Role> roles)
+	public User withRoles(Collection<Role> roles)
 	{
-		this.roles = roles;
+		return new User(true, username, name, password, email, roles);
 	}
 
 	public Collection<Role> getRoles()

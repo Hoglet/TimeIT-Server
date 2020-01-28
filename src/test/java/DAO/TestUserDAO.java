@@ -2,8 +2,6 @@ package DAO;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -107,13 +105,13 @@ public class TestUserDAO
 		User user = new User("Test Tester", "tester", "password", "email", null);
 		userdao.add(user);
 		TaskDAO taskdao = new TaskDAO(emf);
-		ZonedDateTime now = ZonedDateTime.now();
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, now, false, user);
+		Instant now = Instant.now();
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, false, user);
 		taskdao.add(task);
 		UUID timeID = UUID.randomUUID();
 		
-		ZonedDateTime start = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC"));
-		ZonedDateTime stop  = Instant.ofEpochSecond(100).atZone(ZoneId.of("UTC"));
+		Instant start = Instant.ofEpochSecond(0);
+		Instant stop  = Instant.ofEpochSecond(100);
 		Time time = new Time(timeID, start, stop, false, now, task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);

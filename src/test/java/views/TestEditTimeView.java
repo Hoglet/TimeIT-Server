@@ -41,8 +41,8 @@ public class TestEditTimeView
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
 		ZonedDateTime now = ZonedDateTime.now();
-		Task parent = new Task(parentID, "parent", null, false, now, false, user);
-		Task child = new Task(childID, "child", parent, false, now, false, user);
+		Task parent = new Task(parentID, "parent", null, false, false, user);
+		Task child = new Task(childID, "child", parent, false, false, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(parent);
 		taskDAO.add(child);
@@ -50,11 +50,11 @@ public class TestEditTimeView
 		Instant epoch = Instant.ofEpochSecond(0);
 		Instant stop  = Instant.ofEpochSecond(1);
 		
-		ZonedDateTime s1 = epoch.atZone(ZoneId.of("UTC"));
-		ZonedDateTime s2 = stop.atZone(ZoneId.of("UTC"));
+		Instant s1 = epoch.atZone(ZoneId.of("UTC")).toInstant();
+		Instant s2 = stop.atZone(ZoneId.of("UTC")).toInstant();
 				
 		
-		time = new Time(timeID, s1, s2, false, now, parent);
+		time = new Time(timeID, s1, s2, false, now.toInstant(), parent);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 	}

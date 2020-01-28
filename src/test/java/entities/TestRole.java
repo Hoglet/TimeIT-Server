@@ -22,18 +22,12 @@ public class TestRole
 	}
 
 	@Test
-	public final void testSetName()
-	{
-		role.setName(JUST_A_STRING);
-		assertEquals(role.getName(), JUST_A_STRING);
-	}
-
-	@Test
 	public final void testSetCheckedState()
 	{
 		assertFalse(role.getCheckedState());
-		role.setCheckedState(true);
-		assertTrue(role.getCheckedState());
+		Role newRole = role.withCheckedState(true);
+		assertTrue(newRole.getCheckedState());
+		assertEquals(role.getName(), newRole.getName());
 	}
 
 	@Test

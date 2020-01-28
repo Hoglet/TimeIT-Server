@@ -1,30 +1,38 @@
 package se.solit.timeit.entities;
 
+import javax.annotation.concurrent.Immutable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
+@Immutable
 @Table(name = "role")
 public class Role
 {
 	public static final String	ADMIN	= "Admin";
 
 	@Transient
-	private boolean				checked;
+	private final boolean  checked;
 
 	@Id
-	private String				name;
+	private final String   name;
 
 	protected Role()
 	{
+		this(null);
 	}
 
-	public Role(final String string)
+	public Role(final String op_name)
 	{
-		name = string;
-		checked = false;
+		this(op_name, false);
+	}
+	
+	private Role(final String op_name, boolean op_checked)
+	{
+		name = op_name;
+		checked = op_checked;
 	}
 
 	public final String getName()
@@ -32,15 +40,10 @@ public class Role
 		return name;
 	}
 
-	public final void setName(final String role2)
-	{
-		name = role2;
-	}
-
 	@Transient
-	public final void setCheckedState(boolean state)
+	public final Role withCheckedState(boolean state)
 	{
-		checked = state;
+		return new Role(name, state);
 	}
 
 	@Transient

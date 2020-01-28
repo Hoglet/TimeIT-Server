@@ -123,11 +123,10 @@ public class UserResource extends BaseResource
 	{
 		RoleDAO roleDAO = new RoleDAO(emf);
 		User user = userManager.getUser(username);
-		user.setName(name);
-		user.setEmail(email);
+		User newUser = user.withName(name).withEmail(email);
 		if (password.length() > 0)
 		{
-			user.setPassword(password);
+			newUser = newUser.withPassword(password);
 		}
 		Collection<Role> roles = new ArrayList<Role>();
 		for (String id : roleIDs)
@@ -136,9 +135,9 @@ public class UserResource extends BaseResource
 		}
 		if (authorizedUser.hasRole(Role.ADMIN))
 		{
-			user.setRoles(roles);
+			newUser = newUser.withRoles(roles);
 		}
-		return user;
+		return newUser;
 	}
 
 	@POST

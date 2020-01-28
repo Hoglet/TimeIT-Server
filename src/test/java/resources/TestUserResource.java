@@ -7,8 +7,6 @@ import io.dropwizard.views.ViewMessageBodyWriter;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -74,9 +72,8 @@ public class TestUserResource
 	                                                                              HttpHeaders.class, null))
 	                                                                  .addResource(myAuthenticator).build();
 
-	private ZoneId        zone  = ZonedDateTime.now().getZone();
-	private ZonedDateTime start = Instant.ofEpochSecond(0).atZone(zone);
-	private ZonedDateTime stop  = Instant.ofEpochSecond(100).atZone(zone);
+	private Instant start = Instant.ofEpochSecond(0);
+	private Instant stop  = Instant.ofEpochSecond(100);
 
 	@BeforeClass
 	public static void beforeClass()
@@ -457,12 +454,12 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, ZonedDateTime.now(), true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, start, stop, false, ZonedDateTime.now(), task);
+		Time time = new Time(timeID, start, stop, false, Instant.now(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 
@@ -495,12 +492,12 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, ZonedDateTime.now(), true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, false, true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, start, stop, false, ZonedDateTime.now(), task);
+		Time time = new Time(timeID, start, stop, false, Instant.now(), task);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 

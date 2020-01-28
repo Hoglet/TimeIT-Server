@@ -43,9 +43,10 @@ public class TestTimeDAO
 	private static Task                 task2;
 	private static UserDAO              userdao;
 	static TaskDAO                      taskdao;
-	private static ZonedDateTime        now     = ZonedDateTime.now();
-	private        ZonedDateTime        epoch   = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC"));
-	private        ZonedDateTime        stop1   = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
+	private static Instant              now     = Instant.now();
+	private        Instant              epoch   = Instant.ofEpochSecond(0);
+	private        Instant              stop1   = Instant.ofEpochSecond(1000);
+	private static ZoneId               zone;
 	private static Task                 child;
 
 	@BeforeClass
@@ -54,13 +55,14 @@ public class TestTimeDAO
 		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
-		child = new Task(UUID.randomUUID(), "Task1", task, false, now, false, user);
-		task2 = new Task(UUID.randomUUID(), "Task2", null, false, now, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, false, false, user);
+		child = new Task(UUID.randomUUID(), "Task1", task, false, false, user);
+		task2 = new Task(UUID.randomUUID(), "Task2", null, false, false, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		taskdao.add(task2);
 		taskdao.add(child);
+		zone = ZonedDateTime.now().getZone();
 	}
 
 	@AfterClass
@@ -123,8 +125,8 @@ public class TestTimeDAO
 		Time time = new Time(timeID, epoch, stop1, false, now, task);
 		timedao.add(time);
 
-		ZonedDateTime start2 = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
-		ZonedDateTime stop2 = Instant.ofEpochSecond(10000).atZone(ZoneId.of("UTC"));
+		Instant start2 = Instant.ofEpochSecond(1000);
+		Instant stop2 = Instant.ofEpochSecond(10000);
 
 		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task);
 		timedao.add(time2);
@@ -138,8 +140,8 @@ public class TestTimeDAO
 		Time time = new Time(timeID, epoch, stop1, false, now, task);
 		timedao.add(time);
 		
-		ZonedDateTime start2 = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
-		ZonedDateTime stop2 = Instant.ofEpochSecond(10000).atZone(ZoneId.of("UTC"));
+		Instant start2 = Instant.ofEpochSecond(1000);
+		Instant stop2 = Instant.ofEpochSecond(10000);
 		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task);
 		timedao.add(time2);
 		Collection<Time> times = timedao.getTimes(user.getUsername(), now.minusSeconds(1));
@@ -178,8 +180,8 @@ public class TestTimeDAO
 		Time time = new Time(timeID, epoch , stop1, false, now, task);
 		timedao.add(time);
 		
-		ZonedDateTime start2 = Instant.ofEpochSecond(700).atZone(ZoneId.of("UTC"));
-		ZonedDateTime stop2 = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
+		Instant start2 = Instant.ofEpochSecond(700);
+		Instant stop2 = Instant.ofEpochSecond(1000);
 		
 		Time t3 = new Time(timeID, start2, stop2, false, epoch, task);
 		Time[] timeArray = new Time[] { t3 };
@@ -192,8 +194,8 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_dummy() throws SQLException
 	{
-		ZonedDateTime start2 = Instant.ofEpochSecond(700).atZone(ZoneId.of("UTC"));
-		ZonedDateTime stop2 = Instant.ofEpochSecond(1000).atZone(ZoneId.of("UTC"));
+		Instant start2 = Instant.ofEpochSecond(700);
+		Instant stop2 = Instant.ofEpochSecond(1000);
 		Time t3 = new Time(timeID, start2, stop2, false, now, task);
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
@@ -203,14 +205,15 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_simple() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(10);
-		Time time = new Time(timeID, start, start.plusSeconds(60), false, now, task);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(10).toInstant();
+		Time time = new Time(timeID, start, start.plusSeconds(60), false, l_now.toInstant(), task);
 		timedao.add(time);
-		Time deletedTime = new Time(UUID.randomUUID(), start, start.plusSeconds(1000), true, now, task);
+		Time deletedTime = new Time(UUID.randomUUID(), start, start.plusSeconds(1000), true, l_now.toInstant(), task);
 		timedao.add(deletedTime);
 
-		ZonedDateTime startOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
 		TimeDescriptor item = result.get(0);
@@ -223,8 +226,9 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_timeStartsBeforeMidnight() throws SQLException
 	{
-		ZonedDateTime start = now.minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0);
-		ZonedDateTime stop = now.withHour(0).withMinute(10).withSecond(0).withNano(0);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant stop = l_now.withHour(0).withMinute(10).withSecond(0).withNano(0).toInstant();
 		
 		Time time = new Time(timeID, start, stop, false, now, task);
 		timedao.add(time);
@@ -232,8 +236,8 @@ public class TestTimeDAO
 		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task2);
 		timedao.add(deletedTime);
 		
-		ZonedDateTime startOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
@@ -241,7 +245,7 @@ public class TestTimeDAO
 
 		Assert.assertEquals(task, item.getTask());
 
-		Duration expectedDuration = Duration.between(startOfDay.toInstant(), stop.toInstant());
+		Duration expectedDuration = Duration.between(startOfDay.toInstant(), stop);
 		Assert.assertEquals(expectedDuration, item.getDuration());
 
 	}
@@ -249,14 +253,15 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_timeEndsAfteMidnight() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(23).withMinute(50).withSecond(0).withNano(0);
-		ZonedDateTime stop = now.plusDays(1).withHour(0).withMinute(10).withSecond(0).withNano(0);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(23).withMinute(50).withSecond(0).withNano(0).toInstant();
+		Instant stop = l_now.plusDays(1).withHour(0).withMinute(10).withSecond(0).withNano(0).toInstant();
 		Time time = new Time(timeID, start, stop, false, now, task);
 		timedao.add(time);
 		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task);
 		timedao.add(deletedTime);
-		ZonedDateTime startOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX).withNano(0);
+		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX).withNano(0);
 		TimeDescriptorList result = timedao.getTimes(user, startOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
 		TimeDescriptor item = result.get(0);
@@ -272,11 +277,12 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_timeBeforeLimits() throws SQLException
 	{
-		ZonedDateTime start = now.minusDays(1).withHour(10);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.minusDays(1).withHour(10).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(60), false, now, task);
 		timedao.add(time);
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(0, result.size());
 	}
@@ -284,11 +290,12 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_timeAfterLimits() throws SQLException
 	{
-		ZonedDateTime start = now.plusDays(1).withHour(10);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.plusDays(1).withHour(10).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task);
 		timedao.add(time);
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(0, result.size());
 	}
@@ -296,15 +303,16 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_twoTimes() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(10);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(10).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task);
 		timedao.add(time);
-		ZonedDateTime start2 = now.withHour(12);
+		Instant start2 = l_now.withHour(12).toInstant();
 		UUID timeID2 = UUID.randomUUID();
 		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60000), false, now, task);
 		timedao.add(time2);
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
 	}
@@ -312,16 +320,17 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_twoTimes_onePassingMargin() throws SQLException
 	{
-		ZonedDateTime start = now.plusDays(1).with(LocalTime.MIN).minusSeconds(2);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.plusDays(1).with(LocalTime.MIN).minusSeconds(2).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
 		timedao.add(time);
-		ZonedDateTime start2 = now.withHour(12);
+		Instant start2 = l_now.withHour(12).toInstant();
 		UUID timeID2 = UUID.randomUUID();
 		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60), false, now, task);
 		timedao.add(time2);
 
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(1, result.size());
 		TimeDescriptor item = result.get(0);
@@ -332,7 +341,8 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesSummary_dummy() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(10);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(10).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
 		Time time2 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
 		Time time3 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
@@ -340,8 +350,8 @@ public class TestTimeDAO
 		timedao.add(time);
 		timedao.add(time3);
 
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(2, result.size());
 	}
@@ -349,12 +359,13 @@ public class TestTimeDAO
 	@Test
 	public final void testTimeHierarchy() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(10);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(10).toInstant();
 		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, child);
 		timedao.add(time);
 
-		ZonedDateTime beginningOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		TimeDescriptorList result = timedao.getTimes(user, beginningOfDay, endOfDay);
 		Assert.assertEquals(2, result.size());
 
@@ -368,16 +379,15 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimeItems() throws SQLException
 	{
-		ZonedDateTime start = now.withHour(10);
-		ZonedDateTime beginingOfDay = now.with(LocalTime.MIN);
-		ZonedDateTime endOfDay = now.with(LocalTime.MAX);
+		ZonedDateTime l_now = now.atZone(zone);
+		Instant start = l_now.withHour(10).toInstant();
+		ZonedDateTime beginingOfDay = l_now.with(LocalTime.MIN);
+		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
 		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task2);
-		Time time2 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(1), beginingOfDay.plusHours(1), false, now,
-				task2);
-		Time time3 = new Time(UUID.randomUUID(), endOfDay.minusHours(1), endOfDay.plusHours(2), false, now, task2);
-		Time time4 = new Time(UUID.randomUUID(), endOfDay.plusHours(1), endOfDay.plusHours(2), false, now, task2);
-		Time time5 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(2), beginingOfDay.minusHours(1), false, now,
-				task2);
+		Time time2 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(1).toInstant(), beginingOfDay.plusHours(1).toInstant(), false, now, task2);
+		Time time3 = new Time(UUID.randomUUID(), endOfDay.minusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2);
+		Time time4 = new Time(UUID.randomUUID(), endOfDay.plusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2);
+		Time time5 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(2).toInstant(), beginingOfDay.minusHours(1).toInstant(), false, now, task2);
 		timedao.add(time);
 		timedao.add(time2);
 		timedao.add(time3);

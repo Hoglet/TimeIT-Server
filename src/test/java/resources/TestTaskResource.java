@@ -4,7 +4,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,7 +81,7 @@ public class TestTaskResource
 	@Before
 	public void setUp()
 	{
-		task = new Task(taskID, "admin stuff", null, false, ZonedDateTime.now().minusSeconds(2), false, user);
+		task = new Task(taskID, "admin stuff", null, false, Instant.now().minusSeconds(2), false, user);
 		taskDAO.add(task);
 	}
 
@@ -173,7 +173,7 @@ public class TestTaskResource
 
 		UUID id = UUID.randomUUID();
 		String name = "Banarne";
-		Task expected = new Task(id, name, null, false, ZonedDateTime.now(), false, user);
+		Task expected = new Task(id, name, null, false, false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", null);
@@ -227,7 +227,7 @@ public class TestTaskResource
 
 		UUID id = UUID.randomUUID();
 		String name = "Banarne";
-		Task expected = new Task(id, name, task, false, ZonedDateTime.now(), false, user);
+		Task expected = new Task(id, name, task, false, false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", task.getID());
@@ -256,7 +256,7 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String name = "Banarne";
-		Task expected = new Task(taskID, name, null, false, ZonedDateTime.now(), false, user);
+		Task expected = new Task(taskID, name, null, false, false, user);
 		Form form = new Form();
 		form.add("taskid", taskID.toString());
 		form.add("parent", null);
@@ -285,11 +285,11 @@ public class TestTaskResource
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		UUID parentID = UUID.randomUUID();
-		Task parent = new Task(parentID, "Parent", null, false, ZonedDateTime.now().minusSeconds(3), false, user);
+		Task parent = new Task(parentID, "Parent", null, false, Instant.now().minusSeconds(3), false, user);
 		taskDAO.add(parent);
 		UUID id = taskID;
 		String name = "Banarne";
-		Task expected = new Task(id, name, parent, false, ZonedDateTime.now(), false, user);
+		Task expected = new Task(id, name, parent, false, false, user);
 		Form form = new Form();
 		form.add("taskid", id.toString());
 		form.add("parent", parent.getID());
@@ -344,7 +344,7 @@ public class TestTaskResource
 
 		String id = UUID.randomUUID().toString();
 		String name = "Banarne";
-		Task task = new Task(UUID.fromString(id), name, null, false, ZonedDateTime.now(), false, user);
+		Task task = new Task(UUID.fromString(id), name, null, false, false, user);
 		Form form = new Form();
 		form.add("taskid", id);
 		form.add("parent", null);
@@ -367,7 +367,7 @@ public class TestTaskResource
 	public final void testDelete()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());
@@ -388,7 +388,7 @@ public class TestTaskResource
 	public final void testDelete_auth()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());
@@ -410,7 +410,7 @@ public class TestTaskResource
 	public final void testDelete_otherUser()
 	{
 		UUID id = UUID.randomUUID();
-		Task task2delete = new Task(id, "name", null, false, ZonedDateTime.now(), false, user);
+		Task task2delete = new Task(id, "name", null, false, false, user);
 		taskDAO.add(task2delete);
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/delete/" + id.toString());

@@ -1,6 +1,7 @@
 package views;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -49,11 +50,11 @@ public class TestYearReportView
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		Task task = new Task(taskID, "Name", null, false, ZonedDateTime.now(), false, user);
+		Task task = new Task(taskID, "Name", null, false, false, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
-		ZonedDateTime start = pointInMonth.withHour(10);
-		ZonedDateTime stop = start.plusMinutes(10);
+		Instant start = pointInMonth.withHour(10).toInstant();
+		Instant stop = start.plusSeconds(10 * 60);
 		Time time = new Time(timeID, start, stop, false, stop, task);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);

@@ -117,8 +117,9 @@ public class DayReportView extends ReportView
 
 	private boolean timeIntersectingWithHour(Time time, int hour)
 	{
-		int startHour = time.getStart().getHour();
-		int stopHour = time.getStop().getHour();
+		ZoneId zone = ZonedDateTime.now().getZone();
+		int startHour = time.getStart().atZone(zone).getHour();
+		int stopHour = time.getStop().atZone(zone).getHour();
 		return (startHour == hour || stopHour == hour) ||
 				(startHour < hour && stopHour > hour);
 	}

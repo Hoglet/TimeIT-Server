@@ -1,6 +1,8 @@
 package se.solit.timeit.views;
 
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
@@ -18,11 +20,12 @@ import com.sun.jersey.api.core.HttpContext;
 
 public class TimeView extends BaseView
 {
-	private final Time                 time;
-	private final TaskDAO              taskDAO;
+	private final Time               time;
+	private final TaskDAO            taskDAO;
 
-	private final  DateTimeFormatter   dateFormatter  = DateTimeFormatter.ofPattern("yyy-MM-dd");
-	private final  DateTimeFormatter   timeFormatter  = DateTimeFormatter.ofPattern("HH:mm");
+	private final DateTimeFormatter  dateFormatter  = DateTimeFormatter.ofPattern("yyy-MM-dd");
+	private final DateTimeFormatter  timeFormatter  = DateTimeFormatter.ofPattern("HH:mm");
+	private final ZoneId             zone           = ZonedDateTime.now().getZone();
 
 	public TimeView(EntityManagerFactory emf, Time time, User user, HttpContext context, HttpSession session)
 	{
@@ -38,17 +41,17 @@ public class TimeView extends BaseView
 
 	public String getStartDate()
 	{
-		return time.getStart().format(dateFormatter);
+		return time.getStart().atZone(zone).format(dateFormatter);
 	}
 
 	public String getStartTime()
 	{
-		return time.getStart().format(timeFormatter);
+		return time.getStart().atZone(zone).format(timeFormatter);
 	}
 	
 	public String getStopTime()
 	{
-		return time.getStop().format(timeFormatter);
+		return time.getStop().atZone(zone).format(timeFormatter);
 	}
 	
 	public TaskDescriptorList getTasks() throws SQLException

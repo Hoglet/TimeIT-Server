@@ -3,7 +3,6 @@ package se.solit.timeit.dao;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +23,7 @@ public class TimeDAO
 	private static final String  STOP   = "stop";
 	private static final String  USER   = "user";
 	private static final String  START  = "start";
-	private ZonedDateTime        epoch  = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC"));
+	private static final Instant epoch  = Instant.ofEpochSecond(0);
 
 	public TimeDAO(final EntityManagerFactory emf)
 	{
@@ -77,13 +76,18 @@ public class TimeDAO
 
 	public Collection<Time> getTimes(String username, ZonedDateTime param_time)
 	{
+		return getTimes(username, param_time.toInstant());
+	}
+
+	public Collection<Time> getTimes(String username, Instant time)
+	{
 		EntityManager em = entityManagerFactory.createEntityManager();
-		Instant time = Instant.from(param_time);
 		List<Time> items = iGetTimes(username, em, time.getEpochSecond());
 		em.close();
 		return items;
 	}
 
+	
 	static List<Time> iGetTimes(final String username, EntityManager em, long time)
 	{
 		TypedQuery<Time> getTimesQuery = em

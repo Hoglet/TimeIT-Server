@@ -5,8 +5,6 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -56,10 +54,9 @@ public class TestTimesSyncResource
 
 	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
-	private static ZonedDateTime            now;
-	private static ZoneId                   zone   = ZonedDateTime.now().getZone();
-	private        ZonedDateTime            start  = Instant.ofEpochSecond(11).atZone(zone);
-	private        ZonedDateTime            stop   = Instant.ofEpochSecond(101).atZone(zone);
+	private static Instant                  now;
+	private        Instant                  start  = Instant.ofEpochSecond(11);
+	private        Instant                  stop   = Instant.ofEpochSecond(101);
 
 	private static UUID						timeID = UUID.randomUUID();
 
@@ -76,15 +73,14 @@ public class TestTimesSyncResource
 	@BeforeClass
 	public static void beforeClass()
 	{
-		zone = ZonedDateTime.now().getZone();
-		now = Instant.ofEpochSecond(100).atZone(zone);
+		now = Instant.ofEpochSecond(100);
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
 		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
 		taskdao.add(task);
 
-		ZonedDateTime  l_start = Instant.ofEpochSecond(10).atZone(zone);
-		ZonedDateTime  l_stop  = Instant.ofEpochSecond(100).atZone(zone);
+		Instant  l_start = Instant.ofEpochSecond(10);
+		Instant  l_stop  = Instant.ofEpochSecond(100);
 
 		time = new Time(timeID, l_start, l_stop, false, now, task);
 	}
@@ -165,7 +161,7 @@ public class TestTimesSyncResource
 	public void testTimesSyncRanged()
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
-		ZonedDateTime  changed = Instant.ofEpochSecond(100).atZone(zone);
+		Instant  changed = Instant.ofEpochSecond(100);
 
 		Time newTime = new Time(timeID, start, stop, false, changed, task);
 		timesToSend.add(newTime);

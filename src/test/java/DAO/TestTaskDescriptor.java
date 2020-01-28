@@ -2,7 +2,6 @@ package DAO;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -16,7 +15,6 @@ import se.solit.timeit.entities.User;
 public class TestTaskDescriptor
 {
 	private static User           owner            = new User("owner", "Owner", "password", "email", null);
-	private static ZonedDateTime  changeTime       = ZonedDateTime.now();
 	private static UUID           parentID         = UUID.fromString("13060e94-8b31-4f38-9f7e-8a709db57408");
 	private static UUID           childID          = UUID.randomUUID();
 	private static TaskDescriptor taskDescriptor1;
@@ -27,8 +25,8 @@ public class TestTaskDescriptor
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		parent = new Task(parentID, "parent", null, false, changeTime, false, owner);
-		child = new Task(childID, "child", parent, false, changeTime, false, owner);
+		parent = new Task(parentID, "parent", null, false, false, owner);
+		child = new Task(childID, "child", parent, false, false, owner);
 		taskDescriptor1 = new TaskDescriptor(parent);
 		taskDescriptor2 = new TaskDescriptor(child);
 	}

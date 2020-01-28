@@ -2,8 +2,6 @@ package se.solit.timeit.serializers;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import se.solit.timeit.entities.Task;
@@ -26,20 +24,16 @@ public class TimeDeserializer extends JsonDeserializer<Time>
 		ObjectCodec oc = jp.getCodec();
 		JsonNode node = oc.readTree(jp);
 		ObjectMapper mapper = new ObjectMapper();
-		ZoneId zone = ZonedDateTime.now().getZone();
 		
 		UUID id = UUID.fromString(node.get("id").textValue());
 		
-		Instant startInstant = Instant.ofEpochSecond(node.get("start").longValue());
-		ZonedDateTime start = startInstant.atZone(zone);
+		Instant start = Instant.ofEpochSecond(node.get("start").longValue());
 		
-		Instant stopInstant = Instant.ofEpochSecond(node.get("stop").longValue());
-		ZonedDateTime stop = stopInstant.atZone(zone);
+		Instant stop  = Instant.ofEpochSecond(node.get("stop").longValue());
 
 		boolean deleted = node.get("deleted").asBoolean();
 		
-		Instant changedInstant = Instant.ofEpochSecond(node.get("changed").longValue());
-		ZonedDateTime lastChanged = changedInstant.atZone(zone);
+		Instant lastChanged = Instant.ofEpochSecond(node.get("changed").longValue());
 
 		JsonNode jn = node.get("task");
 		Task task = mapper.readValue(jn.traverse(oc), Task.class);
