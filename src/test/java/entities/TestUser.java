@@ -94,6 +94,7 @@ public class TestUser
 		assertEquals(user.getPassword(), newUser.getPassword());
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void testEquals_Symmetric()
 	{

@@ -154,6 +154,7 @@ public class TestTask
 		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public final void testEqualsObject()
 	{

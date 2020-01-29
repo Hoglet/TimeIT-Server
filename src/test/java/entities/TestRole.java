@@ -30,6 +30,7 @@ public class TestRole
 		assertEquals(role.getName(), newRole.getName());
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public final void testEqualsObject()
 	{

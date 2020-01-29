@@ -2,8 +2,10 @@ package resources;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
+import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
 
 import java.sql.SQLException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -20,6 +22,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
@@ -30,6 +35,7 @@ import se.solit.timeit.utilities.Crypto;
 import se.solit.timeit.utilities.Email;
 
 import com.codahale.metrics.MetricRegistry;
+import com.google.common.collect.ImmutableList;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -40,8 +46,7 @@ public class TestCredentialRecoveryResource
 
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 
-	private final static HttpSession		mockSession	= new MockSession();
-
+	private final static HttpSession		mockSession	= Mockito.mock(HttpSession.class);
 	private static MockMailer				mockMailer	= new MockMailer();
 
 	@ClassRule
@@ -55,7 +60,7 @@ public class TestCredentialRecoveryResource
 																				mockSession))
 																.addProvider(
 																		new ViewMessageBodyWriter(
-																				new MetricRegistry()))
+																				new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
 																.addProvider(
 																		new ContextInjectableProvider<HttpHeaders>(
 																				HttpHeaders.class, null)).build();
@@ -67,6 +72,11 @@ public class TestCredentialRecoveryResource
 	private static LoginKeyDAO				loginKeyDAO;
 
 	private static UserDAO					userDAO;
+
+
+	// Collection to store attributes keys/values
+	final ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();     
+
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException, AddressException
@@ -140,6 +150,34 @@ public class TestCredentialRecoveryResource
 		Client client = resources.client();
 		WebResource resource = client.resource("/recover/");
 
+		// Mock setAttribute
+		Mockito.doAnswer(new Answer<Void>() 
+		{
+		    @Override
+		    public Void answer(InvocationOnMock invocation) throws Throwable 
+		    {
+		        String key = (String) invocation.getArguments()[0];
+		        Object value = invocation.getArguments()[1];
+		        attributes.put(key, value);
+		        System.out.println("put attribute key="+key+", value="+value);
+		        return null;
+		    }
+		}).when(mockSession).setAttribute(Mockito.anyString(), Mockito.anyObject());
+
+		// Mock getAttribute
+		Mockito.doAnswer(new Answer<Object>() {
+		    @Override
+		    public Object answer(InvocationOnMock invocation) throws Throwable {
+		        String key = (String) invocation.getArguments()[0];
+		        Object value = attributes.get(key);
+		        System.out.println("get attribute value for key="+key+" : "+value);
+		        return value;
+		    }
+		}).when(mockSession).getAttribute(Mockito.anyString());
+
+		
+		
+		
 		try
 		{
 			Form form = new Form();

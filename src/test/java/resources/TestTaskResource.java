@@ -3,6 +3,7 @@ package resources;
 import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
+import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
 
 import java.time.Instant;
 import java.util.List;
@@ -32,6 +33,7 @@ import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.TaskResource;
 
 import com.codahale.metrics.MetricRegistry;
+import com.google.common.collect.ImmutableList;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -55,7 +57,7 @@ public class TestTaskResource
 	                                                                                         HttpSession.class,
 	                                                                                         mockSession))
 	                                                                     .addProvider( new ViewMessageBodyWriter(
-	                                                                                         new MetricRegistry()))
+	                                                                                         new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
 	                                                                     .addProvider(
 	                                                                                  new ContextInjectableProvider<HttpHeaders>(
 	                                                                                         HttpHeaders.class, null))

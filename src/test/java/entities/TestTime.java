@@ -79,6 +79,7 @@ public class TestTime
 		assertEquals(time.getID(), timeID);
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public final void testEqualsObject()
 	{
