@@ -18,9 +18,9 @@ automatic time tracking and no idle detection.
 1. Download the source into a folder of choice
 2. Open a terminal in source folder
 3. Run following command:
-   1. Unix: ./gradlew jar
-   2. Windows: gradlew jar
-4. java -jar ./build/libs/server-1.0.jar
+   1. Unix: ./gradlew shadowJar
+   2. Windows: gradlew shadowJar
+4. java -jar ./build/libs/server-1.0.jar server src/main/config/template-config.yml
 5. Start a browser and point it to http://localhost:8080/
    Initial username and password: admin
 
@@ -31,7 +31,8 @@ of data but quickly becomes slow as number of time slices increases.
 Testing has been done with postgresql (and shortly with mariadb) and is used in
 the server used by the author.
 
-To change preferred database you need to edit src/main/config/template-config.yml
+To change preferred database you need to edit src/main/config/template-config.yml, preferably copy
+it to a logical place (like: /etc/timeit/config.yml)
 
 ## Hacking the code
 Fork the code here:

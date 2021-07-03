@@ -52,6 +52,18 @@ test
 //      reportsDir = file("$buildDir/junit")
 }
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+  	classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
+  }
+}
+
+
 dependencies
 {
 	compile group: 'io.dropwizard', name: 'dropwizard-core', version: project.ext.dropwizardVersion
@@ -70,23 +82,14 @@ dependencies
 	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
 }
 
+apply plugin: "com.github.johnrengelman.shadow"
 
-jar
-{
-	manifest
-	{
-		attributes "Implementation-Title": "TimeIT Server"
-		attributes "Implementation-Version": version
-		attributes 'Main-Class': mainClassName
-		attributes 'Class-Path': configurations.testCompile.files.collect{ project.uri(it) }.join(' ')
-	}
-	from (configurations.runtime.resolve().collect { it.isDirectory() ? it : zipTree(it) })
-	{
-		exclude 'META-INF/MANIFEST.MF'
-		exclude 'META-INF/*.SF'
-		exclude 'META-INF/*.DSA'
-		exclude 'META-INF/*.RSA'
-	}
+shadowJar {
+    mergeServiceFiles()
+    mainClassName = mainClassName
+    baseName = 'TimeIT-Server'
+    classifier = 'beta'
+    version =  version
 }
 
 task wrapper(type: Wrapper){
