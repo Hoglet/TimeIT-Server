@@ -26,6 +26,7 @@ public class TestUserDAO
 
 	public static EntityManagerFactory	emf	= Persistence.createEntityManagerFactory("test");
 	private UserDAO						userdao;
+	private final String                comment = "Just a comment";
 
 	@Before
 	public void setUp() throws Exception
@@ -112,7 +113,7 @@ public class TestUserDAO
 		
 		Instant start = Instant.ofEpochSecond(0);
 		Instant stop  = Instant.ofEpochSecond(100);
-		Time time = new Time(timeID, start, stop, false, now, task);
+		Time time = new Time(timeID, start, stop, false, now, task, comment);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 		userdao.delete(user);

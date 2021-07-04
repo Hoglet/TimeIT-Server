@@ -6,5 +6,6 @@
   },
   "start" : 10,
   "stop" : 100,
-  "changed" : 100
+  "changed" : 100,
+  "comment" : "Just a comment"
 }

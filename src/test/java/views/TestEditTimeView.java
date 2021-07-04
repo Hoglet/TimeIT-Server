@@ -32,6 +32,7 @@ public class TestEditTimeView
 	private static UUID                  timeID    = UUID.randomUUID();
 	private static UUID                  parentID  = UUID.fromString("e00b8d6f-3f89-4748-98ca-25ef6225d06a");
 	private static UUID                  childID   = UUID.fromString("4afe7048-fefe-4c5f-b32f-d4a771175b70");
+	private final static String          comment   = "Just a comment";
 	private final HttpSession            session   = Mockito.mock(HttpSession.class);
 
 	@BeforeClass
@@ -54,7 +55,7 @@ public class TestEditTimeView
 		Instant s2 = stop.atZone(ZoneId.of("UTC")).toInstant();
 				
 		
-		time = new Time(timeID, s1, s2, false, now.toInstant(), parent);
+		time = new Time(timeID, s1, s2, false, now.toInstant(), parent, comment);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 	}

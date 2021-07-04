@@ -31,6 +31,7 @@ public class TestIndexView
 	private static UUID                  childID   = UUID.fromString("c624ba2d-2027-4858-9696-3efc4e4106ad");
 	private static HttpSession           session;
 	private final static ZonedDateTime   now       = ZonedDateTime.now();
+	private final static String          comment   = "Just a comment";
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -45,10 +46,10 @@ public class TestIndexView
 		taskdao.add(child);
 		Instant start = now.withHour(10).toInstant();
 		Instant stop = start.plusSeconds(10 * 60);
-		Time time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), parent);
+		Time time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), parent, comment);
 		TimeDAO timeDAO = new TimeDAO(emf);
 		timeDAO.add(time);
-		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child, comment);
 		timeDAO.add(time);
 
 		if (now.getDayOfMonth() != 4)
@@ -60,7 +61,7 @@ public class TestIndexView
 			start = now.withDayOfMonth(3).toInstant();
 		}
 		stop = start.plusSeconds(10 * 60);
-		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child, comment);
 		timeDAO.add(time);
 
 		if (now.getMonthValue() != 4)
@@ -72,7 +73,7 @@ public class TestIndexView
 			start = now.withMonth(3).toInstant();
 		}
 		stop = start.plusSeconds(10 * 60);
-		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child);
+		time = new Time(UUID.randomUUID(), start, stop, false, now.toInstant(), child, comment);
 		timeDAO.add(time);
 
 		session = Mockito.mock(HttpSession.class);

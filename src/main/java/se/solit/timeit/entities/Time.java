@@ -1,6 +1,7 @@
 package se.solit.timeit.entities;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.annotation.concurrent.Immutable;
@@ -46,25 +47,32 @@ public class Time
 	//@Convert (converter = InstantConverter.class)
 	private final long         changed;
 
+	@Column(nullable = true)
+	private final String       comment;
+
+
+
 	protected Time()
 	{
-		this.id = "";
-		this.changed = 0;
-		this.start = 0;
-		this.stop = 0;
-		this.deleted = false;
-		this.task = new Task();
+		id      = "";
+		changed = 0;
+		start   = 0;
+		stop    = 0;
+		deleted = false;
+		task    = new Task();
+		comment = "";
 	}
 
 	public Time(final UUID paramUuid, final Instant paramStart, final Instant paramStop, final boolean paramDeleted,
-			final Instant paramChanged, final Task paramTask)
+			final Instant paramChanged, final Task paramTask, final String paramComment)
 	{
-		id = paramUuid.toString();
-		start = paramStart.getEpochSecond();
-		stop = paramStop.getEpochSecond();
+		id      = paramUuid.toString();
+		start   = paramStart.getEpochSecond();
+		stop    = paramStop.getEpochSecond();
 		deleted = paramDeleted;
-		task = paramTask;
+		task    = paramTask;
 		changed = paramChanged.getEpochSecond();
+		comment = paramComment;
 	}
 
 	public final Instant getChanged()
@@ -97,6 +105,15 @@ public class Time
 		return task;
 	}
 
+	public final String getComment()
+	{
+		if(comment!=null)
+		{
+			return comment;
+		}
+		return "";
+	}
+
 	// CHECKSTYLE:OFF
 	// SONAR:OFF
 
@@ -111,6 +128,7 @@ public class Time
 		result = prime * result + Long.valueOf(start).hashCode();
 		result = prime * result + Long.valueOf(stop).hashCode();
 		result = prime * result + task.getID().hashCode();
+		result = prime * result + comment.hashCode();
 		return result;
 	}
 
@@ -154,6 +172,10 @@ public class Time
 		{
 			return false;
 		}
+		if( !Objects.equals(comment, other.comment))
+		{
+			return false;
+		}
 		return true;
 	}
 
@@ -162,7 +184,7 @@ public class Time
 		UUID uuid = UUID.fromString(id);
 		Instant stop2 = Instant.ofEpochSecond(stop);
 		Instant changed2 = Instant.ofEpochSecond(changed);
-		return new Time( uuid, start2, stop2, deleted, changed2, task);
+		return new Time( uuid, start2, stop2, deleted, changed2, task, comment);
 	}
 
 	public Time withStop(Instant stop2)
@@ -170,7 +192,7 @@ public class Time
 		UUID uuid = UUID.fromString(id);
 		Instant start2 = Instant.ofEpochSecond(start);
 		Instant changed2 = Instant.ofEpochSecond(changed);
-		return new Time( uuid, start2, stop2, deleted, changed2, task);
+		return new Time( uuid, start2, stop2, deleted, changed2, task, comment);
 	}
 
 	// SONAR:ON

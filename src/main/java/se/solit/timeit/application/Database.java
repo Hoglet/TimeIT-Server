@@ -36,7 +36,17 @@ public class Database
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("Default", props);
 		populateTables(emf);
 		cleanData(emf);
+		updateDatabase(emf);
 		return emf;
+	}
+
+	private void updateDatabase(EntityManagerFactory emf)
+	{
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Query query = em.createNativeQuery("ALTER TABLE time ADD COLUMN IF NOT EXISTS  comment VARCHAR ");
+		query.executeUpdate();
+		em.getTransaction().commit();
 	}
 
 	private void cleanData(EntityManagerFactory emf)

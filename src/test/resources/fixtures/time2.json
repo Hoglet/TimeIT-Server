@@ -6,5 +6,6 @@
     "id" : "a9e104e7-fd86-4953-a297-97736fc939fe"
   },
   "start" : 10,
-  "stop" : 100
+  "stop" : 100,
+  "comment" : "Just a comment"
 }

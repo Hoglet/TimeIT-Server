@@ -48,6 +48,7 @@ public class TestTimeDAO
 	private        Instant              stop1   = Instant.ofEpochSecond(1000);
 	private static ZoneId               zone;
 	private static Task                 child;
+	private static String               comment = "Just a comment";
 
 	@BeforeClass
 	public static void beforeClass()
@@ -91,9 +92,9 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdate() throws SQLException
 	{
-		Time time = new Time(timeID, epoch, now, false, epoch, task);
+		Time time = new Time(timeID, epoch, now, false, epoch, task, "");
 		timedao.add(time);
-		Time t2 = new Time(timeID, now, now, false, now, task);
+		Time t2 = new Time(timeID, now, now, false, now, task, comment);
 		timedao.update(t2);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Time result = (Time) times.toArray()[0];
@@ -103,7 +104,7 @@ public class TestTimeDAO
 	@Test
 	public final void testAdd_Existing() throws SQLException
 	{
-		Time time = new Time(timeID, epoch, stop1, false, now, task);
+		Time time = new Time(timeID, epoch, stop1, false, now, task, comment);
 		timedao.add(time);
 		try
 		{
@@ -122,13 +123,13 @@ public class TestTimeDAO
 		Collection<Time> times = timedao.getTimes(user.getUsername());
 		Assert.assertEquals(0, times.size());
 
-		Time time = new Time(timeID, epoch, stop1, false, now, task);
+		Time time = new Time(timeID, epoch, stop1, false, now, task, comment);
 		timedao.add(time);
 
 		Instant start2 = Instant.ofEpochSecond(1000);
 		Instant stop2 = Instant.ofEpochSecond(10000);
 
-		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task);
+		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task, comment);
 		timedao.add(time2);
 		times = timedao.getTimes(user.getUsername());
 		Assert.assertEquals(2, times.size());
@@ -137,12 +138,12 @@ public class TestTimeDAO
 	@Test
 	public final void testGetTimesRanged() throws SQLException
 	{
-		Time time = new Time(timeID, epoch, stop1, false, now, task);
+		Time time = new Time(timeID, epoch, stop1, false, now, task, comment);
 		timedao.add(time);
 		
 		Instant start2 = Instant.ofEpochSecond(1000);
 		Instant stop2 = Instant.ofEpochSecond(10000);
-		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task);
+		Time time2 = new Time(UUID.randomUUID(), start2, stop2, true, now, task, comment);
 		timedao.add(time2);
 		Collection<Time> times = timedao.getTimes(user.getUsername(), now.minusSeconds(1));
 		Assert.assertEquals(2, times.size());
@@ -154,7 +155,7 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_addOnEmpty() throws SQLException
 	{
-		Time time = new Time(timeID, epoch, stop1, false, now, task);
+		Time time = new Time(timeID, epoch, stop1, false, now, task, comment);
 		Time[] timeArray = new Time[] { time };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
@@ -164,9 +165,9 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_update() throws SQLException
 	{
-		Time time = new Time(timeID, epoch, now, false, epoch, task);
+		Time time = new Time(timeID, epoch, now, false, epoch, task, comment);
 		timedao.add(time);
-		Time t2 = new Time(timeID, now, now, false, now, task);
+		Time t2 = new Time(timeID, now, now, false, now, task, comment);
 		Time[] timeArray = new Time[] { t2 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
@@ -177,13 +178,13 @@ public class TestTimeDAO
 	@Test
 	public final void testUpdateOrAdd_noUpdatWhenOlder() throws SQLException
 	{
-		Time time = new Time(timeID, epoch , stop1, false, now, task);
+		Time time = new Time(timeID, epoch , stop1, false, now, task, comment);
 		timedao.add(time);
 		
 		Instant start2 = Instant.ofEpochSecond(700);
 		Instant stop2 = Instant.ofEpochSecond(1000);
 		
-		Time t3 = new Time(timeID, start2, stop2, false, epoch, task);
+		Time t3 = new Time(timeID, start2, stop2, false, epoch, task, comment);
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
 		Collection<Time> times = timedao.getTimes(user.getUsername());
@@ -196,7 +197,7 @@ public class TestTimeDAO
 	{
 		Instant start2 = Instant.ofEpochSecond(700);
 		Instant stop2 = Instant.ofEpochSecond(1000);
-		Time t3 = new Time(timeID, start2, stop2, false, now, task);
+		Time t3 = new Time(timeID, start2, stop2, false, now, task, comment);
 		Time[] timeArray = new Time[] { t3 };
 		timedao.updateOrAdd(timeArray);
 		timedao.updateOrAdd(timeArray);
@@ -207,9 +208,9 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(60), false, l_now.toInstant(), task);
+		Time time = new Time(timeID, start, start.plusSeconds(60), false, l_now.toInstant(), task, comment);
 		timedao.add(time);
-		Time deletedTime = new Time(UUID.randomUUID(), start, start.plusSeconds(1000), true, l_now.toInstant(), task);
+		Time deletedTime = new Time(UUID.randomUUID(), start, start.plusSeconds(1000), true, l_now.toInstant(), task, comment);
 		timedao.add(deletedTime);
 
 		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
@@ -230,10 +231,10 @@ public class TestTimeDAO
 		Instant start = l_now.minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0).toInstant();
 		Instant stop = l_now.withHour(0).withMinute(10).withSecond(0).withNano(0).toInstant();
 		
-		Time time = new Time(timeID, start, stop, false, now, task);
+		Time time = new Time(timeID, start, stop, false, now, task, comment);
 		timedao.add(time);
 		
-		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task2);
+		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task2, comment);
 		timedao.add(deletedTime);
 		
 		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
@@ -256,9 +257,9 @@ public class TestTimeDAO
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.withHour(23).withMinute(50).withSecond(0).withNano(0).toInstant();
 		Instant stop = l_now.plusDays(1).withHour(0).withMinute(10).withSecond(0).withNano(0).toInstant();
-		Time time = new Time(timeID, start, stop, false, now, task);
+		Time time = new Time(timeID, start, stop, false, now, task, comment);
 		timedao.add(time);
-		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task);
+		Time deletedTime = new Time(UUID.randomUUID(), start, stop, true, now, task, comment);
 		timedao.add(deletedTime);
 		ZonedDateTime startOfDay = l_now.with(LocalTime.MIN);
 		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX).withNano(0);
@@ -279,7 +280,7 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.minusDays(1).withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(60), false, now, task);
+		Time time = new Time(timeID, start, start.plusSeconds(60), false, now, task, comment);
 		timedao.add(time);
 		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
 		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
@@ -292,7 +293,7 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.plusDays(1).withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task);
+		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task, comment);
 		timedao.add(time);
 		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
 		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
@@ -305,11 +306,11 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task);
+		Time time = new Time(timeID, start, start.plusSeconds(60000), false, now, task, comment);
 		timedao.add(time);
 		Instant start2 = l_now.withHour(12).toInstant();
 		UUID timeID2 = UUID.randomUUID();
-		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60000), false, now, task);
+		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60000), false, now, task, comment);
 		timedao.add(time2);
 		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
 		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
@@ -322,11 +323,11 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.plusDays(1).with(LocalTime.MIN).minusSeconds(2).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task, comment);
 		timedao.add(time);
 		Instant start2 = l_now.withHour(12).toInstant();
 		UUID timeID2 = UUID.randomUUID();
-		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60), false, now, task);
+		Time time2 = new Time(timeID2, start2, start2.plusSeconds(60), false, now, task, comment);
 		timedao.add(time2);
 
 		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
@@ -343,9 +344,9 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task);
-		Time time2 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
-		Time time3 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task, comment);
+		Time time2 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2, comment);
+		Time time3 = new Time(UUID.randomUUID(), start, start.plusSeconds(5), false, now, task2, comment);
 		timedao.add(time2);
 		timedao.add(time);
 		timedao.add(time3);
@@ -361,7 +362,7 @@ public class TestTimeDAO
 	{
 		ZonedDateTime l_now = now.atZone(zone);
 		Instant start = l_now.withHour(10).toInstant();
-		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, child);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, child, comment);
 		timedao.add(time);
 
 		ZonedDateTime beginningOfDay = l_now.with(LocalTime.MIN);
@@ -383,11 +384,11 @@ public class TestTimeDAO
 		Instant start = l_now.withHour(10).toInstant();
 		ZonedDateTime beginingOfDay = l_now.with(LocalTime.MIN);
 		ZonedDateTime endOfDay = l_now.with(LocalTime.MAX);
-		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task2);
-		Time time2 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(1).toInstant(), beginingOfDay.plusHours(1).toInstant(), false, now, task2);
-		Time time3 = new Time(UUID.randomUUID(), endOfDay.minusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2);
-		Time time4 = new Time(UUID.randomUUID(), endOfDay.plusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2);
-		Time time5 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(2).toInstant(), beginingOfDay.minusHours(1).toInstant(), false, now, task2);
+		Time time = new Time(timeID, start, start.plusSeconds(5), false, now, task2, comment);
+		Time time2 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(1).toInstant(), beginingOfDay.plusHours(1).toInstant(), false, now, task2, comment);
+		Time time3 = new Time(UUID.randomUUID(), endOfDay.minusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2, comment);
+		Time time4 = new Time(UUID.randomUUID(), endOfDay.plusHours(1).toInstant(), endOfDay.plusHours(2).toInstant(), false, now, task2, comment);
+		Time time5 = new Time(UUID.randomUUID(), beginingOfDay.minusHours(2).toInstant(), beginingOfDay.minusHours(1).toInstant(), false, now, task2, comment);
 		timedao.add(time);
 		timedao.add(time2);
 		timedao.add(time3);

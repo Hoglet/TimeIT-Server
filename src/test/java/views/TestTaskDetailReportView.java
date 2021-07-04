@@ -34,6 +34,7 @@ public class TestTaskDetailReportView
 	private static ZonedDateTime  pointInMonth;
 	private static int            dayToTest;
 	private static Task           task;
+	private final static String   comment = "Just a comment";
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -59,16 +60,16 @@ public class TestTaskDetailReportView
 		Instant start = pointInMonth.withHour(10).toInstant();
 		Instant stop = start.plusSeconds(10 * 60);
 		TimeDAO timeDAO = new TimeDAO(emf);
-		Time time = new Time(timeID, start, stop, false, stop, task);
-		Time dummyTime = new Time(timeID2, start, start, false, stop, task2);
+		Time time = new Time(timeID, start, stop, false, stop, task, comment);
+		Time dummyTime = new Time(timeID2, start, start, false, stop, task2, comment);
 		
 		Instant start2 = start.minusSeconds(5*60*60);
 		Instant stop2 = start.minusSeconds(3*60*60);
-		Time time2 = new Time(timeID3, start2, stop2, false, stop, task);
+		Time time2 = new Time(timeID3, start2, stop2, false, stop, task, comment);
 		
 		Instant start3 = pointInMonth.withHour(15).toInstant();
 		Instant stop3  = pointInMonth.withHour(16).toInstant();
-		Time time3 = new Time(timeID4, start3, stop3, false, stop, task);
+		Time time3 = new Time(timeID4, start3, stop3, false, stop, task, comment);
 		timeDAO.add(time);
 		timeDAO.add(time2);
 		timeDAO.add(time3);

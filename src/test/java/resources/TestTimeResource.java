@@ -53,6 +53,7 @@ public class TestTimeResource
 	private static Task                  task;
 	private static Instant               now           = Instant.now();
 	private static ZoneId                zone          = ZonedDateTime.now().getZone();
+	private final  static String         comment       = "Just a comment";
 	private final  DateTimeFormatter     dateFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
 	private final  DateTimeFormatter     timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -87,7 +88,7 @@ public class TestTimeResource
 		
 		Instant start = Instant.ofEpochSecond(0);
 		Instant stop = Instant.ofEpochSecond(1);
-		time = new Time(timeID, start, stop, false, now, task);
+		time = new Time(timeID, start, stop, false, now, task, comment);
 		timeDAO.add(time);
 	}
 
@@ -136,7 +137,7 @@ public class TestTimeResource
 		ZonedDateTime start = now.atZone(zone).withSecond(0);
 		ZonedDateTime stop = start.plusSeconds(60);
 
-		Time expected = new Time(timeID, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task);
+		Time expected = new Time(timeID, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task, comment);
 
 		Form form = new Form();
 		form.add("timeid", timeID.toString());		
@@ -225,7 +226,7 @@ public class TestTimeResource
 		ZonedDateTime start = now.atZone(zone).withSecond(0).withNano(0);
 		ZonedDateTime stop = start.plusSeconds(60);
 
-		Time expected = new Time(id, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task);
+		Time expected = new Time(id, start.toInstant(), stop.toInstant(), false, stop.toInstant(), task, comment);
 
 		Form form = new Form();
 		form.add("timeid", id);

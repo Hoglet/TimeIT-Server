@@ -35,8 +35,14 @@ public class TimeDeserializer extends JsonDeserializer<Time>
 		
 		Instant lastChanged = Instant.ofEpochSecond(node.get("changed").longValue());
 
+		String comment = "";
+		if ( node.has("comment"))
+		{
+			comment = node.get("comment").textValue();
+		}
+
 		JsonNode jn = node.get("task");
 		Task task = mapper.readValue(jn.traverse(oc), Task.class);
-		return new Time(id, start, stop, deleted, lastChanged, task);
+		return new Time(id, start, stop, deleted, lastChanged, task, comment);
 	}
 }

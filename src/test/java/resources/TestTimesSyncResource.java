@@ -55,10 +55,11 @@ public class TestTimesSyncResource
 	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
 																	"Authenticator");
 	private static Instant                  now;
-	private        Instant                  start  = Instant.ofEpochSecond(11);
-	private        Instant                  stop   = Instant.ofEpochSecond(101);
+	private        Instant                  start   = Instant.ofEpochSecond(11);
+	private        Instant                  stop    = Instant.ofEpochSecond(101);
 
-	private static UUID						timeID = UUID.randomUUID();
+	private static UUID						timeID  = UUID.randomUUID();
+	private final static String             comment = "Just a comment";
 
 	@ClassRule
 	public static final ResourceTestRule	resources = ResourceTestRule.builder()
@@ -82,7 +83,7 @@ public class TestTimesSyncResource
 		Instant  l_start = Instant.ofEpochSecond(10);
 		Instant  l_stop  = Instant.ofEpochSecond(100);
 
-		time = new Time(timeID, l_start, l_stop, false, now, task);
+		time = new Time(timeID, l_start, l_stop, false, now, task, comment);
 	}
 
 	@AfterClass
@@ -146,7 +147,7 @@ public class TestTimesSyncResource
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
 
-		Time newTime = new Time(timeID, start, stop, false, now, task);
+		Time newTime = new Time(timeID, start, stop, false, now, task, comment);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
@@ -163,7 +164,7 @@ public class TestTimesSyncResource
 		List<Time> timesToSend = new ArrayList<Time>();
 		Instant  changed = Instant.ofEpochSecond(100);
 
-		Time newTime = new Time(timeID, start, stop, false, changed, task);
+		Time newTime = new Time(timeID, start, stop, false, changed, task, comment);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman/101");
 		resource.accept("application/json");
@@ -184,7 +185,7 @@ public class TestTimesSyncResource
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
 
-		Time newTime = new Time(timeID, start, stop, false, now, task);
+		Time newTime = new Time(timeID, start, stop, false, now, task, comment);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman/100");
 		resource.accept("application/json");
@@ -205,7 +206,7 @@ public class TestTimesSyncResource
 	{
 		List<Time> timesToSend = new ArrayList<Time>();
 
-		Time newTime = new Time(timeID,  start, stop, false, now, task);
+		Time newTime = new Time(timeID,  start, stop, false, now, task, comment);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
@@ -230,7 +231,7 @@ public class TestTimesSyncResource
 		Task otherTask = new Task(UUID.randomUUID(), "d", null, false, now, false, otherUser);
 		taskdao.add(otherTask);
 
-		Time newTime = new Time(timeID, start, stop, false, now, otherTask);
+		Time newTime = new Time(timeID, start, stop, false, now, otherTask, comment);
 		timesToSend.add(newTime);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");

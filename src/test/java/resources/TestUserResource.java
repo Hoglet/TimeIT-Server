@@ -74,8 +74,9 @@ public class TestUserResource
 	                                                                              HttpHeaders.class, null))
 	                                                                  .addResource(myAuthenticator).build();
 
-	private Instant start = Instant.ofEpochSecond(0);
-	private Instant stop  = Instant.ofEpochSecond(100);
+	private Instant      start   = Instant.ofEpochSecond(0);
+	private Instant      stop    = Instant.ofEpochSecond(100);
+	private final String comment = "Just a comment";
 
 	@BeforeClass
 	public static void beforeClass()
@@ -461,7 +462,7 @@ public class TestUserResource
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, start, stop, false, Instant.now(), task);
+		Time time = new Time(timeID, start, stop, false, Instant.now(), task, comment);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 
@@ -499,7 +500,7 @@ public class TestUserResource
 		taskdao.add(task);
 
 		UUID timeID = UUID.randomUUID();
-		Time time = new Time(timeID, start, stop, false, Instant.now(), task);
+		Time time = new Time(timeID, start, stop, false, Instant.now(), task, comment);
 		TimeDAO timedao = new TimeDAO(emf);
 		timedao.add(time);
 

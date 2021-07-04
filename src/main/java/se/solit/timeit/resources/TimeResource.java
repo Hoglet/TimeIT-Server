@@ -57,7 +57,7 @@ public class TimeResource extends BaseResource
 	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
 		Instant now = Instant.now();
-		Time time = new Time(UUID.randomUUID(), now, now, false, now, null);
+		Time time = new Time(UUID.randomUUID(), now, now, false, now, null, "");
 		return new TimeView(emf, time, user, context, session);
 	}
 
@@ -81,7 +81,7 @@ public class TimeResource extends BaseResource
 			Instant start = ZonedDateTime.of(d, s1, zone).toInstant();
 			Instant stop = ZonedDateTime.of(d, s2, zone).toInstant();
 			Task task = taskDAO.getByID(taskID);
-			Time time = new Time(UUID.fromString(id), start, stop, false, now, task);
+			Time time = new Time(UUID.fromString(id), start, stop, false, now, task, "");
 			timedao.add(time);
 			String headline = "Time added successfully";
 			setMessage(session, headline);

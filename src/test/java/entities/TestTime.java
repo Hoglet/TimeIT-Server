@@ -30,6 +30,7 @@ public class TestTime
 	private static final Instant  start        = Instant.ofEpochSecond(10);
 	private static final Instant  stop         = Instant.ofEpochSecond(100);
 	private static final Instant  changeTime   = Instant.ofEpochSecond(100);
+	private static final String   comment      = "Just a comment";
 
 	private static final User     owner        = new User("123", "", "password", "", null);
 	private static final Task     task1        = new Task(UUID.randomUUID(), "task1", null, false, creationTime, false, owner);
@@ -39,7 +40,7 @@ public class TestTime
 	@Before
 	public void setUp() throws Exception
 	{
-		time = new Time(timeID, epoch, epoch.plusSeconds(1), false, creationTime, task1);
+		time = new Time(timeID, epoch, epoch.plusSeconds(1), false, creationTime, task1, comment);
 	}
 
 	@Test
@@ -50,10 +51,10 @@ public class TestTime
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
 		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
 
-		Time time = new Time(timeID, start, stop, false, changeTime, task);
+		Time time = new Time(timeID, start, stop, false, changeTime, task, comment);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(time);
-		Assert.assertEquals(fixture("fixtures/time.json"), jsonString);
+		Assert.assertEquals(MAPPER.readTree(fixture("fixtures/time.json")), MAPPER.readTree(jsonString));
 	}
 
 	@Test
@@ -64,7 +65,7 @@ public class TestTime
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
 		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
 
-		Time time = new Time(timeID, start, stop, false, changeTime, task);
+		Time time = new Time(timeID, start, stop, false, changeTime, task, comment);
 		Time result = MAPPER.readValue(fixture("fixtures/time2.json"), Time.class);
 		Assert.assertEquals(time.getDeleted(), result.getDeleted());
 		Assert.assertEquals(time.getID(), result.getID());
@@ -87,40 +88,46 @@ public class TestTime
 		Instant stop = start.plusSeconds(1);
 		Instant now  = Instant.now();
 
-		Time x = new Time(timeID, start, stop, false, now, task1);
-		Time y = new Time(timeID, start, stop, false, now, task1);
+		Time x = new Time(timeID, start, stop, false, now, task1, comment);
+		Time y = new Time(timeID, start, stop, false, now, task1, comment);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Time(UUID.randomUUID(), start, stop, false, now, task1);
+		y = new Time(UUID.randomUUID(), start, stop, false, now, task1, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, stop, stop, false, now, task1);
+		y = new Time(timeID, stop, stop, false, now, task1, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, start, now, false, now, task1);
+		y = new Time(timeID, start, now, false, now, task1, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, start, stop, true, now, task1);
+		y = new Time(timeID, start, stop, true, now, task1, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, start, stop, false, Instant.ofEpochSecond(42), task1);
+		y = new Time(timeID, start, stop, false, Instant.ofEpochSecond(42), task1, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Time(timeID, start, stop, false, now, task2);
+		y = new Time(timeID, start, stop, false, now, task2, comment);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
+
+		y = new Time(timeID, start, stop, false, now, task1, "apa");
+		assertFalse(x.equals(y));
+		assertFalse(y.equals(x));
+		assertFalse(x.hashCode() == y.hashCode());
+
 
 		assertTrue(x.equals(x));
 		assertFalse(y.equals(""));
@@ -147,4 +154,6 @@ public class TestTime
 		assertNotEquals(newStop, time.getStop());
 		assertEquals(newStop, newTime.getStop());
 	}
+
+
 }
