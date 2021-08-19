@@ -34,10 +34,10 @@ public class TestTimeDescriptorlist
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		parent = new Task(parentID, "parent", null, false, false, owner);
-		parent2 = new Task(parent2ID, "parent2", null, false, false, owner);
-		child = new Task(childID, "child", parent, false, false, owner);
-		child2 = new Task(child2ID, "child", parent2, false, false, owner);
+		parent = new Task(parentID, "parent", null, owner);
+		parent2 = new Task(parent2ID, "parent2", null, owner);
+		child = new Task(childID, "child", parent,  owner);
+		child2 = new Task(child2ID, "child", parent2,  owner);
 		duration = Duration.ofSeconds(70);
 		durationWithChildren = Duration.ofSeconds(140);
 		list = new TimeDescriptorList();
@@ -55,7 +55,7 @@ public class TestTimeDescriptorlist
 		TimeDescriptor found = list.find(parent2);
 		assertEquals(tdToFind, found);
 
-		Task oddTask = new Task(UUID.randomUUID(), "Oddy", null, false, false, owner);
+		Task oddTask = new Task(UUID.randomUUID(), "Oddy", null, owner);
 		found = list.find(oddTask);
 		assertEquals(null, found);
 
@@ -64,7 +64,7 @@ public class TestTimeDescriptorlist
 	@Test
 	public void testSortedAddTimeDescriptor()
 	{
-		Task grandChild = new Task(grandchildID, "grandChild", child, false, false, owner);
+		Task grandChild = new Task(grandchildID, "grandChild", child, owner);
 		TimeDescriptor td_toAdd = new TimeDescriptor(grandChild, duration, durationWithChildren);
 		list.add(td_toAdd);
 		StringBuilder sb = new StringBuilder();

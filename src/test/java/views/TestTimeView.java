@@ -44,8 +44,8 @@ public class TestTimeView
 		Instant start = Instant.ofEpochSecond(0);
 		Instant stop  = Instant.ofEpochSecond(1);
 
-		Task    parent  = new Task(parentID, "parent", null, false, false, user);
-		Task    child   = new Task(childID, "child", parent, false, false, user);
+		Task    parent  = new Task(parentID, "parent", null, user);
+		Task    child   = new Task(childID, "child", parent, user);
 		taskDAO.add(parent);
 		taskDAO.add(child);
 

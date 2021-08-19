@@ -23,16 +23,16 @@ public class TestTaskDescriptor
 	private static Task           child;
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
+	public static void setUpBeforeClass()
 	{
-		parent = new Task(parentID, "parent", null, false, false, owner);
-		child = new Task(childID, "child", parent, false, false, owner);
+		parent = new Task(parentID, "parent", null, owner);
+		child = new Task(childID, "child", parent, owner);
 		taskDescriptor1 = new TaskDescriptor(parent);
 		taskDescriptor2 = new TaskDescriptor(child);
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception
+	public static void tearDownAfterClass()
 	{
 	}
 

@@ -77,7 +77,7 @@ public class TestTimesSyncResource
 		now = Instant.ofEpochSecond(100);
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task(UUID.randomUUID(), "Task1", null, false, now, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, now, false, user);
 		taskdao.add(task);
 
 		Instant  l_start = Instant.ofEpochSecond(10);
@@ -228,7 +228,7 @@ public class TestTimesSyncResource
 		List<Time> timesToSend = new ArrayList<Time>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
 		userdao.add(otherUser);
-		Task otherTask = new Task(UUID.randomUUID(), "d", null, false, now, false, otherUser);
+		Task otherTask = new Task(UUID.randomUUID(), "d", null, now, false, otherUser);
 		taskdao.add(otherTask);
 
 		Time newTime = new Time(timeID, start, stop, false, now, otherTask, comment);

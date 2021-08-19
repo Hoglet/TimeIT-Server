@@ -33,8 +33,8 @@ public class TestTime
 	private static final String   comment      = "Just a comment";
 
 	private static final User     owner        = new User("123", "", "password", "", null);
-	private static final Task     task1        = new Task(UUID.randomUUID(), "task1", null, false, creationTime, false, owner);
-	private static final Task     task2        = new Task(UUID.randomUUID(), "task2", null, false, creationTime, false, owner);
+	private static final Task     task1        = new Task(UUID.randomUUID(), "task1", null, creationTime, false, owner);
+	private static final Task     task2        = new Task(UUID.randomUUID(), "task2", null, creationTime, false, owner);
 	private Time                  time;
 
 	@Before
@@ -49,7 +49,7 @@ public class TestTime
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
+		Task task = new Task(id, "Task1", null, changeTime, false, user);
 
 		Time time = new Time(timeID, start, stop, false, changeTime, task, comment);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
@@ -63,7 +63,7 @@ public class TestTime
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("a9e104e7-fd86-4953-a297-97736fc939fe");
-		Task task = new Task(id, "Task1", null, false, changeTime, false, user);
+		Task task = new Task(id, "Task1", null, changeTime, false, user);
 
 		Time time = new Time(timeID, start, stop, false, changeTime, task, comment);
 		Time result = MAPPER.readValue(fixture("fixtures/time2.json"), Time.class);

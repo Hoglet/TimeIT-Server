@@ -35,7 +35,6 @@ public class Task
 	
 	@JsonSerialize(using = TaskSerializer.class)
 	private final Task        parent;
-	private final boolean     completed;
 
 	@JsonSerialize(using = DateAsTimestampSerializer.class)
 	private final long        lastChange;
@@ -48,7 +47,6 @@ public class Task
 
 	protected Task()
 	{
-		this.completed = false;
 		this.id = "";
 		this.name = "";
 		this.lastChange = 0;
@@ -57,13 +55,12 @@ public class Task
 		this.parent = null;
 	}
 
-	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
-	        final boolean paramDeleted, final User paramOwner)
+	public Task(final UUID paramID, final String paramName, final Task paramParent, final User paramOwner)
 	{
-		this(paramID, paramName, paramParent, paramCompleted, Instant.now(), paramDeleted, paramOwner);
+			this(paramID, paramName, paramParent, Instant.now(), false, paramOwner);
 	}
 
-	public Task(final UUID paramID, final String paramName, final Task paramParent, final boolean paramCompleted,
+	public Task(final UUID paramID, final String paramName, final Task paramParent,
 	        final Instant paramLastChanged, final boolean paramDeleted, final User paramOwner)
 	{
 		if (paramID == null)
@@ -73,7 +70,6 @@ public class Task
 		id = paramID.toString();
 		name = paramName;
 		parent = paramParent;
-		completed = paramCompleted;
 		deleted = paramDeleted;
 		if (paramOwner == null)
 		{
@@ -87,7 +83,7 @@ public class Task
 	public final Task withDeleted(final boolean deleted2)
 	{
 		UUID id2 = UUID.fromString(id);
-		return new Task(id2 , name, parent, completed, Instant.now(), deleted2, owner);
+		return new Task(id2 , name, parent, Instant.now(), deleted2, owner);
 	}
 
 	public final UUID getID()
@@ -115,11 +111,6 @@ public class Task
 		return deleted;
 	}
 
-	public final boolean getCompleted()
-	{
-		return completed;
-	}
-
 	// CHECKSTYLE:OFF
 	// SONAR:OFF
 	@Override
@@ -138,10 +129,6 @@ public class Task
 			return false;
 		}
 		Task other = (Task) obj;
-		if (completed != other.completed)
-		{
-			return false;
-		}
 		if (deleted != other.deleted)
 		{
 			return false;
@@ -188,7 +175,6 @@ public class Task
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (completed ? 1231 : 1237);
 		result = prime * result + (deleted ? 1231 : 1237);
 		result = prime * result + id.hashCode();
 		result = prime * result + Long.valueOf(lastChange).hashCode();
@@ -205,19 +191,13 @@ public class Task
 	public final Task withName(final String name2)
 	{
 		UUID id2 = UUID.fromString(id);
-		return new Task(id2 , name2, parent, completed, Instant.now(), deleted, owner);
+		return new Task(id2 , name2, parent, Instant.now(), deleted, owner);
 	}
 
 	public final Task withParent(final Task parent2)
 	{
 		UUID id2 = UUID.fromString(id);
-		return new Task(id2 , name, parent2, completed, Instant.now(), deleted, owner);
-	}
-
-	public final Task withCompleted(final boolean completed2)
-	{
-		UUID id2 = UUID.fromString(id);
-		return new Task(id2 , name, parent, completed2, Instant.now(), deleted, owner);
+		return new Task(id2 , name, parent2, Instant.now(), deleted, owner);
 	}
 
 	public final User getOwner()
@@ -232,7 +212,7 @@ public class Task
 			throw new NullPointerException("Owner is not allowed to be null");
 		}
 		UUID id2 = UUID.fromString(id);
-		return new Task(id2 , name, parent, completed, Instant.now(), deleted, owner2);
+		return new Task(id2 , name, parent, Instant.now(), deleted, owner2);
 	}
 
 }

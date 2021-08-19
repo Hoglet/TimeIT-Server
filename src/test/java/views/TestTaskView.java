@@ -35,9 +35,9 @@ public class TestTaskView
 		user2 = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user2);
-		task = new Task(taskID, "Name", null, false, false, user2);
-		Task parent = new Task(parentID, "Parent", null, false, false, user2);
-		Task child = new Task(childID, "child", parent, false, false, user2);
+		task = new Task(taskID, "Name", null, user2);
+		Task parent = new Task(parentID, "Parent", null, user2);
+		Task child = new Task(childID, "child", parent, user2);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);

@@ -44,7 +44,7 @@ public class TaskResource extends BaseResource
 	@Path("/add")
 	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
 	{
-		Task task = new Task(UUID.randomUUID(), "", null, false, false, user);
+		Task task = new Task(UUID.randomUUID(), "", null, user);
 		return new TaskView(emf, task, user, Action.ADD, context, session);
 	}
 
@@ -61,7 +61,7 @@ public class TaskResource extends BaseResource
 		{
 			parent = taskdao.getByID(UUID.fromString(parentID));
 		}
-		Task task = new Task(UUID.fromString(id), name, parent, false, false, user);
+		Task task = new Task(UUID.fromString(id), name, parent, user);
 		taskdao.add(task);
 		String headline = "Task added successfully";
 		setMessage(session, headline);
@@ -103,7 +103,7 @@ public class TaskResource extends BaseResource
 			String headline;
 			if (existingTask.getOwner().equals(user))
 			{
-				Task task = new Task(UUID.fromString(id), name, parent, false, false, user);
+				Task task = new Task(UUID.fromString(id), name, parent, user);
 				taskdao.update(task);
 				headline = "Task updated";
 			}

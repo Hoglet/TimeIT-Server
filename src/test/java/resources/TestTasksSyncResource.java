@@ -65,7 +65,7 @@ public class TestTasksSyncResource
 	{
 		user = new User(TESTMAN_ID, TESTMAN_ID, "password", "", new ArrayList<Role>());
 		userdao.add(user);
-		task = new Task(UUID.randomUUID(), "Task1", null, false, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, user);
 	}
 
 	@AfterClass
@@ -110,7 +110,7 @@ public class TestTasksSyncResource
 	@Test
 	public void testTasksGet_deleted()
 	{
-		Task task2 = new Task(UUID.randomUUID(), "Task1", null, false, true, user);
+		Task task2 = new Task(UUID.randomUUID(), "Task1", null, Instant.now(), true, user);
 		taskdao.add(task2);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -125,7 +125,7 @@ public class TestTasksSyncResource
 	public void testTasksSync()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task(parentID, "newTask", null, false, false, user);
+		Task newTask = new Task(parentID, "newTask", null, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -139,7 +139,7 @@ public class TestTasksSyncResource
 	public void testTasksSync_deleted()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task(parentID, "newTask", null, false, true, user);
+		Task newTask = new Task(parentID, "newTask", null, Instant.now(), true, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -154,7 +154,7 @@ public class TestTasksSyncResource
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
-		Task newTask = new Task(parentID, "newTask", null, false, false, otherUser);
+		Task newTask = new Task(parentID, "newTask", null, otherUser);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -173,7 +173,7 @@ public class TestTasksSyncResource
 	public void testTasksSync_accessingOtherUser()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task(parentID, "newTask", null, false, false, user);
+		Task newTask = new Task(parentID, "newTask", null, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/otherman");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -192,8 +192,8 @@ public class TestTasksSyncResource
 	public void testTasksSync_advanced1()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task(parentID, "parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		tasksToSend.add(child);
 		tasksToSend.add(parent);
 
@@ -209,8 +209,8 @@ public class TestTasksSyncResource
 	public void testTasksSync_advanced2()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task(parentID, "parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		tasksToSend.add(parent);
 		tasksToSend.add(child);
 
@@ -228,7 +228,7 @@ public class TestTasksSyncResource
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
 		Instant changeTime2 = Instant.ofEpochSecond(100);
-		Task newTask = new Task(parentID, "newTask", null, false, changeTime2, false, user);
+		Task newTask = new Task(parentID, "newTask", null, changeTime2, false, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman/100");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -250,7 +250,7 @@ public class TestTasksSyncResource
 	public void testTasksSyncRanged_deleted()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task(parentID, "newTask", null, false, true, user);
+		Task newTask = new Task(parentID, "newTask", null, Instant.now(), true, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -265,7 +265,7 @@ public class TestTasksSyncResource
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
-		Task newTask = new Task(parentID, "newTask", null, false, false, otherUser);
+		Task newTask = new Task(parentID, "newTask", null, otherUser);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/testman/0");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -284,7 +284,7 @@ public class TestTasksSyncResource
 	public void testTasksSyncRanged_accessingOtherUser()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task newTask = new Task(parentID, "newTask", null, false, false, user);
+		Task newTask = new Task(parentID, "newTask", null, user);
 		tasksToSend.add(newTask);
 		WebResource resource = resources.client().resource("/sync/tasks/otherman/0");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -303,8 +303,8 @@ public class TestTasksSyncResource
 	public void testTasksSyncRanged_advanced1()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task(parentID, "parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		tasksToSend.add(child);
 		tasksToSend.add(parent);
 
@@ -320,8 +320,8 @@ public class TestTasksSyncResource
 	public void testTasksSyncRanged_advanced2()
 	{
 		List<Task> tasksToSend = new ArrayList<Task>();
-		Task parent = new Task(parentID, "parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		tasksToSend.add(parent);
 		tasksToSend.add(child);
 

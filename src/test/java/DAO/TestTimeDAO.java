@@ -56,9 +56,9 @@ public class TestTimeDAO
 		user = new User("testman", "Test Tester", "password", "", null);
 		userdao = new UserDAO(emf);
 		userdao.add(user);
-		task = new Task(UUID.randomUUID(), "Task1", null, false, false, user);
-		child = new Task(UUID.randomUUID(), "Task1", task, false, false, user);
-		task2 = new Task(UUID.randomUUID(), "Task2", null, false, false, user);
+		task = new Task(UUID.randomUUID(), "Task1", null, user);
+		child = new Task(UUID.randomUUID(), "Task1", task, user);
+		task2 = new Task(UUID.randomUUID(), "Task2", null, user);
 		taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		taskdao.add(task2);

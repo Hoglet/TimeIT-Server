@@ -60,7 +60,7 @@ public class TestIndexResource
 		TaskDAO taskDAO = new TaskDAO(emf);
 		User user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		Task task = new Task(UUID.randomUUID(), "admin stuff", null, false, false, user);
+		Task task = new Task(UUID.randomUUID(), "admin stuff", null, user);
 		taskDAO.add(task);
 	}
 

@@ -457,7 +457,7 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, Instant.now(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 
@@ -495,7 +495,7 @@ public class TestUserResource
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
 
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, true, minion);
+		Task task = new Task(UUID.randomUUID(), "parent", null, Instant.now(), true, minion);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 

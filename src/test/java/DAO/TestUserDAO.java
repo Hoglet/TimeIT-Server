@@ -107,7 +107,7 @@ public class TestUserDAO
 		userdao.add(user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		Instant now = Instant.now();
-		Task task = new Task(UUID.randomUUID(), "parent", null, false, false, user);
+		Task task = new Task(UUID.randomUUID(), "parent", null, user);
 		taskdao.add(task);
 		UUID timeID = UUID.randomUUID();
 		

@@ -56,8 +56,8 @@ public class TestDayReportView
 		UUID timeID3 = UUID.randomUUID();
 		UUID timeID4 = UUID.randomUUID();
 
-		task = new Task(taskID, "Name", null, false, false, user);
-		Task task2 = new Task(taskID2, "Name2", null, false, false, user);
+		task = new Task(taskID, "Name", null, user);
+		Task task2 = new Task(taskID2, "Name2", null, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		taskdao.add(task2);

@@ -48,7 +48,7 @@ public class TestReportView
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		task = new Task(taskID, "Name", null, false, false, user);
+		task = new Task(taskID, "Name", null, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		Instant start = pointInMonth.withHour(10).toInstant();
@@ -75,7 +75,7 @@ public class TestReportView
 		view.extractTimeDescriptors(start, stop);
 		view.extractTasks();
 		Assert.assertEquals("Item Item0", view.getTaskClass(task));
-		Task unknownTask = new Task(UUID.randomUUID(), "Who", null, false, false, user);
+		Task unknownTask = new Task(UUID.randomUUID(), "Who", null, user);
 		Assert.assertEquals("Item ", view.getTaskClass(unknownTask));
 	}
 

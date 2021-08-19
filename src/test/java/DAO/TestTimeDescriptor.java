@@ -29,8 +29,8 @@ public class TestTimeDescriptor
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		parent = new Task(parentID, "parent", null, false, false, owner);
-		child = new Task(childID, "child", parent, false, false, owner);
+		parent = new Task(parentID, "parent", null, owner);
+		child = new Task(childID, "child", parent, owner);
 		duration = Duration.ofSeconds(120);
 		duration2 = Duration.ofSeconds(60);
 		timeDescriptor1 = new TimeDescriptor(parent, duration, duration2);

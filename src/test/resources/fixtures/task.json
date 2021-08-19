@@ -1,7 +1,6 @@
 {
   "id" : "415a8737-b433-4a31-b85f-1a63e34eaddb",
   "name" : "Task1",
-  "completed" : false,
   "deleted" : false,
   "lastChange" : 1000,
   "owner" : {

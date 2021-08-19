@@ -70,7 +70,7 @@ public class TestReportResource
 		userDAO.add(user);
 		userDAO.add(otheruser);
 		taskID = UUID.randomUUID().toString();
-		Task task = new Task(UUID.fromString(taskID), "TaskName", null, false, false, user);
+		Task task = new Task(UUID.fromString(taskID), "TaskName", null, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(task);
 	}

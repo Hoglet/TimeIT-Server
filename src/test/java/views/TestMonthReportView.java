@@ -49,7 +49,7 @@ public class TestMonthReportView
 		UUID taskID = UUID.randomUUID();
 		UUID timeID = UUID.randomUUID();
 
-		Task task = new Task(taskID, "Name", null, false, false, user);
+		Task task = new Task(taskID, "Name", null, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(task);
 		Instant start = pointInMonth.withHour(10).toInstant();

@@ -83,7 +83,7 @@ public class TestTimeResource
 		TaskDAO taskDAO = new TaskDAO(emf);
 		user = new User("admin", "Bob B", "password", "email", null);
 		userDAO.add(user);
-		task = new Task(taskID, "Task", null, false, false, user);
+		task = new Task(taskID, "Task", null, user);
 		taskDAO.add(task);
 		
 		Instant start = Instant.ofEpochSecond(0);

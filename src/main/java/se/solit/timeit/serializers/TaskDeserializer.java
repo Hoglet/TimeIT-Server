@@ -46,8 +46,7 @@ public class TaskDeserializer extends JsonDeserializer<Task>
 			{
 				parent = mapper.readValue(jn.traverse(oc), Task.class);
 			}
-			completed = node.get("completed").asBoolean();
 		}
-		return new Task(id, name, parent, completed, lastChanged, deleted, owner);
+		return new Task(id, name, parent, lastChanged, deleted, owner);
 	}
 }

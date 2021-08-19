@@ -34,7 +34,7 @@ public class TestTask
 	@Before
 	public void setUp() throws Exception
 	{
-		task = new Task(taskID, "", null, false, createTime, false, user);
+		task = new Task(taskID, "", null, createTime, false, user);
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class TestTask
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
-		Task task = new Task(id, "Task1", null, false, createTime, false, user);
+		Task task = new Task(id, "Task1", null, createTime, false, user);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(task);
 		Assert.assertEquals(fixture("fixtures/task.json"), jsonString);
@@ -56,8 +56,8 @@ public class TestTask
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
 		UUID parentID = UUID.fromString("6fd9a659-8834-4d31-a69c-1c6b601b8f50");
-		Task parent = new Task(parentID, "parent", null, false, createTime, false, user);
-		Task task = new Task(id, "Task1", parent, false, createTime, false, user);
+		Task parent = new Task(parentID, "parent", null, createTime, false, user);
+		Task task = new Task(id, "Task1", parent, createTime, false, user);
 		MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonString = MAPPER.writeValueAsString(task);
 		Assert.assertEquals(fixture("fixtures/taskWithParent.json"), jsonString);
@@ -69,13 +69,12 @@ public class TestTask
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
-		Task expected = new Task(id, "Task1", null, false, createTime, false, user);
+		Task expected = new Task(id, "Task1", null, createTime, false, user);
 		Task actual = MAPPER.readValue(fixture("fixtures/task.json"), Task.class);
 		Assert.assertEquals("Name: ", expected.getName(), actual.getName());
 		Assert.assertEquals("Deleted: ", expected.getDeleted(), actual.getDeleted());
 		Assert.assertEquals("ID: ", expected.getID(), actual.getID());
 		Assert.assertEquals("Owner: ", expected.getOwner().getUsername(), actual.getOwner().getUsername());
-		Assert.assertEquals("Completed: ", expected.getCompleted(), actual.getCompleted());
 		Assert.assertEquals("Changed: ", expected.getLastChange(), actual.getLastChange());
 	}
 
@@ -86,15 +85,14 @@ public class TestTask
 		User user = new User("testman", "Test Tester", "password", "", null);
 		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
 		UUID parentID = UUID.fromString("6fd9a659-8834-4d31-a69c-1c6b601b8f50");
-		Task parent = new Task(parentID, "parent", null, false, createTime, false, user);
-		Task expected = new Task(id, "Task1", parent, false, createTime, false, user);
+		Task parent = new Task(parentID, "parent", null, createTime, false, user);
+		Task expected = new Task(id, "Task1", parent, createTime, false, user);
 		Task actual = MAPPER.readValue(fixture("fixtures/taskWithParent.json"), Task.class);
 		Assert.assertEquals("Name: ", expected.getName(), actual.getName());
 		Assert.assertEquals("Deleted: ", expected.getDeleted(), actual.getDeleted());
 		Assert.assertEquals("ID: ", expected.getID(), actual.getID());
 		Assert.assertEquals("Owner: ", expected.getOwner().getUsername(), actual.getOwner().getUsername());
 		Assert.assertEquals("Parent: ", expected.getParent().getID(), actual.getParent().getID());
-		Assert.assertEquals("Completed: ", expected.getCompleted(), actual.getCompleted());
 		Assert.assertEquals("Changed: ", expected.getLastChange(), actual.getLastChange());
 	}
 
@@ -103,9 +101,8 @@ public class TestTask
 	{
 		try
 		{
-			Task task = new Task(null, "", null, false, false, user);
+			Task task = new Task(null, "", null, user);
 			Assert.assertTrue("Should not allow null user", false);
-			task.withCompleted(true);
 		}
 		catch (Exception e)
 		{
@@ -124,17 +121,9 @@ public class TestTask
 	@Test
 	public final void testSetParent()
 	{
-		Task parent = new Task(parentID, "", null, false, false, user);
+		Task parent = new Task(parentID, "", null, user);
 		Task newTask = task.withParent(parent);
 		assertEquals(newTask.getParent(), parent);
-		assertTrue(createTime.isBefore(newTask.getLastChange()));
-	}
-
-	@Test
-	public final void testSetCompleted()
-	{
-		Task newTask = task.withCompleted(true);
-		assertTrue(newTask.getCompleted());
 		assertTrue(createTime.isBefore(newTask.getLastChange()));
 	}
 
@@ -158,65 +147,60 @@ public class TestTask
 	@Test
 	public final void testEqualsObject()
 	{
-		Task x = new Task(taskID, JUST_A_STRING, null, false, false, user);
-		Task y = new Task(taskID, JUST_A_STRING, null, false, false, user);
-		Task parent = new Task(parentID, "parent", null, false, false, user);
+		Task x = new Task(taskID, JUST_A_STRING, null, user);
+		Task y = new Task(taskID, JUST_A_STRING, null, user);
+		Task parent = new Task(parentID, "parent", null, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, null, null, false, false, user);
+		y = new Task(taskID, null, null, x.getLastChange(), false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, parent, false, false, user);
+		y = new Task(taskID, JUST_A_STRING, parent, x.getLastChange(), false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, true, false, user);
+		y = new Task(taskID, JUST_A_STRING, null, epoch, false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, false, epoch, false, user);
+		y = new Task(taskID, JUST_A_STRING, null, x.getLastChange(), true, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, false, true, user);
+		y = new Task(UUID.randomUUID(), JUST_A_STRING, null, x.getLastChange(), false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(UUID.randomUUID(), JUST_A_STRING, null, false, false, user);
+		y = new Task(taskID, "", null, x.getLastChange(), false, user);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, "", null, false, false, user);
-		assertFalse(x.equals(y));
-		assertFalse(y.equals(x));
-		assertFalse(x.hashCode() == y.hashCode());
-
-		x = new Task(taskID, JUST_A_STRING, parent, false, false, user);
-		y = new Task(taskID, JUST_A_STRING, parent, false, false, user);
+		x = new Task(taskID, JUST_A_STRING, parent, user);
+		y = new Task(taskID, JUST_A_STRING, parent, x.getLastChange(), false, user);
 		assertTrue(x.equals(y));
 		assertTrue(y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		y = new Task(taskID, JUST_A_STRING, null, false, false, other);
+		y = new Task(taskID, JUST_A_STRING, null, x.getLastChange(), false, other);
 		assertFalse(x.equals(y));
 		assertFalse(y.equals(x));
 		assertFalse(x.hashCode() == y.hashCode());
 
-		x = new Task(taskID, null, null, false, false, user);
-		y = new Task(taskID, null, null, false, false, user);
+		x = new Task(taskID, null, null, user);
+		y = new Task(taskID, null, null, x.getLastChange(), false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 
-		x = new Task(taskID, JUST_A_STRING, null, false, false, user);
-		y = new Task(taskID, JUST_A_STRING, null, false, false, user);
+		x = new Task(taskID, JUST_A_STRING, null, user);
+		y = new Task(taskID, JUST_A_STRING, null, x.getLastChange(), false, user);
 		assertTrue(x.equals(y) && y.equals(x));
 		assertTrue(x.hashCode() == y.hashCode());
 

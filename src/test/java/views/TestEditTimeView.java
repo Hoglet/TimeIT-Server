@@ -42,8 +42,8 @@ public class TestEditTimeView
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
 		ZonedDateTime now = ZonedDateTime.now();
-		Task parent = new Task(parentID, "parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		TaskDAO taskDAO = new TaskDAO(emf);
 		taskDAO.add(parent);
 		taskDAO.add(child);

@@ -39,8 +39,8 @@ public class TestIndexView
 		user = new User("minion", "Do Er", "password", "email", null);
 		UserDAO userdao = new UserDAO(emf);
 		userdao.add(user);
-		Task parent = new Task(parentID, "Parent", null, false, false, user);
-		Task child = new Task(childID, "child", parent, false, false, user);
+		Task parent = new Task(parentID, "Parent", null, user);
+		Task child = new Task(childID, "child", parent, user);
 		TaskDAO taskdao = new TaskDAO(emf);
 		taskdao.add(parent);
 		taskdao.add(child);
