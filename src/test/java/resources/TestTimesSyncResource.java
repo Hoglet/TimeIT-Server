@@ -1,6 +1,5 @@
 package resources;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
 import java.sql.SQLException;
@@ -13,8 +12,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -33,9 +34,9 @@ import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.TimesSyncResource;
 
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+//import com.sun.jersey.api.client.GenericType;
+//import com.sun.jersey.api.client.WebResource;
+//import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class TestTimesSyncResource
 {
@@ -47,13 +48,13 @@ public class TestTimesSyncResource
 	private static TimeDAO                  timedao    = new TimeDAO(emf);
 	private static User                     user;
 	private static Task                     task;
-	private static GenericType<List<Time>>  returnType = new GenericType<List<Time>>()
+	private static GenericType<List<Time>> returnType = new GenericType<List<Time>>()
 															{
 															};
 	private static Time                     time;
 
-	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
-																	"Authenticator");
+	//private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),																	"Authenticator");
+
 	private static Instant                  now;
 	private        Instant                  start   = Instant.ofEpochSecond(11);
 	private        Instant                  stop    = Instant.ofEpochSecond(101);
@@ -63,13 +64,13 @@ public class TestTimesSyncResource
 
 	@ClassRule
 	public static final ResourceTestRule	resources = ResourceTestRule.builder()
-	                                                                    .addProvider(
-	                                                                            new ContextInjectableProvider<HttpHeaders>(
-	                                                                                    HttpHeaders.class, null))
-	                                                                    .addResource(myAuthenticator)
+/*	                                                                    .addProvider(
+	                                                                            new hContextInjectableProvider<HttpHeaders>(
+	                                                                                    HttpHeaders.class, null))'*/
+	                                                                    //.addResource(myAuthenticator)
 	                                                                    .addResource(new TimesSyncResource(emf)).build();
 
-	private WebResource                     resource;
+	//private WebResource                     resource;
 
 	@BeforeClass
 	public static void beforeClass()
@@ -114,7 +115,8 @@ public class TestTimesSyncResource
 	@Test
 	public void testTimesGet() throws SQLException
 	{
-		timedao.add(time);
+		Fail.fail("Make test");
+/*		timedao.add(time);
 		resource = resources.client().resource("/sync/times/testman");
 		resource.accept("application/json");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -122,12 +124,14 @@ public class TestTimesSyncResource
 		Assert.assertEquals(resultingTimes.size(), 1);
 		Time resultingTime = resultingTimes.get(0);
 		Assert.assertTrue(resultingTime.equals(time));
+*/
 	}
 
 	@Test
 	public void testTimesGet_attackOtherUser() throws SQLException
 	{
-		timedao.add(time);
+		Fail.fail("Make test");
+/*		timedao.add(time);
 		resource = resources.client().resource("/sync/times/otherman");
 		resource.accept("application/json");
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
@@ -140,12 +144,14 @@ public class TestTimesSyncResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testTimesSync()
 	{
-		List<Time> timesToSend = new ArrayList<Time>();
+		Fail.fail("Make test");
+/*		List<Time> timesToSend = new ArrayList<Time>();
 
 		Time newTime = new Time(timeID, start, stop, false, now, task, comment);
 		timesToSend.add(newTime);
@@ -156,12 +162,14 @@ public class TestTimesSyncResource
 		Assert.assertEquals("Number of times returned", 1, resultingTimes.size());
 		Time resultingTime = resultingTimes.get(0);
 		Assert.assertTrue(resultingTime.equals(newTime));
+*/
 	}
 
 	@Test
 	public void testTimesSyncRanged()
 	{
-		List<Time> timesToSend = new ArrayList<Time>();
+		Fail.fail("Make test");
+/*		List<Time> timesToSend = new ArrayList<Time>();
 		Instant  changed = Instant.ofEpochSecond(100);
 
 		Time newTime = new Time(timeID, start, stop, false, changed, task, comment);
@@ -177,12 +185,14 @@ public class TestTimesSyncResource
 		resource.addFilter(new HTTPBasicAuthFilter(TESTMAN_ID, "password"));
 		resultingTimes = resource.type("application/json").put(returnType, timesToSend);
 		Assert.assertEquals("Number of times returned", 1, resultingTimes.size());
-
+*/
 	}
 
 	@Test
 	public void testTimesSyncRanged_attackOtherUser()
 	{
+		Fail.fail("Make test");
+/*
 		List<Time> timesToSend = new ArrayList<Time>();
 
 		Time newTime = new Time(timeID, start, stop, false, now, task, comment);
@@ -199,12 +209,15 @@ public class TestTimesSyncResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testTimesSync_attackOtherUser()
 	{
-		List<Time> timesToSend = new ArrayList<Time>();
+		Fail.fail("Make test");
+/*
+	List<Time> timesToSend = new ArrayList<Time>();
 
 		Time newTime = new Time(timeID,  start, stop, false, now, task, comment);
 		timesToSend.add(newTime);
@@ -220,11 +233,14 @@ public class TestTimesSyncResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testTimesSync_attackDirtyData()
 	{
+		Fail.fail("Make test");
+/*
 		List<Time> timesToSend = new ArrayList<Time>();
 		User otherUser = new User("innocent", "bystander", "unkown", "", null);
 		userdao.add(otherUser);
@@ -245,6 +261,7 @@ public class TestTimesSyncResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 }

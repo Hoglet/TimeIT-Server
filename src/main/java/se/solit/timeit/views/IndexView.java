@@ -7,7 +7,9 @@ import java.util.Iterator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TaskDescriptorList;
 import se.solit.timeit.dao.TimeDAO;
@@ -15,16 +17,14 @@ import se.solit.timeit.dao.TimeDescriptor;
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.User;
 
-import com.sun.jersey.api.core.HttpContext;
-
 public class IndexView extends BaseView
 {
 	private final TaskDAO	taskdao;
 	private final TimeDAO	timedao;
 
-	public IndexView(User user, EntityManagerFactory emf, HttpContext context, HttpSession session)
+	public IndexView(User user, EntityManagerFactory emf, UriInfo uriInfo, HttpSession session)
 	{
-		super("index.ftl", user, context, session);
+		super("index.ftl", user, uriInfo, session);
 		taskdao = new TaskDAO(emf);
 		timedao = new TimeDAO(emf);
 	}

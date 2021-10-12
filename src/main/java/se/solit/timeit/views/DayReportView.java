@@ -1,5 +1,6 @@
 package se.solit.timeit.views;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.jersey.sessions.Session;
 
 import java.time.Instant;
@@ -13,13 +14,12 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class DayReportView extends ReportView
 {
@@ -28,9 +28,9 @@ public class DayReportView extends ReportView
 	private Map<Integer, List<Time>>	items;
 
 	public DayReportView(EntityManagerFactory emf, ZonedDateTime pointInTime, User user, User reportedUser,
-			HttpContext context, @Session HttpSession session)
+						 UriInfo uriInfo, @Session HttpSession session)
 	{
-		super("dayReport.ftl", user, pointInTime, reportedUser, context, session, emf);
+		super("dayReport.ftl", user, pointInTime, reportedUser, uriInfo, session, emf);
 
 		ZonedDateTime start = pointInTime.with(LocalTime.MIN);
 		ZonedDateTime stop = start.with(LocalTime.MAX);

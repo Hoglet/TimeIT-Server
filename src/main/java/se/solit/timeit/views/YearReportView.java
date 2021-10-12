@@ -1,5 +1,6 @@
 package se.solit.timeit.views;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.jersey.sessions.Session;
 
 import java.time.Instant;
@@ -11,21 +12,21 @@ import java.time.format.DateTimeFormatter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.User;
 
-import com.sun.jersey.api.core.HttpContext;
 
 public class YearReportView extends ReportView
 {
 	private final TimeDAO	timeDAO;
 
 	public YearReportView(EntityManagerFactory emf, ZonedDateTime pointInMonth, User user, User reportedUser,
-			HttpContext context, @Session HttpSession session)
+						  UriInfo uriInfo, @Session HttpSession session)
 	{
-		super("yearReport.ftl", user, pointInMonth, reportedUser, context, session, emf);
+		super("yearReport.ftl", user, pointInMonth, reportedUser, uriInfo, session, emf);
 		timeDAO = new TimeDAO(emf);
 		ZonedDateTime beginingOfYear = pointInTime.withMonth(1).withDayOfMonth(1).with(LocalDate.MIN);
 		ZonedDateTime endOfYear = beginingOfYear.plusMonths(MONTHS_IN_YEAR).minusDays(1).with(LocalDate.MAX);

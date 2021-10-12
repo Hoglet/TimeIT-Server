@@ -2,7 +2,7 @@ package se.solit.timeit.dao;
 
 import java.time.Duration;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import se.solit.timeit.entities.Task;
 

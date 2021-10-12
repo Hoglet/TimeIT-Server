@@ -1,15 +1,16 @@
 package se.solit.timeit.views;
 
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
-import com.sun.jersey.api.core.HttpContext;
+import com.sun.net.httpserver.HttpContext;
 
 public class RecoverView extends BaseView
 {
 
-	public RecoverView(HttpContext context, HttpSession session)
+	public RecoverView(UriInfo uriInfo, HttpSession session)
 	{
-		super("recover.ftl", null, context, session);
+		super("recover.ftl", null, uriInfo, session);
 	}
 
 }

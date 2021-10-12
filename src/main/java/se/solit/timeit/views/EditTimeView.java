@@ -7,11 +7,11 @@ import java.time.format.DateTimeFormatter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class EditTimeView extends BaseView
 {
@@ -21,9 +21,9 @@ public class EditTimeView extends BaseView
 	private final DateTimeFormatter  timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 	private final ZoneId             zone          = ZonedDateTime.now().getZone();
 	
-	public EditTimeView(EntityManagerFactory emf, Time time, User user, HttpContext context, HttpSession session)
+	public EditTimeView(EntityManagerFactory emf, Time time, User user, UriInfo uriInfo, HttpSession session)
 	{
-		super("editTime.ftl", user, context, session);
+		super("editTime.ftl", user, uriInfo, session);
 		this.time = time;
 	}
 

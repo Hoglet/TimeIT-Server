@@ -1,6 +1,5 @@
 package resources;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
@@ -17,6 +16,7 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -35,10 +35,7 @@ import se.solit.timeit.resources.TimeResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.representation.Form;
+//import com.sun.jersey.api.representation.Form;
 
 public class TestTimeResource
 {
@@ -57,23 +54,24 @@ public class TestTimeResource
 	private final  DateTimeFormatter     dateFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
 	private final  DateTimeFormatter     timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-	private static BasicAuthProvider<User>  myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),  "Authenticator");
+	//private static BasicAuthProvider<User>  myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),  "Authenticator");
 
 	@ClassRule
 	public static final ResourceTestRule    resources  = ResourceTestRule.builder()
-	                                                                     .addResource(new TimeResource(emf))
-	                                                                     .addProvider(
-	                                                                           new SessionInjectableProvider<HttpSession>(
-	                                                                                 HttpSession.class,
-	                                                                                 mockSession)
-	                                                                                  )
-	                                                                     .addProvider(
-	                                                                           new ViewMessageBodyWriter(
-	                                                                                 new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
-	                                                                     .addProvider(
-	                                                                           new ContextInjectableProvider<HttpHeaders>(
-	                                                                                 HttpHeaders.class, null))
-	                                                                     .addResource(myAuthenticator).build();
+			.addResource(new TimeResource(emf))
+/*			.addProvider(
+					new SessionInjectableProvider<HttpSession>(
+							HttpSession.class,
+							mockSession)
+			)*/
+			.addProvider(
+					new ViewMessageBodyWriter(
+							new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
+/*			.addProvider(
+					new ContextInjectableProvider<HttpHeaders>(
+							HttpHeaders.class, null))*/
+//			.addResource(myAuthenticator)
+			.build();
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException
@@ -101,17 +99,23 @@ public class TestTimeResource
 	@Test
 	public final void testEditTimePage()
 	{
+		Fail.fail("Make test");
+/*
+
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/edit/" + timeID.toString());
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("<h2>Edit time</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/time/edit'"));
+*/
 	}
 
 	@Test
 	public final void testEditTimePageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/edit/" + timeID.toString());
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -124,11 +128,14 @@ public class TestTimeResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testEditTimePostPage() throws SQLException
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -158,11 +165,14 @@ public class TestTimeResource
 		Assert.assertEquals(expected.getStart().toString(), actual.getStart().toString());
 		Assert.assertEquals(expected.getStop().toString(), actual.getStop().toString());
 		Assert.assertEquals(expected.getTask().getID(), actual.getTask().getID());
+*/
 	}
 
 	@Test
 	public final void testEditTimePostPageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -185,22 +195,28 @@ public class TestTimeResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testAddPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("<h2>Add time</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/time/add'"));
+*/
 	}
 
 	@Test
 	public final void testAddPageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -213,11 +229,14 @@ public class TestTimeResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testAddPostPage() throws SQLException
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -250,11 +269,14 @@ public class TestTimeResource
 		Assert.assertEquals(expected.getStart().toString(), actual.getStart().toString());
 		Assert.assertEquals(expected.getStop().toString(), actual.getStop().toString());
 		Assert.assertEquals(expected.getTask().getID(), actual.getTask().getID());
+*/
 	}
 
 	@Test
 	public final void testAddPostPageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/time/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -274,5 +296,6 @@ public class TestTimeResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 }

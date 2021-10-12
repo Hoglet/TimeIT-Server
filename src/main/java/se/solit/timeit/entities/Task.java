@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import se.solit.timeit.serializers.DateAsTimestampSerializer;
 import se.solit.timeit.serializers.TaskDeserializer;
@@ -22,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
-@XmlRootElement(name = "Task")
 @JsonDeserialize(using = TaskDeserializer.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Immutable

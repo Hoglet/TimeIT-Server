@@ -5,13 +5,13 @@ import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.dao.RoleDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class UserEditView extends BaseView
 {
@@ -19,9 +19,9 @@ public class UserEditView extends BaseView
 	private final RoleDAO	roleDAO;
 	private final UserDAO	userDAO;
 
-	public UserEditView(String username, EntityManagerFactory emf, User user, HttpContext context, HttpSession session)
+	public UserEditView(String username, EntityManagerFactory emf, User user, UriInfo uriInfo, HttpSession session)
 	{
-		super("useredit.ftl", user, context, session);
+		super("useredit.ftl", user, uriInfo, session);
 		userDAO = new UserDAO(emf);
 		roleDAO = new RoleDAO(emf);
 		this.username = username;

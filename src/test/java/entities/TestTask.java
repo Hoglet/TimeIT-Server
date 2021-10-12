@@ -53,7 +53,12 @@ public class TestTask
 	public final void serializeToJSON_withParent() throws IOException
 	{
 		ObjectMapper MAPPER = Jackson.newObjectMapper();
-		User user = new User("testman", "Test Tester", "password", "", null);
+		User user = new User(
+				"testman",
+				"Test Tester",
+				"password",
+				"",
+				null);
 		UUID id = UUID.fromString("415a8737-b433-4a31-b85f-1a63e34eaddb");
 		UUID parentID = UUID.fromString("6fd9a659-8834-4d31-a69c-1c6b601b8f50");
 		Task parent = new Task(parentID, "parent", null, createTime, false, user);

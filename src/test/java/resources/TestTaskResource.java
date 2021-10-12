@@ -1,6 +1,5 @@
 package resources;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
@@ -16,6 +15,7 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,34 +34,31 @@ import se.solit.timeit.resources.TaskResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.representation.Form;
+//import com.sun.jersey.api.representation.Form;
 
 public class TestTaskResource
 {
 	private static final UUID                taskID          = UUID.randomUUID();
 	private static EntityManagerFactory      emf             = Persistence.createEntityManagerFactory("test");
-	private static BasicAuthProvider<User>   myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator");
+//	private static BasicAuthProvider<User>   myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator");
 	private static TaskDAO                   taskDAO;
 	private static User                      user;
 	private Task                             task;
-	private final static HttpSession         mockSession     = Mockito.mock(HttpSession.class);
+	//private final static HttpSession         mockSession     = Mockito.mock(HttpSession.class);
 
 	@ClassRule
 	public static final ResourceTestRule     resources = ResourceTestRule.builder()
-	                                                                     .addResource( new TaskResource(emf))
-	                                                                     .addProvider( new SessionInjectableProvider<HttpSession>(
-	                                                                                         HttpSession.class,
-	                                                                                         mockSession))
-	                                                                     .addProvider( new ViewMessageBodyWriter(
-	                                                                                         new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
-	                                                                     .addProvider(
-	                                                                                  new ContextInjectableProvider<HttpHeaders>(
-	                                                                                         HttpHeaders.class, null))
-	                                                                     .addResource(myAuthenticator).build();
+//			.addResource( new TaskResource(emf))
+/*			.addProvider( new SessionInjectableProvider<HttpSession>(
+							 HttpSession.class,
+						 mockSession))*/
+//			.addProvider( new ViewMessageBodyWriter(
+//							 new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
+/*			.addProvider(
+					  new ContextInjectableProvider<HttpHeaders>(
+							 HttpHeaders.class, null))
+			.addResource(myAuthenticator)*/
+			.build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -110,6 +107,9 @@ public class TestTaskResource
 	@Test
 	public final void testAddPage()
 	{
+		Fail.fail("Make test");
+/*
+
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -117,11 +117,14 @@ public class TestTaskResource
 		Assert.assertTrue(actual.contains("admin stuff"));
 		Assert.assertTrue(actual.contains("<h2>Add task</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/add'"));
+*/
 	}
 
 	@Test
 	public final void testEditPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -129,11 +132,14 @@ public class TestTaskResource
 		Assert.assertTrue(actual.contains("admin stuff"));
 		Assert.assertTrue(actual.contains("<h2>Edit task</h2>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/task/edit'"));
+*/
 	}
 
 	@Test
 	public final void testEditPage_otherUser()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
@@ -147,11 +153,15 @@ public class TestTaskResource
 			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
 			Assert.assertEquals("Client response status: 303", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testAddPageAuth()
 	{
+		Fail.fail("Make test");
+/*
+
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -164,11 +174,14 @@ public class TestTaskResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testAddPostPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -194,11 +207,14 @@ public class TestTaskResource
 		Assert.assertEquals(expected.getID(), actual.getID());
 		Assert.assertEquals(expected.getName(), actual.getName());
 		Assert.assertEquals(expected.getParent(), actual.getParent());
+*/
 	}
 
 	@Test
 	public final void testAddPostPageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -218,11 +234,14 @@ public class TestTaskResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testAddPostPage2()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -248,11 +267,14 @@ public class TestTaskResource
 		Assert.assertEquals(expected.getID(), actual.getID());
 		Assert.assertEquals(expected.getName(), actual.getName());
 		Assert.assertEquals(expected.getParent(), actual.getParent());
+*/
 	}
 
 	@Test
 	public final void testPostEditPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -277,11 +299,14 @@ public class TestTaskResource
 		Assert.assertEquals(expected.getID(), actual.getID());
 		Assert.assertEquals(expected.getName(), actual.getName());
 		Assert.assertEquals(expected.getParent(), actual.getParent());
+*/
 	}
 
 	@Test
 	public final void testPostEditPage2()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -310,11 +335,14 @@ public class TestTaskResource
 		Assert.assertEquals(expected.getID(), actual.getID());
 		Assert.assertEquals(expected.getName(), actual.getName());
 		Assert.assertEquals(expected.getParent().toString(), actual.getParent().toString());
+*/
 	}
 
 	@Test
 	public final void testPostEditPageAuth()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "pissword"));
@@ -335,11 +363,14 @@ public class TestTaskResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testPostEditPage_otherUser()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/task/edit");
 		resource.addFilter(new HTTPBasicAuthFilter("tester", "password"));
@@ -363,11 +394,14 @@ public class TestTaskResource
 		}
 		Task result = taskDAO.getByID(id);
 		Assert.assertEquals(name, result.getName());
+*/
 	}
 
 	@Test
 	public final void testDelete()
 	{
+		Fail.fail("Make test");
+/*
 		UUID id = UUID.randomUUID();
 		Task task2delete = new Task(id, "name", null, user);
 		taskDAO.add(task2delete);
@@ -384,11 +418,14 @@ public class TestTaskResource
 			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
 		}
 		Assert.assertEquals(id, taskDAO.getByID(id).getID());
+*/
 	}
 
 	@Test
 	public final void testDelete_auth()
 	{
+		Fail.fail("Make test");
+/*
 		UUID id = UUID.randomUUID();
 		Task task2delete = new Task(id, "name", null, user);
 		taskDAO.add(task2delete);
@@ -406,11 +443,14 @@ public class TestTaskResource
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
 		Assert.assertEquals(task2delete, taskDAO.getByID(id));
+*/
 	}
 
 	@Test
 	public final void testDelete_otherUser()
 	{
+		Fail.fail("Make test");
+/*
 		UUID id = UUID.randomUUID();
 		Task task2delete = new Task(id, "name", null, user);
 		taskDAO.add(task2delete);
@@ -427,6 +467,7 @@ public class TestTaskResource
 			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
 		}
 		Assert.assertEquals(id, taskDAO.getByID(id).getID());
+*/
 	}
 
 }

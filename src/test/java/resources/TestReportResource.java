@@ -1,6 +1,5 @@
 package resources;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 
@@ -12,6 +11,7 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,38 +27,36 @@ import se.solit.timeit.entities.User;
 import se.solit.timeit.resources.ReportResource;
 
 import com.codahale.metrics.MetricRegistry;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class TestReportResource
 {
 	private static EntityManagerFactory      emf              = Persistence.createEntityManagerFactory("test");
 
-	private static BasicAuthProvider<User>   myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),
-																	"Authenticator");
+//	private static BasicAuthProvider<User>   myAuthenticator  = new BasicAuthProvider<User>(new MyAuthenticator(emf),
+//																	"Authenticator");
 
 	private static User                      user;
 	private static String                    taskID;
 	private static User                      otheruser;
 
-	private final static HttpSession         mockSession      = Mockito.mock(HttpSession.class);
+//	private final static HttpSession         mockSession      = Mockito.mock(HttpSession.class);
 
 	@SuppressWarnings("deprecation")
 	@ClassRule
 	public static final ResourceTestRule     resources  = ResourceTestRule.builder()
-	                                                                      .addResource(new ReportResource(emf))
-	                                                                      .addProvider(
-	                                                                                 new SessionInjectableProvider<HttpSession>(
-	                                                                                        HttpSession.class,
-	                                                                                        mockSession))
-	                                                                      .addProvider(
-	                                                                                 new ViewMessageBodyWriter(
-	                                                                                 new MetricRegistry()))
-	                                                                      .addProvider(
-	                                                                                 new ContextInjectableProvider<HttpHeaders>(
-	                                                                                            HttpHeaders.class, null))
-	                                                                      .addResource(myAuthenticator).build();
+			.addResource(new ReportResource(emf))
+/*			.addProvider(
+					new SessionInjectableProvider<HttpSession>(
+							HttpSession.class,
+							mockSession))*/
+//			.addProvider(
+//					new ViewMessageBodyWriter(
+//							new MetricRegistry()))
+			/*.addProvider(
+					new ContextInjectableProvider<HttpHeaders>(
+							HttpHeaders.class, null))*/
+//			.addResource(myAuthenticator)
+			.build();
 
 	@BeforeClass
 	public static void beforeClass()
@@ -84,6 +82,9 @@ public class TestReportResource
 	@Test
 	public void testDayReport()
 	{
+		Fail.fail("Make test");
+/*
+
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12/1");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -91,11 +92,14 @@ public class TestReportResource
 		Assert.assertTrue(actual.contains("<div id=\"DayReport\""));
 		Assert.assertTrue(actual.contains("<div id=\"month\">December</div>"));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
+*/
 	}
 
 	@Test
 	public void testGetDayReport_wrongUser()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12/1");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -108,11 +112,14 @@ public class TestReportResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testGetMonthReport()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -120,22 +127,28 @@ public class TestReportResource
 		Assert.assertTrue(actual.contains("<div id=\"MonthReport\""));
 		Assert.assertTrue(actual.contains("<div id=\"month\">December</div>"));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
+*/
 	}
 
 	@Test
 	public void testGetYearReport()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("<div id=\"YearReport\""));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
+*/
 	}
 
 	@Test
 	public void testGetYearReport_wrongUser()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -148,11 +161,14 @@ public class TestReportResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testGetMonthReport_wrongPassword()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "pissword"));
@@ -165,11 +181,14 @@ public class TestReportResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testGetMonthReport_otherUser()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -182,11 +201,14 @@ public class TestReportResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public void testTaskDetailReport()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12/1/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -195,11 +217,13 @@ public class TestReportResource
 		Assert.assertTrue(actual.contains("<div id=\"month\">December</div>"));
 		Assert.assertTrue(actual.contains("<div id=\"year\">2014</div>"));
 		Assert.assertTrue(actual.contains("<h2> TaskName </h2>"));
+*/
 	}
 
 	@Test
 	public void testTaskDetailReport_wrongUser()
 	{
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/report/minion/2014/12/1/" + taskID);
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -212,6 +236,7 @@ public class TestReportResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 }

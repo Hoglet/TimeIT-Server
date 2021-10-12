@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -26,6 +27,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import se.solit.timeit.application.MailerInterface;
 import se.solit.timeit.dao.LoginKeyDAO;
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.LoginKey;
@@ -36,17 +38,15 @@ import se.solit.timeit.utilities.Email;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.representation.Form;
+//import com.sun.jersey.api.representation.Form;
 
 public class TestCredentialRecoveryResource
 {
 
 	private static EntityManagerFactory		emf			= Persistence.createEntityManagerFactory("test");
 
-	private final static HttpSession		mockSession	= Mockito.mock(HttpSession.class);
+//	private final static HttpSession		mockSession	= Mockito.mock(HttpSession.class);
+//	private static MailerInterface			mockMailer	= Mockito.mock(MailerInterface.class);
 	private static MockMailer				mockMailer	= new MockMailer();
 
 	@ClassRule
@@ -54,7 +54,7 @@ public class TestCredentialRecoveryResource
 																.builder()
 																.addResource(
 																		new CredentialRecoveryResource(emf, mockMailer))
-																.addProvider(
+/*																.addProvider(
 																		new SessionInjectableProvider<HttpSession>(
 																				HttpSession.class,
 																				mockSession))
@@ -63,7 +63,10 @@ public class TestCredentialRecoveryResource
 																				new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
 																.addProvider(
 																		new ContextInjectableProvider<HttpHeaders>(
-																				HttpHeaders.class, null)).build();
+																				HttpHeaders.class, null))
+																				*/
+			.build();
+
 
 	static String							mailaddress	= "mepa@mail.org";
 
@@ -113,16 +116,21 @@ public class TestCredentialRecoveryResource
 	@Test
 	public final void testRecover()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/recover/");
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("<H1>Recovering password</H1>"));
 		Assert.assertTrue(actual.contains("<form method=\"POST\" action='/recover'"));
+*/
 	}
 
 	@Test
 	public final void testRecoverPost() throws MessagingException
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/recover/");
 
@@ -142,11 +150,14 @@ public class TestCredentialRecoveryResource
 		Query query = em.createQuery("SELECT l FROM LoginKey l");
 		LoginKey result = (LoginKey) query.getSingleResult();
 		Assert.assertTrue(capturedEmail.message.contains("/recover/" + result.getId().toString()));
+*/
 	}
 
 	@Test
 	public final void testRecoverPost_fail1() throws MessagingException
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/recover/");
 
@@ -189,11 +200,14 @@ public class TestCredentialRecoveryResource
 			Assert.assertEquals("Client response status: 303", e.getMessage());
 		}
 		Assert.assertEquals("No user connected to wrong@address.org", mockSession.getAttribute("message"));
+*/
 	}
 
 	@Test
 	public final void testChangePassword()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		LoginKey loginKey = new LoginKey(user);
 		loginKeyDAO.add(loginKey);
@@ -201,11 +215,14 @@ public class TestCredentialRecoveryResource
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("<h2>New password</h2>"));
 		Assert.assertTrue(actual.contains("form method=\"POST\" action='/recover/" + loginKey.getId()));
+*/
 	}
 
 	@Test
 	public final void testChangePassword_noKey()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		LoginKey loginKey = new LoginKey(user);
 		WebResource resource = client.resource("/recover/" + loginKey.getId());
@@ -218,11 +235,14 @@ public class TestCredentialRecoveryResource
 		{
 			Assert.assertEquals("Client response status: 303", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testChangePasswordPost() throws MessagingException
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		LoginKey loginKey = new LoginKey(user);
 		loginKeyDAO.add(loginKey);
@@ -241,7 +261,7 @@ public class TestCredentialRecoveryResource
 		}
 		User daUser = userDAO.getUser(user.getUsername());
 		Assert.assertEquals(Crypto.encrypt(password), daUser.getPassword());
-
+*/
 	}
 
 }

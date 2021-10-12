@@ -1,6 +1,6 @@
 package se.solit.timeit.dao;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import se.solit.timeit.entities.Task;
 

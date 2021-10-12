@@ -1,5 +1,6 @@
 package se.solit.timeit.views;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.views.View;
 
 import java.time.ZonedDateTime;
@@ -9,12 +10,12 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.entities.Role;
 import se.solit.timeit.entities.User;
 
 import com.google.common.base.Charsets;
-import com.sun.jersey.api.core.HttpContext;
 
 public class BaseView extends View
 {
@@ -27,7 +28,7 @@ public class BaseView extends View
 
 	private String						message;
 
-	public BaseView(String template, User user, HttpContext context, HttpSession session)
+	public BaseView(String template, User user, UriInfo uriInfo, HttpSession session)
 	{
 		super(template, Charsets.UTF_8);
 		this.user = user;
@@ -38,9 +39,9 @@ public class BaseView extends View
 		}
 		session.removeAttribute("message");
 
-		if (context != null)
+		if (uriInfo != null)
 		{
-			currentPath = context.getRequest().getPath();
+			currentPath = uriInfo.getPath();
 		}
 		list = new ArrayList<SimpleEntry<String, String>>();
 		if (user != null && user.hasRole(Role.ADMIN))

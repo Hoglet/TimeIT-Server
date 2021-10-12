@@ -1,5 +1,6 @@
 package se.solit.timeit.resources;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
@@ -19,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +33,6 @@ import se.solit.timeit.entities.User;
 import se.solit.timeit.utilities.Email;
 import se.solit.timeit.views.ChangePasswordView;
 import se.solit.timeit.views.RecoverView;
-
-import com.sun.jersey.api.core.HttpContext;
 
 @Path("/recover")
 public class CredentialRecoveryResource extends BaseResource
@@ -53,16 +53,18 @@ public class CredentialRecoveryResource extends BaseResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
-	public View recoverPage(@Context HttpContext context,
+	public View recoverPage(@Context UriInfo uriInfo,
 			@Session HttpSession session)
 	{
-		return new RecoverView(context, session);
+		return new RecoverView(uriInfo, session);
 	}
 
 	@POST
 	@Produces("text/html;charset=UTF-8")
-	public View requestCredentials(@Context HttpContext context,
-			@Session HttpSession session, @FormParam("address") String mailaddress) throws URISyntaxException
+	public View requestCredentials(@Context UriInfo uriInfo,
+								   @Context HttpContext context,
+								   @Session HttpSession session,
+								   @FormParam("address") String mailaddress) throws URISyntaxException
 	{
 
 		try
@@ -84,7 +86,8 @@ public class CredentialRecoveryResource extends BaseResource
 
 				StringBuilder sb = new StringBuilder();
 				sb.append("Goto link : ");
-				sb.append(context.getUriInfo().getBaseUri());
+
+				sb.append(uriInfo.getBaseUri());
 				sb.append("recover/" + loginKey.getId());
 				sb.append("\n");
 				String message = sb.toString();
@@ -105,7 +108,7 @@ public class CredentialRecoveryResource extends BaseResource
 	@GET
 	@Path("/{keyid}")
 	@Produces("text/html;charset=UTF-8")
-	public View changePassword(@Context HttpContext context,
+	public View changePassword(@Context UriInfo uriInfo,
 			@Session HttpSession session, @PathParam("keyid") String keyid) throws URISyntaxException
 	{
 		loginKeyDAO.removeOld(Duration.ofDays(DAY_LIMIT));
@@ -115,7 +118,7 @@ public class CredentialRecoveryResource extends BaseResource
 			setMessage(session, "This key is no longer active, please do a new request");
 			throw redirect("/");
 		}
-		return new ChangePasswordView(loginKey.getUser(), keyid, context, session);
+		return new ChangePasswordView(loginKey.getUser(), keyid, uriInfo, session);
 	}
 
 	@POST

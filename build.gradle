@@ -1,15 +1,18 @@
 apply plugin: "java"
 apply plugin: "application"
 apply plugin: 'eclipse'
-apply plugin: "jacoco"
 apply plugin: 'project-report'
 
-sourceCompatibility='1.8'
-targetCompatibility='1.8'
 version='1.1'
+
+compileJava {
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+}
+
 project.ext
 {
-	dropwizardVersion='0.7.+'
+	dropwizardVersion='0.8.+'
 	h2Version = '1.4+'
 	postgresversion = '9.4+'
 	mariadbversion = '1.1.8'
@@ -26,20 +29,6 @@ repositories
 
 sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
 sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-    reportsDir = file("$buildDir/customJacocoReportDir")
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
-    }
-}
-
 
 test
 {
@@ -74,7 +63,7 @@ dependencies
 	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
 	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
 	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
-	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
+//	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
 	compile group: 'com.h2database', name: 'h2', version: h2Version
 	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
 	//compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
@@ -93,7 +82,7 @@ shadowJar {
 }
 
 task wrapper(type: Wrapper){
-    gradleVersion = '4.0'
+    gradleVersion = '4.10'
 }
 
 run

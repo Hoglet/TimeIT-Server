@@ -1,5 +1,6 @@
 package se.solit.timeit.views;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.jersey.sessions.Session;
 
 import java.time.Duration;
@@ -10,13 +11,12 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class TaskDetailReportView extends ReportView
 {
@@ -25,10 +25,10 @@ public class TaskDetailReportView extends ReportView
 	private String		total;
 
 	public TaskDetailReportView(EntityManagerFactory emf, ZonedDateTime pointInTime, User user, User reportedUser,
-			String taskid,
-			HttpContext context, @Session HttpSession session)
+								String taskid,
+								UriInfo uriInfo, @Session HttpSession session)
 	{
-		super("taskDetailReport.ftl", user, pointInTime, reportedUser, context, session, emf);
+		super("taskDetailReport.ftl", user, pointInTime, reportedUser, uriInfo, session, emf);
 
 		ZonedDateTime start = pointInTime.with(LocalTime.MIN);
 		ZonedDateTime stop = start.with(LocalTime.MAX);

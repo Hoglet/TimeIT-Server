@@ -1,6 +1,7 @@
 package resources;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
@@ -11,8 +12,8 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -27,28 +28,32 @@ import se.solit.timeit.resources.IndexResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestIndexResource
 {
-	private static EntityManagerFactory     emf             = Persistence.createEntityManagerFactory("test");
-	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf), "Authenticator");
+	private static EntityManagerFactory     emf  = Persistence.createEntityManagerFactory("test");
+
 	private final static HttpSession        mockSession	= Mockito.mock(HttpSession.class);
 
 	@ClassRule
 	public static final ResourceTestRule  resources = ResourceTestRule.builder()
-	                                                                  .addResource(new IndexResource(emf))
-	                                                                  .addProvider(new SessionInjectableProvider<HttpSession>(
-	                                                                               HttpSession.class,
-	                                                                               mockSession))
-	                                                                  .addProvider(new ViewMessageBodyWriter(
-	                                                                               new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
-	                                                                  .addProvider(new ContextInjectableProvider<HttpHeaders>(
-	                                                                               HttpHeaders.class, null))
-	                                                                  .addResource(myAuthenticator).build();
+			.addResource(new IndexResource(emf))
+/*			.addProvider(
+					new SessionInjectableProvider<HttpSession>(
+							HttpSession.class,
+							mockSession))
+			.addProvider(
+					new ViewMessageBodyWriter(
+							new MetricRegistry(),
+							ImmutableList.of(new FreemarkerViewRenderer())))
+			.addProvider(
+					new ContextInjectableProvider<HttpHeaders>(
+							HttpHeaders.class, null))*/
+			.addResource(AuthFactory.binder( new BasicAuthFactory<User>( new MyAuthenticator(emf), "TimeIT auth", User.class)))
+			.build();
 
 	
 	
@@ -76,26 +81,33 @@ public class TestIndexResource
 	@Test
 	public final void testIndexPage()
 	{
-		Client client = resources.client();
-		WebResource resource = client.resource("/");
-		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
-		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("admin stuff"));
+		assertThat(resources.client().target("/").request().get().toString())
+				.contains("admin stuff");
+
+		//resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
+		//String actual = resource.accept("text/html").get(String.class);
+
+
 	}
 
 	@Test
 	public final void testLandingPage()
 	{
-		Client client = resources.client();
-		WebResource resource = client.resource("/");
-		String actual = resource.accept("text/html").get(String.class);
-		Assert.assertTrue(actual.contains("<H1>TimeIT server</H1>"));
+		assertThat(resources.client().target("/").request().get().toString())
+				.contains("<H1>TimeIT server</H1>");
+		//String actual = resource.accept("text/html").get(String.class);
+		//Assert.assertTrue(actual.contains("<H1>TimeIT server</H1>"));
 	}
 
 	@Test
 	public final void testLoginPage()
 	{
-		Client client = resources.client();
+		Fail.fail("Do test");
+/*		assertThat(resources
+				.client()
+				.addFilter(new HTTPBasicAuthFilter("admin", "password"))
+				.target("/login").request().get().toString())
+				.contains("<H1>TimeIT server</H1>");
 		WebResource resource = client.resource("/login");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		try
@@ -107,6 +119,6 @@ public class TestIndexResource
 		{
 			Assert.assertEquals(UniformInterfaceException.class, e.getClass());
 		}
+*/
 	}
-
 }

@@ -1,5 +1,6 @@
 package se.solit.timeit.resources;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.sessions.Session;
@@ -18,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.dao.UserDAO;
 import se.solit.timeit.entities.User;
@@ -25,8 +27,6 @@ import se.solit.timeit.views.DayReportView;
 import se.solit.timeit.views.MonthReportView;
 import se.solit.timeit.views.TaskDetailReportView;
 import se.solit.timeit.views.YearReportView;
-
-import com.sun.jersey.api.core.HttpContext;
 
 @Path("/report")
 public class ReportResource
@@ -45,7 +45,7 @@ public class ReportResource
 	@Path("/{username}/{year}")
 	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
 	public View getYearReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final int year, @Context HttpContext context, @Session HttpSession session)
+							  @PathParam("year") final int year, @Context UriInfo uriInfo, @Session HttpSession session)
 	{
 		ZoneId zone = ZonedDateTime.now().getZone();
 		YearReportView result = null;
@@ -54,7 +54,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			ZonedDateTime pointInTime = ZonedDateTime.of(year, 1, 1, 1, 1, 0, 0, zone);
-			result = new YearReportView(emf, pointInTime, user, userToShow, context, session);
+			result = new YearReportView(emf, pointInTime, user, userToShow, uriInfo, session);
 		}
 		else
 		{
@@ -68,7 +68,7 @@ public class ReportResource
 	@Path("/{username}/{year}/{month}")
 	@CacheControl(maxAge = 15, maxAgeUnit = TimeUnit.MINUTES)
 	public View getMonthReport(@Auth User user, @PathParam("username") final String username,
-			@PathParam("year") final int year, @PathParam("month") final int month, @Context HttpContext context,
+			@PathParam("year") final int year, @PathParam("month") final int month, @Context UriInfo uriInfo,
 			@Session HttpSession session)
 	{
 		ZoneId zone = ZonedDateTime.now().getZone();
@@ -78,7 +78,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, 1, 1, 1, 0, 0, zone);
-			result = new MonthReportView(emf, pointInTime, user, userToShow, context, session);
+			result = new MonthReportView(emf, pointInTime, user, userToShow, uriInfo, session);
 		}
 		else
 		{
@@ -92,7 +92,7 @@ public class ReportResource
 	@Path("/{username}/{year}/{month}/{day}")
 	public View getDayReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @PathParam("month") final int month, @PathParam("day") final int day,
-			@Context HttpContext context, @Session HttpSession session)
+			@Context UriInfo uriInfo, @Session HttpSession session)
 	{
 		ZoneId zone = ZonedDateTime.now().getZone();
 		DayReportView result = null;
@@ -101,7 +101,7 @@ public class ReportResource
 			User userToShow = userDAO.getUser(username);
 
 			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, day, 1, 1, 0, 0, zone);
-			result = new DayReportView(emf, pointInTime, user, userToShow, context, session);
+			result = new DayReportView(emf, pointInTime, user, userToShow, uriInfo, session);
 		}
 		else
 		{
@@ -116,16 +116,16 @@ public class ReportResource
 	public View getTaskDetailReport(@Auth User user, @PathParam("username") final String username,
 			@PathParam("year") final int year, @PathParam("month") final int month, @PathParam("day") final int day,
 			@PathParam("task") final String taskid,
-			@Context HttpContext context, @Session HttpSession session)
+			@Context UriInfo uriInfo, @Session HttpSession session)
 	{
-		session.setAttribute("returnPoint", context.getRequest().getPath());
+		session.setAttribute("returnPoint", uriInfo.getPath());
 		TaskDetailReportView result = null;
 		if (user.getUsername().equals(username))
 		{
 			User userToShow = userDAO.getUser(username);
 			ZoneId zone = ZonedDateTime.now().getZone();
 			ZonedDateTime pointInTime = ZonedDateTime.of(year, month, day, 1, 1, 0, 0, zone);
-			result = new TaskDetailReportView(emf, pointInTime, user, userToShow, taskid, context, session);
+			result = new TaskDetailReportView(emf, pointInTime, user, userToShow, taskid, uriInfo, session);
 		}
 		else
 		{

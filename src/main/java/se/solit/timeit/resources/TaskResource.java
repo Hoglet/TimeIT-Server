@@ -1,5 +1,6 @@
 package se.solit.timeit.resources;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
@@ -15,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +26,6 @@ import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.Action;
 import se.solit.timeit.views.TaskView;
-
-import com.sun.jersey.api.core.HttpContext;
 
 @Path("/task")
 public class TaskResource extends BaseResource
@@ -42,10 +42,10 @@ public class TaskResource extends BaseResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
+	public View getAdd(@Auth User user, @Context UriInfo uriInfo, @Session HttpSession session)
 	{
 		Task task = new Task(UUID.randomUUID(), "", null, user);
-		return new TaskView(emf, task, user, Action.ADD, context, session);
+		return new TaskView(emf, task, user, Action.ADD, uriInfo, session);
 	}
 
 	@POST
@@ -71,14 +71,14 @@ public class TaskResource extends BaseResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit/{taskid}")
-	public View edit(@Auth User user, @PathParam("taskid") String id, @Context HttpContext context,
+	public View edit(@Auth User user, @PathParam("taskid") String id, @Context UriInfo uriInfo,
 			@Session HttpSession session) throws URISyntaxException
 	{
 		TaskDAO taskdao = new TaskDAO(emf);
 		Task task = taskdao.getByID(id);
 		if (task.getOwner().equals(user))
 		{
-			return new TaskView(emf, task, user, Action.EDIT, context, session);
+			return new TaskView(emf, task, user, Action.EDIT, uriInfo, session);
 		}
 		setMessage(session, NOT_ALLOWED);
 		throw redirect("/");

@@ -8,7 +8,9 @@ import java.util.Collection;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.dao.TaskDAO;
 import se.solit.timeit.dao.TaskDescriptor;
 import se.solit.timeit.dao.TaskDescriptorList;
@@ -16,7 +18,6 @@ import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 
-import com.sun.jersey.api.core.HttpContext;
 
 public class TimeView extends BaseView
 {
@@ -27,9 +28,9 @@ public class TimeView extends BaseView
 	private final DateTimeFormatter  timeFormatter  = DateTimeFormatter.ofPattern("HH:mm");
 	private final ZoneId             zone           = ZonedDateTime.now().getZone();
 
-	public TimeView(EntityManagerFactory emf, Time time, User user, HttpContext context, HttpSession session)
+	public TimeView(EntityManagerFactory emf, Time time, User user, UriInfo uriInfo, HttpSession session)
 	{
-		super("time.ftl", user, context, session);
+		super("time.ftl", user, uriInfo, session);
 		this.time = time;
 		taskDAO = new TaskDAO(emf);
 	}

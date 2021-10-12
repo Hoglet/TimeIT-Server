@@ -1,19 +1,19 @@
 package se.solit.timeit.views;
 
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class ChangePasswordView extends BaseView
 {
 	private final String	temporaryKey;
 
-	public ChangePasswordView(User user, String temporaryKey, HttpContext context,
+	public ChangePasswordView(User user, String temporaryKey, UriInfo uriInfo,
 			HttpSession session)
 	{
-		super("passwordChange.ftl", user, context, session);
+		super("passwordChange.ftl", user, uriInfo, session);
 		this.temporaryKey = temporaryKey;
 	}
 

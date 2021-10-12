@@ -1,5 +1,6 @@
 package se.solit.timeit.resources;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
@@ -22,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +35,6 @@ import se.solit.timeit.entities.Time;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.EditTimeView;
 import se.solit.timeit.views.TimeView;
-
-import com.sun.jersey.api.core.HttpContext;
 
 @Path("/time")
 public class TimeResource extends BaseResource
@@ -54,11 +54,11 @@ public class TimeResource extends BaseResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/add")
-	public View getAdd(@Auth User user, @Context HttpContext context, @Session HttpSession session)
+	public View getAdd(@Auth User user, @Context UriInfo uriInfo, @Session HttpSession session)
 	{
 		Instant now = Instant.now();
 		Time time = new Time(UUID.randomUUID(), now, now, false, now, null, "");
-		return new TimeView(emf, time, user, context, session);
+		return new TimeView(emf, time, user, uriInfo, session);
 	}
 
 	@POST
@@ -99,14 +99,14 @@ public class TimeResource extends BaseResource
 	@GET
 	@Produces("text/html;charset=UTF-8")
 	@Path("/edit/{timeid}")
-	public View getEdit(@Auth User user, @PathParam("timeid") String timeid, @Context HttpContext context,
+	public View getEdit(@Auth User user, @PathParam("timeid") String timeid, @Context UriInfo uriInfo,
 			@Session HttpSession session) throws URISyntaxException
 	{
 		Time time;
 		try
 		{
 			time = timedao.getByID(UUID.fromString(timeid));
-			return new EditTimeView(emf, time, user, context, session);
+			return new EditTimeView(emf, time, user, uriInfo, session);
 		}
 		catch (SQLException e)
 		{

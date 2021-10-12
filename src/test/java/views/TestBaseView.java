@@ -3,6 +3,7 @@ package views;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -12,8 +13,9 @@ import org.mockito.Mockito;
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.BaseView;
 
-import com.sun.jersey.api.core.HttpContext;
-import com.sun.jersey.api.core.HttpRequestContext;
+import java.net.URISyntaxException;
+
+import static org.mockito.Mockito.when;
 
 public class TestBaseView
 {
@@ -38,17 +40,14 @@ public class TestBaseView
 	public final void testGetClassess()
 	{
 		User user = new User("minion", "Do Er", "password", "email", null);
-		HttpContext context = Mockito.mock(HttpContext.class);
-		HttpRequestContext mockRequest = Mockito.mock(HttpRequestContext.class);
-		Mockito.when(mockRequest.getPath()).thenReturn("report/");
-		Mockito.when(context.getRequest()).thenReturn(mockRequest);
+		var uriInfo = Mockito.mock(UriInfo.class);
+		when(uriInfo.getPath()).thenReturn("report/");
 
 		HttpSession session = Mockito.mock(HttpSession.class);
-		BaseView view = new BaseView("index.ftl", user, context, session);
+		BaseView view = new BaseView("index.ftl", user, uriInfo, session);
 		Assert.assertEquals("selected", view.getClasses("report"));
 
-		Mockito.when(mockRequest.getPath()).thenReturn("/");
-		view = new BaseView("index.ftl", user, context, session);
+		view = new BaseView("index.ftl", user, uriInfo, session);
 		Assert.assertEquals("", view.getClasses("report"));
 
 	}

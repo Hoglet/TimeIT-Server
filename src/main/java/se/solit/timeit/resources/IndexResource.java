@@ -1,5 +1,6 @@
 package se.solit.timeit.resources;
 
+import com.sun.net.httpserver.HttpContext;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.sessions.Session;
 import io.dropwizard.views.View;
@@ -12,12 +13,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import se.solit.timeit.entities.User;
 import se.solit.timeit.views.IndexView;
 import se.solit.timeit.views.LandingView;
-
-import com.sun.jersey.api.core.HttpContext;
 
 @Path("/")
 public class IndexResource extends BaseResource
@@ -31,16 +31,16 @@ public class IndexResource extends BaseResource
 
 	@GET
 	@Produces("text/html;charset=UTF-8")
-	public View landingPage(@Auth(required = false) User user, @Context HttpContext context,
+	public View landingPage(@Auth(required = false) User user, @Context UriInfo uriInfo,
 			@Session HttpSession session)
 	{
 		if (user == null)
 		{
-			return new LandingView(context, session);
+			return new LandingView(uriInfo, session);
 		}
 		else
 		{
-			return new IndexView(user, emf, context, session);
+			return new IndexView(user, emf, uriInfo, session);
 		}
 	}
 

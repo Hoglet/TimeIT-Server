@@ -1,7 +1,9 @@
 package resources;
 
 import static org.junit.Assert.fail;
-import io.dropwizard.auth.basic.BasicAuthProvider;
+
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import io.dropwizard.views.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
@@ -19,6 +21,7 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Fail;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,38 +44,42 @@ import se.solit.timeit.resources.UserResource;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.representation.Form;
+//import com.sun.jersey.api.representation.Form;
 
 public class TestUserResource
 {
 	private static EntityManagerFactory     emf             = Persistence.createEntityManagerFactory("test");
 
-	private static BasicAuthProvider<User>  myAuthenticator = new BasicAuthProvider<User>(new MyAuthenticator(emf),
-																	"Authenticator");
-
 	private static UserDAO                  userDAO;
 
 	private static User                     admin;
 	private User                            minion;
-	private final static HttpSession        mockSession     = Mockito.mock(HttpSession.class);
+	//private final static HttpSession        mockSession     = Mockito.mock(HttpSession.class);
 
 	@ClassRule
-	public static final ResourceTestRule  resources = ResourceTestRule.builder()
-	                                                                  .addResource(new UserResource(emf))
-	                                                                  .addProvider(
-	                                                                         new SessionInjectableProvider<HttpSession>(
-	                                                                                HttpSession.class,
-	                                                                                mockSession))
-	                                                                  .addProvider(
-	                                                                         new ViewMessageBodyWriter(
-	                                                                         new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
-	                                                                  .addProvider(
-	                                                                         new ContextInjectableProvider<HttpHeaders>(
-	                                                                              HttpHeaders.class, null))
-	                                                                  .addResource(myAuthenticator).build();
+	public static final ResourceTestRule resources = ResourceTestRule.builder()
+			.addResource(new UserResource(emf))
+			.build();
+/*	public static final ResourceTestRule  resources = ResourceTestRule.builder()
+			.addResource(new UserResource(emf))
+			.addProvider(
+					new SessionInjectableProvider<HttpSession>(
+							HttpSession.class,
+							mockSession))
+			.addProvider(
+					new ViewMessageBodyWriter(
+							new MetricRegistry(), ImmutableList.of(new FreemarkerViewRenderer())))
+			.addProvider(
+					new ContextInjectableProvider<HttpHeaders>(
+							HttpHeaders.class, null))
+			.addResource( AuthFactory.binder(
+					new BasicAuthFactory<User>(
+							new MyAuthenticator(emf),
+							"TimeIT auth",
+							User.class)
+						))
+			.build();
+*/
 
 	private Instant      start   = Instant.ofEpochSecond(0);
 	private Instant      stop    = Instant.ofEpochSecond(100);
@@ -119,6 +126,8 @@ public class TestUserResource
 	@Test
 	public final void testAdmin()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -127,11 +136,14 @@ public class TestUserResource
 
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("Bob B"));
+*/
 	}
 
 	@Test
 	public final void testAdmin_failAccess()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -144,11 +156,14 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserEditGet_Self()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -157,11 +172,14 @@ public class TestUserResource
 
 		Assert.assertTrue(actual.contains("Bob C"));
 		Assert.assertTrue(actual.contains("action='/user/minion'"));
+*/
 	}
 
 	@Test
 	public final void testUserEditGet_OtherUserWithRights()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -170,11 +188,14 @@ public class TestUserResource
 
 		Assert.assertTrue(actual.contains("Bob C"));
 		Assert.assertTrue(actual.contains("action='/user/minion'"));
+*/
 	}
 
 	@Test
 	public final void testUserEditGet_otherUserWithoutRights()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/admin");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -188,11 +209,14 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserEdit()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 
 		String username = minion.getUsername();
@@ -224,11 +248,14 @@ public class TestUserResource
 
 		User actual = userDAO.getUser(username);
 		Assert.assertTrue(expected.equals(actual));
+*/
 	}
 
 	@Test
 	public final void testUserEdit_retainOldPassword()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 
 		String username = minion.getUsername();
@@ -263,12 +290,14 @@ public class TestUserResource
 		Assert.assertEquals(minion.getPassword(), actual.getPassword());
 		Assert.assertEquals(expected.getEmail(), actual.getEmail());
 		Assert.assertEquals("Active roles:", 1, actual.getRoles().size());
-
+*/
 	}
 
 	@Test
 	public final void testUserEdit_personalEditingSave()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 
 		String username = minion.getUsername();
@@ -305,12 +334,14 @@ public class TestUserResource
 		Assert.assertEquals(expected.getPassword(), actual.getPassword());
 		Assert.assertEquals(expected.getEmail(), actual.getEmail());
 		Assert.assertEquals("Active roles:", 0, actual.getRoles().size());
-
+*/
 	}
 
 	@Test
 	public final void testUserEdit_personalEditingSaveOfOtherUser()
 	{
+		Fail.fail("Make test");
+/*
 		String username = admin.getUsername();
 		String name = "Banarne";
 		String password = "Pasvord";
@@ -340,11 +371,14 @@ public class TestUserResource
 
 		User actual = userDAO.getUser(username);
 		Assert.assertEquals(admin, actual);
+*/
 	}
 
 	@Test
 	public final void testUserEdit_notAuthorized()
 	{
+		Fail.fail("Make test");
+/*
 
 		String username = minion.getUsername();
 		String name = "Banarne";
@@ -376,11 +410,14 @@ public class TestUserResource
 
 		User actual = userDAO.getUser(username);
 		Assert.assertFalse(expected.equals(actual));
+*/
 	}
 
 	@Test
 	public final void testUserAdd()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
@@ -413,11 +450,14 @@ public class TestUserResource
 
 		User actual = userDAO.getUser(username);
 		Assert.assertTrue(expected.equals(actual));
+*/
 	}
 
 	@Test
 	public final void testUserAdd_withoutRights()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/add");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -447,11 +487,14 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserDelete() throws SQLException
 	{
+		Fail.fail("Make test");
+/*
 
 		String username = "minion";
 		User expected = userDAO.getUser(username);
@@ -486,11 +529,14 @@ public class TestUserResource
 
 		User actual = userDAO.getUser(username);
 		Assert.assertTrue(null == actual);
+*/
 	}
 
 	@Test
 	public final void testUserDelete_withoutRights() throws SQLException
 	{
+		Fail.fail("Make test");
+/*
 		String username = "minion";
 		User expected = userDAO.getUser(username);
 		Assert.assertEquals(minion, expected);
@@ -521,11 +567,14 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserAdd_notAuthorized()
 	{
+		Fail.fail("Make test");
+/*
 		String username = "apa";
 		String name = "Banarne";
 		String password = "Pasvord";
@@ -551,11 +600,14 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 303", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserAdd_wrongCredentials()
 	{
+		Fail.fail("Make test");
+/*
 
 		String username = "apa";
 		String name = "Banarne";
@@ -583,33 +635,44 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
+
 
 	@Test
 	public final void testUserEditPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("class=\"tab selected\"><h2>Edit</h2>"));
 		Assert.assertTrue(actual.contains("<td>minion</td>"));
+*/
 	}
 
 	@Test
 	public final void testUserAddPage()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
+
 		WebResource resource = client.resource("/user/add");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("class=\"tab selected\"><h2>Add user</h2>"));
+*/
 	}
 
 	@Test
 	public final void testUserAddPage_withoutRights()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/add");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -623,22 +686,28 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 	@Test
 	public final void testUserDeleteConfirm()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/delete/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("admin", "password"));
 
 		String actual = resource.accept("text/html").get(String.class);
 		Assert.assertTrue(actual.contains("action='/user/delete/minion'"));
+*/
 	}
 
 	@Test
 	public final void testUserDeleteConfirm_withoutRights()
 	{
+		Fail.fail("Make test");
+/*
 		Client client = resources.client();
 		WebResource resource = client.resource("/user/delete/minion");
 		resource.addFilter(new HTTPBasicAuthFilter("minion", "password"));
@@ -652,6 +721,7 @@ public class TestUserResource
 		{
 			Assert.assertEquals("Client response status: 401", e.getMessage());
 		}
+*/
 	}
 
 }

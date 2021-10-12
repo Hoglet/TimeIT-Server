@@ -2,8 +2,8 @@ package se.solit.timeit.application;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.auth.basic.BasicAuthProvider;
-import io.dropwizard.jersey.sessions.HttpSessionProvider;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
@@ -63,7 +63,7 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		SimpleModule module = new SimpleModule("MyModule");
 		environment.getObjectMapper().registerModule(module);
 
-		environment.jersey().register(HttpSessionProvider.class);
+		//environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
 
 		String mailserver = configuration.getMailserver();
@@ -76,9 +76,14 @@ public class TimeITServerApplication extends Application<TimeITConfiguration>
 		environment.jersey().register(new TasksSyncResource(emf));
 		environment.jersey().register(new TimesSyncResource(emf));
 		environment.jersey().register(new UserResource(emf));
-		environment.jersey().register(new BasicAuthProvider<User>(new MyAuthenticator(emf), "TimeIT auth"));
+		environment.jersey().register( AuthFactory.binder(
+				new BasicAuthFactory<User>(
+						new MyAuthenticator(emf),
+						"TimeIT auth",
+						User.class)
+						));
 		environment.jersey().register(new ReportResource(emf));
-		environment.jersey().register(HttpSessionProvider.class);
+		//environment.jersey().register(HttpSessionProvider.class);
 		environment.servlets().setSessionHandler(new SessionHandler());
 		environment.servlets().addFilter("CacheControl", new CacheControlFilter())
 				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "*.css");

@@ -1,15 +1,16 @@
 package se.solit.timeit.views;
 
-import javax.servlet.http.HttpSession;
+import com.sun.net.httpserver.HttpContext;
 
-import com.sun.jersey.api.core.HttpContext;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
 public class LandingView extends BaseView
 {
 
-	public LandingView(HttpContext context, HttpSession session)
+	public LandingView(UriInfo uriInfo, HttpSession session)
 	{
-		super("landing.ftl", null, context, session);
+		super("landing.ftl", null, uriInfo, session);
 	}
 
 }

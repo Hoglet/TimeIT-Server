@@ -8,14 +8,14 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriInfo;
 
+import com.sun.net.httpserver.HttpContext;
 import se.solit.timeit.dao.TimeDAO;
 import se.solit.timeit.dao.TimeDescriptor;
 import se.solit.timeit.dao.TimeDescriptorList;
 import se.solit.timeit.entities.Task;
 import se.solit.timeit.entities.User;
-
-import com.sun.jersey.api.core.HttpContext;
 
 public class ReportView extends BaseView
 {
@@ -37,10 +37,10 @@ public class ReportView extends BaseView
 	protected String[]              itemClass;
 	protected final List<Task>      tasks                  = new ArrayList<Task>();
 
-	public ReportView(String template, User user, ZonedDateTime pointInTime, User reportedUser, HttpContext context,
+	public ReportView(String template, User user, ZonedDateTime pointInTime, User reportedUser, UriInfo uriInfo,
 			HttpSession session, EntityManagerFactory emf)
 	{
-		super(template, user, context, session);
+		super(template, user, uriInfo, session);
 		timeDAO = new TimeDAO(emf);
 		this.pointInTime = pointInTime;
 		this.reportedUser = reportedUser;
