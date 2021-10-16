@@ -1,11 +1,10 @@
 apply plugin: "java"
 apply plugin: "application"
-apply plugin: 'eclipse'
-apply plugin: "jacoco"
 apply plugin: 'project-report'
 
 sourceCompatibility='1.8'
 targetCompatibility='1.8'
+
 version='1.0'
 project.ext
 {
@@ -26,19 +25,6 @@ repositories
 
 sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
 sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-    reportsDir = file("$buildDir/customJacocoReportDir")
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
-    }
-}
 
 
 test
@@ -90,10 +76,6 @@ shadowJar {
     baseName = 'TimeIT-Server'
     classifier = 'beta'
     version =  version
-}
-
-task wrapper(type: Wrapper){
-    gradleVersion = '4.0'
 }
 
 run
