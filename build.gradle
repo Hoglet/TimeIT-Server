@@ -8,11 +8,11 @@ targetCompatibility='1.8'
 version='1.0'
 project.ext
 {
-	dropwizardVersion='0.7.+'
-	h2Version = '1.4+'
-	postgresversion = '9.4+'
-	mariadbversion = '1.1.8'
-	jnaversion = '3.0.9'
+	dropwizardVersion = '0.7.+'
+	h2Version         = '1.4+'
+	postgresversion   = '9.4+'
+	mariadbversion    = '1.1.8'
+	jnaversion        = '3.0.9'
 }
 
 mainClassName = 'se.solit.timeit.application.TimeITServerApplication'
@@ -22,9 +22,17 @@ repositories
 	mavenCentral()
 }
 
-
-sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
-sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
+sourceSets
+{
+	main
+	{
+		output.resourcesDir = sourceSets.main.output.classesDir
+	}
+	test
+	{
+		output.resourcesDir = sourceSets.test.output.classesDir
+	}
+}
 
 
 test
@@ -52,32 +60,37 @@ buildscript {
 
 dependencies
 {
-	compile group: 'io.dropwizard', name: 'dropwizard-core', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-auth', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-views-freemarker', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-jackson', version: project.ext.dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-testing', version: project.ext.dropwizardVersion
-	compile group: 'javax.mail', name: 'mail', version: '1.4.7'
-	compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.18.1'
-	compile group: 'com.h2database', name: 'h2', version: h2Version
-	compile group: 'org.postgresql', name: 'postgresql', version: postgresversion
+	implementation( "io.dropwizard:dropwizard-core:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-auth:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-assets:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-views:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-views-freemarker:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-jackson:$dropwizardVersion" )
+	implementation( "io.dropwizard:dropwizard-testing:$dropwizardVersion" )
+	implementation( "javax.mail:mail:1.4.7" )
+	implementation( "com.sun.jersey:jersey-json:1.18.1" )
+	implementation( "com.h2database:h2:$h2Version" )
+	implementation( "org.postgresql:postgresql:$postgresversion" )
 	//compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: mariadbversion
 	//compile group: 'com.sun.jna', name: 'jna', version: jnaversion
-	compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.5.1'
+	implementation( "org.eclipse.persistence:eclipselink:2.5.1" )
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
 
 shadowJar {
     mergeServiceFiles()
-    mainClassName = mainClassName
+	exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
     baseName = 'TimeIT-Server'
     classifier = 'beta'
     version =  version
 }
 
+jar {
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
+}
 run
 {
 	args 'server','./src/main/config/template-config.yml'
